@@ -1,0 +1,72 @@
+/*  Quincy IDE for the Pawn scripting language
+ *
+ *  Copyright ITB CompuPhase, 2009-2016
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ *  use this file except in compliance with the License. You may obtain a copy
+ *  of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *  License for the specific language governing permissions and limitations
+ *  under the License.
+ *
+ *  Version: $Id: wxquincy.rc 5504 2016-05-15 13:42:30Z  $
+ */
+#include <windows.h>
+#include <winver.h>
+#include "svnrev.h"
+
+AppIcon ICON "res/quincy.ico"
+
+/*  Version information
+ *
+ *  All strings MUST have an explicit \0. See the Windows SDK documentation
+ *  for details on version information and the VERSIONINFO structure.
+ */
+#define VERSION              4
+#define REVISION             0
+#define BUILD                SVN_REV
+#define VERSIONSTR           "4.0." SVN_REVSTR "\0"
+#define VERSIONNAME          "wxQuicy.exe\0"
+#define VERSIONDESCRIPTION   "Quincy for Pawn\0"
+#define VERSIONCOMPANYNAME   "CompuPhase\0"
+#define VERSIONPRODUCTNAME   "wxQuincy\0"
+#define VERSIONCOPYRIGHT     "Copyright \251 ITB CompuPhase 2009-2014\0"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    VERSION, REVISION, BUILD, 0
+PRODUCTVERSION VERSION, REVISION, BUILD, 0
+FILEFLAGSMASK  0x0000003FL
+FILEFLAGS      0
+#if defined(WIN32)
+  FILEOS       VOS__WINDOWS32
+#else
+  FILEOS       VOS__WINDOWS16
+#endif
+FILETYPE       VFT_APP
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",      VERSIONCOMPANYNAME
+            VALUE "FileDescription",  VERSIONDESCRIPTION
+            VALUE "FileVersion",      VERSIONSTR
+            VALUE "InternalName",     VERSIONNAME
+            VALUE "LegalCopyright",   VERSIONCOPYRIGHT
+            VALUE "OriginalFilename", VERSIONNAME
+            VALUE "ProductName",      VERSIONPRODUCTNAME
+            VALUE "ProductVersion",   VERSIONSTR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
