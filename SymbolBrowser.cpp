@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: SymbolBrowser.cpp 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: SymbolBrowser.cpp 5519 2016-05-26 08:33:38Z  $
  */
 #include "wxQuincy.h"
 #include "SymbolBrowser.h"
@@ -129,21 +129,20 @@ bool CSymbolList::LoadReportFile(const wxString& file)
 
 /* Lookup()
  * Looks up a symbol in the "browse" information.
- * "nextmatch" should be -1 to find an exact match. If "nextmatch" is positive,
- * it will perform a partial match (any string matching parameter "symbol" in
- * the length of "symbol" is matched), but the first "nextmatch" number of matches
- * will be skipped. So, if "nextmatch" is zero, the first partial match is
- * returned; if "nextmatch" is 1, the second partial match is returned.
+ * If "skip" is greater than zero, the first "skip" matches are ignored. You can
+ * use this when there are multiple symbols with the same name.
+ * If "partial" is true, only the length of "symbol" is matched; a symbol that is
+ * longer than parameter "symbol" but match it up to that length, is returned. 
  */
-const CSymbolEntry* CSymbolList::Lookup(const wxString& symbol, int nextmatch) const
+const CSymbolEntry* CSymbolList::Lookup(const wxString& symbol, int skip, bool partial) const
 {
 	CSymbolEntry *item = SymbolList.Next;
 	while (item) {
 		wxString symname = item->SymbolName.Mid(2);
-		if (nextmatch >= 0)
+		if (partial)
 			symname = symname.Left(symbol.Length());
 		if (symname.Cmp(symbol) == 0) {
-			if (--nextmatch < 0)
+			if (--skip < 0)
 				return item;
 		}
 		item = item->Next;

@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: HelpIndex.cpp 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: HelpIndex.cpp 5564 2016-07-26 09:24:04Z  $
  */
 #define _CRT_SECURE_NO_WARNINGS
 #include <cassert>
@@ -61,10 +61,11 @@ bool CHelpIndex::ScanFile(const char *indexfile, int id, const char *docfile)
 		char macro[64] = "", label[64] = "", type[64] = "";
 		sscanf(line, "%[^{]{%[^}]}{%d}{%[^}]}{%d}", macro, label, &softpage, type, &hardpage);
 		if (strcmp(macro, "\\@definelabel") == 0
-			&& label[0] == 'L'
-			&& strcmp(type, "page") == 0
+			&& strlen(label) > 2 && label[0] == 'p' && label[1] == '.' 
+			&& (strpbrk(label + 2, " .,:+-/&!()") == NULL || strncmp(label, "p.at.", 5) == 0 && strpbrk(label + 5, " .,:+-/&!()") == NULL)
+			&& strcmp(type, "page") == 0 
 			&& hardpage > 0)
-			AddPage(label, id, hardpage);
+			AddPage(label + 2, id, hardpage);
 	}
 
 	fclose(fp);

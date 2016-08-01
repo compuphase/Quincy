@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: SymbolBrowser.h 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: SymbolBrowser.h 5519 2016-05-26 08:33:38Z  $
  */
 #ifndef _SYMBOLBROWSER_H
 #define _SYMBOLBROWSER_H
@@ -46,7 +46,7 @@ public:
 	~CSymbolList() { Clear(); }
 	void Clear() { SymbolList.Remove(); }
 	bool LoadReportFile(const wxString& file);
-	const CSymbolEntry* Lookup(const wxString& symbol, int nextmatch = -1) const;
+	const CSymbolEntry* Lookup(const wxString& symbol, int skip = 0, bool partial = false) const;
 	const CSymbolEntry* Root() const { return SymbolList.Next; }
 private:
 	CSymbolEntry SymbolList;

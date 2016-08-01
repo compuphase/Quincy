@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.h 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: QuincyFrame.h 5567 2016-08-01 14:52:15Z  $
  */
 #ifndef _QUINCYFRAME_H
 #define _QUINCYFRAME_H
@@ -26,6 +26,7 @@
 #include <wx/icon.h>
 #include <wx/listctrl.h>
 #include <wx/process.h>
+#include <wx/regex.h>
 #include <wx/splitter.h>
 #include <wx/stc/stc.h>
 #include <wx/timer.h>
@@ -48,6 +49,48 @@
 #define UI_TRANSFER	0x0040
 #define UI_DBGTOOLS	0x0080
 #define UI_FINDNEXT	0x0100
+
+#define CTX_RESTART 0x01    /* start scanning from top (change was detected) */
+#define CTX_RESET   0x02    /* like CTX_RESTART, but also clears the list before starting the scan */
+#define CTX_FULL    0x04    /* like CTX_RESTART, but scans the complete file before returning */
+#define CTX_LINES   1
+class ContextParse {
+public:
+    ContextParse() { 
+        choicectrl = NULL;
+        Names.Clear(); 
+        Ranges.Clear(); 
+        currentselection = -1;
+        activeedit = NULL; 
+        startline = 0; 
+        nestlevel = 0;
+        incomment = inparamlist = false; 
+        context = wxEmptyString;
+        topline = btmline = -1;
+    }
+    void SetControl(wxChoice* ctrl) { choicectrl = ctrl; }
+    void ShowContext(int linenr); /* sets the context name in the control */
+    bool ScanContext(wxStyledTextCtrl* edit, int flags = 0);
+    int Lookup(const wxString& name);
+    
+private:
+    wxRegEx re;
+
+    wxArrayString WorkNames;
+    wxArrayLong WorkRanges;
+    wxStyledTextCtrl* activeedit; /* active editor */
+    int startline;          /* line that the previous scan left off */
+    bool incomment;
+    bool inparamlist;
+    int nestlevel;
+    wxString context;
+    int topline, btmline;
+
+    wxArrayString Names;
+    wxArrayLong Ranges;
+    wxChoice* choicectrl;   /* control with the updated choice lists */
+    int currentselection;
+};
 
 class QuincyFrame : public wxFrame
 {
@@ -112,6 +155,7 @@ public:
 	virtual void OnAutoComplete(wxCommandEvent& event);
 	virtual void OnIdle(wxIdleEvent& event);
 	virtual void OnTerminateApp(wxProcessEvent& event);
+    virtual void OnSelectContext(wxCommandEvent& event);
 
 	virtual void OnUIWorkSpace(wxUpdateUIEvent& event);
 	virtual void OnUIUndo(wxUpdateUIEvent& event);
@@ -208,6 +252,7 @@ private:
 	wxMenu* menuBreakpoints;
 	wxMenu* menuTabSpace;
 	wxAuiToolBar* ToolBar;
+    wxChoice* FunctionList;
 
 	wxSplitterWindow* SplitterFrame;
 	wxPanel* pnlEdit;
@@ -307,6 +352,8 @@ private:
 
 	unsigned long RectSelectChkSum;	/* checksum to detect paste of rectangular selection */
 	unsigned long CalcClipboardChecksum();
+
+    ContextParse context;
 
 	wxFindReplaceDialog *FindDlg;
 	wxFindReplaceData FindData;
@@ -411,20 +458,11 @@ enum {
 	IDM_INDENTSTOTABS,
 	IDM_TRIMTRAILING,
 	IDM_CONTEXTHELP,
+    IDM_SELECTCONTEXT,
     //-----
     IDM_RECENTFILE1,
     IDM_RECENTWORKSPACE1 = IDM_RECENTFILE1 + MAX_RECENTFILES,
-    IDM_RECENTWORKSPACE2,
-    IDM_RECENTWORKSPACE3,
-    IDM_RECENTWORKSPACE4,
-    IDM_RECENTWORKSPACE5,
-    IDM_RECENTWORKSPACE6,
-    IDM_RECENTWORKSPACE7,
-    IDM_RECENTWORKSPACE8,
-    IDM_RECENTWORKSPACE9,
-    IDM_RECENTWORKSPACE10,
 	IDM_HELP1 = IDM_RECENTWORKSPACE1 + MAX_RECENTWORKSPACES,
-	//-----
 	IDM_TIMER = IDM_HELP1 + MAX_HELPFILES,
 	//-----
 	IDC_EDIT,	/* must remain last */

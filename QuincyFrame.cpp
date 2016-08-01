@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.cpp 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: QuincyFrame.cpp 5567 2016-08-01 14:52:15Z  $
  */
 #define _CRT_SECURE_NO_DEPRECATE
 #include "wxQuincy.h"
@@ -372,6 +372,11 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
 	ToolBar->AddTool(IDM_STEPOVER, wxT("Step Over"), tb_stepover, wxT("Step over functions") + TB_SHORTCUT(wxT("StepOver")));
 	ToolBar->AddTool(IDM_STEPOUT, wxT("Step Out"), tb_stepout, wxT("Run up to the function return") + TB_SHORTCUT(wxT("StepOut")));
 	ToolBar->AddTool(IDM_RUNTOCURSOR, wxT("Run to cursor"), tb_runtocursor, wxT("Run up to the current line") + TB_SHORTCUT(wxT("RunToCursor")));
+	ToolBar->AddSeparator();
+    FunctionList = new wxChoice(ToolBar, IDM_SELECTCONTEXT, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
+    FunctionList->SetMinSize(wxSize(200, -1));
+    FunctionList->SetToolTip(wxT("The function name at the current cursor position."));
+    ToolBar->AddControl(FunctionList, wxT("Context"));
 	ToolBar->Realize();
 	ToolBar->Refresh(false);
 	bSizerFrame->Add(ToolBar, 0, wxEXPAND, 5);
@@ -395,6 +400,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
 	Connect(IDM_STEPOVER, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(QuincyFrame::OnStepOver));
 	Connect(IDM_STEPOUT, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(QuincyFrame::OnStepOut));
 	Connect(IDM_RUNTOCURSOR, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(QuincyFrame::OnRunToCursor));
+    Connect(IDM_SELECTCONTEXT, wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(QuincyFrame::OnSelectContext));
 
 	/* splitter window */
 	SplitterFrame = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D);
@@ -487,6 +493,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
 	LoadSession();
 	if (EditTab->GetPageCount() == 0)
 		AddEditor();	/* no files in the session, create an empty file */
+    context.SetControl(FunctionList);
 	UIDisabledTools = 0;
 	VisibleWhiteSpace = false;
 	IgnoreChangeEvent = false;
@@ -588,6 +595,8 @@ void QuincyFrame::OnTabChange(wxAuiNotebookEvent& /* event */)
 {
 	/* user has clicked on a TAB to select a different file */
 	AdjustTitle();
+	wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
+    context.ScanContext(edit, CTX_RESET);
 }
 
 void QuincyFrame::OnTabClose(wxAuiNotebookEvent& event)
@@ -2046,7 +2055,7 @@ void QuincyFrame::OnFindDlg(wxCommandEvent& /* event */)
                         wxBusyInfoFlags()
                             .Parent(this)
                             .Icon(wxArtProvider::GetIcon(wxART_FIND))
-                            .Title(wxT("<b>Search through all files in ") + path + wxT("</b>"))
+                            .Title(wxT("Search ") + path)
                             .Text(wxT("Please wait..."))
                             .Foreground(*wxWHITE)
                             .Background(*wxBLACK)
@@ -2432,6 +2441,40 @@ void QuincyFrame::OnGotoSymbol(wxCommandEvent& /* event */)
 		wxMessageBox(wxT("Symbol \"") + word + wxT("\"not found."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
 		return;
 	}
+
+    /* see whether there are more matches 
+       if there are more matches (not a likely scenario), collect them and let 
+       the user choose */
+    int count = 1;
+    while (SymbolList.Lookup(word, count) != NULL)
+        count++;
+    if (count > 1) {
+        const CSymbolEntry** symbollist = new const CSymbolEntry*[count];
+        if (symbollist) {
+    		wxArrayString matches;
+            for (int idx = 0; idx < count; idx++) {
+                symbollist[idx] = SymbolList.Lookup(word, idx);
+                matches.Add(symbollist[idx]->Syntax + wxT(" - ") + symbollist[idx]->Source);
+            }
+            /* create a dialog that the user can choose from */
+		    static int dlgwidth = wxDefaultCoord;
+		    static int dlgheight = wxDefaultCoord;
+		    wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, wxT("This symbol appears in multiple source files."), wxT("Select source file"), matches);
+		    dlg->SetSize(wxDefaultCoord, wxDefaultCoord, dlgwidth, dlgheight, wxSIZE_AUTO);
+		    int result = dlg->ShowModal();
+		    dlg->GetSize(&dlgwidth, &dlgheight);
+		    if (result == wxID_OK) {
+			    int idx = dlg->GetSelection();
+                wxASSERT(idx >= 0 && idx < count);
+			    symbol = symbollist[idx];
+		    } else {
+                symbol = NULL;
+            }
+            delete[] symbollist;
+        }
+    }
+    if (!symbol)
+        return;
 
 	wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
 	wxASSERT(edit);	/* otherwise a valid word could never have been found */
@@ -2869,7 +2912,7 @@ void QuincyFrame::OnBreakpointClear(wxCommandEvent& /* event */)
 	}
 }
 
-void QuincyFrame::OnIdle(wxIdleEvent& /* event */)
+void QuincyFrame::OnIdle(wxIdleEvent& event)
 {
 	if (ExecPID != 0 && !wxProcess::Exists(ExecPID))
 		ExecPID = 0;
@@ -2921,7 +2964,14 @@ void QuincyFrame::OnIdle(wxIdleEvent& /* event */)
 				ExecInputQueue.Empty();
 			}
 		}
+
+        /* while the debugger is running, request for continued idle events */
+        event.RequestMore();
 	}
+
+	wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
+    if (!context.ScanContext(edit, 0))
+        event.RequestMore();
 }
 
 void QuincyFrame::OnTerminateApp(wxProcessEvent& /* event */)
@@ -3658,12 +3708,9 @@ void QuincyFrame::OnContextHelp(wxCommandEvent& /* event */)
 	std::map<const char*,int> *filenames = NULL;
 	wxASSERT(HelpIndex);
 	filenames = HelpIndex->LookUp(label.utf8_str());
-	if (filenames->size() == 0) {
+	if (filenames->size() == 0 && word[0] == '@') {
 		/* no exact match found, try a prefix */
-		if (word[0] == '@')
-			label = wxT("Lat.") + word.Mid(1);
-		else
-			label = wxT("L.") + word;
+		label = wxT("at.") + word.Mid(1);
 		filenames = HelpIndex->LookUp(label.utf8_str());
 	}
 	/* - if there are zero matches, give an error
@@ -3683,8 +3730,10 @@ void QuincyFrame::OnContextHelp(wxCommandEvent& /* event */)
 		/* pop up a dialog, to have the user select the document */
 		wxArrayString documents;
 		std::map<const char*,int>::iterator p = filenames->begin();
-		while (p != filenames->begin())
+		while (p != filenames->end()) {
 			documents.Add(wxString::FromUTF8(p->first));
+            p++;
+        }
 		static int dlgwidth = wxDefaultCoord;
 		static int dlgheight = wxDefaultCoord;
 		wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, wxT("This keyword appears in multiple documents. Please select the one to open."), wxT("Select document"), documents);
@@ -3714,7 +3763,7 @@ void QuincyFrame::OnContextHelp(wxCommandEvent& /* event */)
 			Command += wxT(" ") + filename;
 		/* replace other options */
 		Command.Replace(wxT("{page}"), wxString::Format(wxT("%d"), page));
-		Command.Replace(wxT("{label}"), label);
+		Command.Replace(wxT("{label}"), wxT("p.") + label);
 	} else {
 		#if wxCHECK_VERSION(2, 9, 0)
 		#else
@@ -3736,6 +3785,9 @@ void QuincyFrame::OnEditorChange(wxStyledTextEvent& /* event */)
 	if (!IgnoreChangeEvent) {
 		SetStatusText(wxT("Source file changed since last compile"), 0);
 		SetChanged();
+        /* flag start of re-scan of the context list (in the background, as an idle task */
+	    wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
+        context.ScanContext(edit, CTX_RESTART);
 	}
 }
 
@@ -3869,38 +3921,9 @@ void QuincyFrame::OnEditorPosition(wxStyledTextEvent& /* event */)
 		if (!Timer->IsRunning())
 			Timer->Start(1000, true);
 	}
-}
 
-void QuincyFrame::OnTimer(wxTimerEvent& event)
-{
-	wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
-	if (edit) {
-		if (PendingFlags & PEND_SWITCHEDIT) {
-			PendingFlags &= ~PEND_SWITCHEDIT;
-			edit->SetFocus();
-		}
-
-		if (PendingFlags & PEND_MATCHBRACE) {
-			PendingFlags &= ~PEND_MATCHBRACE;
-			if (MatchBracePos[0] >= 0 && MatchBracePos[1] < 0)
-				edit->BraceBadLight(MatchBracePos[0]);
-			else
-				edit->BraceHighlight(MatchBracePos[0], MatchBracePos[1]);
-		}
-
-		if (PendingFlags & PEND_DELETE_BM) {
-			PendingFlags &= ~PEND_DELETE_BM;
-			int line = edit->GetCurrentLine();
-			if (edit->MarkerGet(line) & (1 << MARKER_NAVIGATE)) {
-				IgnoreChangeEvent = true;
-				edit->MarkerDelete(line, MARKER_NAVIGATE);
-				IgnoreChangeEvent = false;
-			}
-		}
-	} /* if (edit) */
-
-	if (ExecPID != 0 && DebugMode && !DebugRunning && WatchUpdateList.Count() > 0)
-		SendWatchList();
+    /* update the current context in the toolbar */
+    context.ShowContext(line);
 }
 
 void QuincyFrame::OnEditorDwellStart(wxStyledTextEvent& /* event */)
@@ -3952,6 +3975,38 @@ void QuincyFrame::OnEditorDwellEnd(wxStyledTextEvent& /* event */)
 	wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
 	if (edit)
 		edit->CallTipCancel();
+}
+
+void QuincyFrame::OnTimer(wxTimerEvent& event)
+{
+	wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
+	if (edit) {
+		if (PendingFlags & PEND_SWITCHEDIT) {
+			PendingFlags &= ~PEND_SWITCHEDIT;
+			edit->SetFocus();
+		}
+
+		if (PendingFlags & PEND_MATCHBRACE) {
+			PendingFlags &= ~PEND_MATCHBRACE;
+			if (MatchBracePos[0] >= 0 && MatchBracePos[1] < 0)
+				edit->BraceBadLight(MatchBracePos[0]);
+			else
+				edit->BraceHighlight(MatchBracePos[0], MatchBracePos[1]);
+		}
+
+		if (PendingFlags & PEND_DELETE_BM) {
+			PendingFlags &= ~PEND_DELETE_BM;
+			int line = edit->GetCurrentLine();
+			if (edit->MarkerGet(line) & (1 << MARKER_NAVIGATE)) {
+				IgnoreChangeEvent = true;
+				edit->MarkerDelete(line, MARKER_NAVIGATE);
+				IgnoreChangeEvent = false;
+			}
+		}
+	} /* if (edit) */
+
+	if (ExecPID != 0 && DebugMode && !DebugRunning && WatchUpdateList.Count() > 0)
+		SendWatchList();
 }
 
 void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
@@ -4637,4 +4692,173 @@ void QuincyFrame::RebuildHelpMenu()
 			count += 1;
 		} while (dir.GetNext(&filename) && count < MAX_HELPFILES);
 	}
+}
+
+void QuincyFrame::OnSelectContext(wxCommandEvent& event)
+{
+    int idx = FunctionList->GetSelection();
+    if (idx != wxNOT_FOUND) {
+        wxString name = FunctionList->GetString(idx);
+        int linenr = context.Lookup(name);
+	    wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
+        if (linenr != wxNOT_FOUND && edit) {
+		    long pos = edit->PositionFromLine(linenr);
+		    edit->GotoPos(pos);
+		    edit->SetFocus();
+        } else {
+            FunctionList->SetSelection(wxNOT_FOUND);
+        }
+    }
+}
+
+/** ScanContext() scans the current editor file in small chunks. It returns true
+ *  when it has completed, or false when it needs to be called again to finish.
+ */
+bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
+{
+    if (edit != activeedit)
+        flags |= CTX_RESET;
+    if ((flags & CTX_RESET) || (flags & CTX_FULL))
+        flags |= CTX_RESTART;
+    bool updatectrl = false;
+    if (flags & CTX_RESTART) {
+        WorkNames.Clear();
+        WorkRanges.Clear();
+        currentselection = -1;
+        startline = 0;
+        activeedit = edit;
+        incomment = false;
+        inparamlist = false;
+        nestlevel = 0;
+        topline = -1;
+        context = wxEmptyString;
+    }
+    if (flags & CTX_RESET) {
+        Names.Clear();
+        Ranges.Clear();
+        updatectrl = true;
+    }
+
+    if (!re.IsValid())
+        re.Compile(wxT("^[ \\t]*(static[ \\t]+|)([A-Za-z@_][A-Za-z@_0-9]*:[ \\t]*|)([A-Za-z@_][A-Za-z@_0-9]*)[ \\t]*\\("), wxRE_EXTENDED);
+
+    /* run through the source code of the current document */
+    wxASSERT(edit == activeedit);
+    bool result = false;    /* assume not yet completed */
+	if (edit) {
+        int startline_save = startline;
+        int lastline;
+        if (flags & CTX_FULL) {
+            lastline = edit->GetLineCount();
+        } else {
+            lastline = startline + CTX_LINES;
+            if (lastline > edit->GetLineCount())
+                lastline = edit->GetLineCount();
+        }
+        wxASSERT(re.IsValid());
+        for (int idx = startline; idx < lastline; idx++) {
+            wxString line = edit->GetLine(idx);
+            /* strip line comments */
+            int pos;
+            if ((pos = line.Find(wxT("//"))) >= 0)
+                line = line.Left(pos);
+            if (nestlevel == 0 && !incomment && re.Matches(line)) {
+                context = re.GetMatch(line, 3);
+                topline = idx;
+                inparamlist = true;
+            }
+            bool instring = false;
+            bool escaped = false;
+            for (unsigned c = 0; c < line.Length(); c++) {
+                if (line[c] == wxT('{') && !incomment && !instring && !inparamlist) {
+                    if (nestlevel == 0 && context.Length() > 0) {
+                        WorkNames.Add(context);
+                        wxASSERT(topline >= 0);
+                    }
+                    nestlevel++;
+                } else if (line[c] == wxT('}') && !incomment && !instring && !inparamlist) {
+                    nestlevel--;
+                    if (nestlevel < 0)
+                        nestlevel = 0;
+                    if (nestlevel == 0  && context.Length() > 0) {
+                        wxASSERT(topline >= 0);
+                        btmline = idx;
+                        WorkRanges.Add((long)topline | ((long)btmline << 16));
+                        wxASSERT(WorkNames.Count() == WorkRanges.Count());
+                        context = wxEmptyString;
+                        topline = -1;
+                    }
+                } else if (line[c] == wxT(')') && !incomment && !instring) {
+                    inparamlist = false;
+                } else if (line[c] == wxT('"') && !incomment && !escaped) {
+                    instring = !instring;
+                } else if (line[c] == wxT('/') && (c + 1) < line.Length() && line[c + 1] == wxT('*') && !instring) {
+                    incomment = true;
+                } else if (line[c] == wxT('*') && (c + 1) < line.Length() && line[c + 1] == wxT('/') && !instring) {
+                    incomment = false;
+                }
+                if (line[c] == wxT('\\'))
+                    escaped = !escaped;
+                else
+                    escaped = false;
+            }
+        } /* for (idx) */
+        startline = lastline;
+        if (startline >= edit->GetLineCount()) {
+            if (startline != startline_save) {
+                Names = WorkNames;
+                Ranges = WorkRanges;
+                WorkNames.Clear();
+                WorkRanges.Clear();
+                updatectrl = true;
+            }
+            result = true;
+        }
+    } else {
+        if (Names.Count() > 0) {
+            Names.Clear();
+            Ranges.Clear();
+            updatectrl = true;
+        }
+        result = true;
+    }
+
+    if (choicectrl && updatectrl) {
+        choicectrl->SetSelection(wxNOT_FOUND);
+        choicectrl->Set(Names);
+	    if (edit) {
+	        int pos = edit->GetCurrentPos();
+	        int line = edit->LineFromPosition(pos);
+            currentselection = -1;
+            ShowContext(line);
+        }
+    }
+
+    return result;
+}
+
+void ContextParse::ShowContext(int linenr)
+{
+    if (choicectrl) {
+        int newidx = -1;
+        for (unsigned idx = 0; idx < Ranges.Count() && newidx < 0; idx++)
+            if (linenr >= (Ranges[idx] & 0xffff) && linenr <= ((Ranges[idx] >> 16) & 0xffff))
+                newidx = idx;
+        if (newidx != currentselection) {
+            currentselection = newidx;
+            int newsel = (newidx >= 0) ? choicectrl->FindString(Names[newidx]) : wxNOT_FOUND;
+            choicectrl->SetSelection(newsel);
+        }
+    }
+}
+
+int ContextParse::Lookup(const wxString& name)
+{
+    unsigned idx;
+    for (idx = 0; idx < Names.Count() && Names[idx] != name; idx++)
+        /* nothing */;
+    if (idx >= Names.Count())
+        return wxNOT_FOUND;
+    wxASSERT(idx < Ranges.Count());
+    return (int)(Ranges[idx] & 0xffff);
 }
