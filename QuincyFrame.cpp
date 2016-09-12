@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.cpp 5567 2016-08-01 14:52:15Z  $
+ *  Version: $Id: QuincyFrame.cpp 5579 2016-09-12 07:58:43Z  $
  */
 #define _CRT_SECURE_NO_DEPRECATE
 #include "wxQuincy.h"
@@ -4724,7 +4724,6 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
     if (flags & CTX_RESTART) {
         WorkNames.Clear();
         WorkRanges.Clear();
-        currentselection = -1;
         startline = 0;
         activeedit = edit;
         incomment = false;
@@ -4740,7 +4739,7 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
     }
 
     if (!re.IsValid())
-        re.Compile(wxT("^[ \\t]*(static[ \\t]+|)([A-Za-z@_][A-Za-z@_0-9]*:[ \\t]*|)([A-Za-z@_][A-Za-z@_0-9]*)[ \\t]*\\("), wxRE_EXTENDED);
+        re.Compile(wxT("^[[:blank:]]*(static[[:blank:]]+|)([A-Za-z@_][A-Za-z@_0-9]*:[[:blank:]]*|)([A-Za-z@_][A-Za-z@_0-9]*)[[:blank:]]*\\("), wxRE_EXTENDED);
 
     /* run through the source code of the current document */
     wxASSERT(edit == activeedit);
@@ -4758,6 +4757,8 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
         wxASSERT(re.IsValid());
         for (int idx = startline; idx < lastline; idx++) {
             wxString line = edit->GetLine(idx);
+            if (line.Left(12).Cmp(wxT("timer_second"))==0)
+                lastline = idx + 1;
             /* strip line comments */
             int pos;
             if ((pos = line.Find(wxT("//"))) >= 0)
@@ -4806,11 +4807,19 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
         startline = lastline;
         if (startline >= edit->GetLineCount()) {
             if (startline != startline_save) {
-                Names = WorkNames;
+                /* first see whether the work names are identical to the saved ones 
+                   (the choice control does not need to be updated if they are) */
+                updatectrl = false;     /* preset */
+                if (Names.Count() != WorkNames.Count())
+                    updatectrl = true;
+                for (unsigned i =0; !updatectrl && i < WorkNames.Count(); i++)
+                    if (WorkNames[i].Cmp(Names[i]) != 0)
+                        updatectrl = true;
+                if (updatectrl)
+                    Names = WorkNames;
                 Ranges = WorkRanges;
                 WorkNames.Clear();
                 WorkRanges.Clear();
-                updatectrl = true;
             }
             result = true;
         }
@@ -4829,7 +4838,7 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
 	    if (edit) {
 	        int pos = edit->GetCurrentPos();
 	        int line = edit->LineFromPosition(pos);
-            currentselection = -1;
+            currentselection = -1;  /* make invalid, to force ShowContext() to update */
             ShowContext(line);
         }
     }
