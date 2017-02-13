@@ -2051,15 +2051,20 @@ void QuincyFrame::OnFindDlg(wxCommandEvent& /* event */)
 				wxString fname;
 				if (dir.GetFirst(&fname, wxT("*"), wxDIR_FILES )) {
 					wxWindowDisabler *disableAll = new wxWindowDisabler;
-					wxBusyInfo *info = new wxBusyInfo(
-                        wxBusyInfoFlags()
-                            .Parent(this)
-                            .Icon(wxArtProvider::GetIcon(wxART_FIND))
-                            .Title(wxT("Search ") + path)
-                            .Text(wxT("Please wait..."))
-                            .Foreground(*wxWHITE)
-                            .Background(*wxBLACK)
-                            .Transparency(4*wxALPHA_OPAQUE/5));
+					#if wxCHECK_VERSION(3, 1, 0)
+						/* wxBusyInfoFlags not introduced to 3.1, fall back to uglier boxes */
+						wxBusyInfo *info = new wxBusyInfo(
+							wxBusyInfoFlags()
+								.Parent(this)
+								.Icon(wxArtProvider::GetIcon(wxART_FIND))
+								.Title(wxT("Search ") + path)
+								.Text(wxT("Please wait..."))
+								.Foreground(*wxWHITE)
+								.Background(*wxBLACK)
+								.Transparency(4*wxALPHA_OPAQUE/5));
+					#else
+						wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
+					#endif
 					do {
 						/* check the file type (by verifing the extension) */
 						if (IsPawnFile(fname)) {
@@ -3060,15 +3065,20 @@ bool QuincyFrame::CompileSource(const wxString& script)
 	options += wxT(" ") + script;
 
 	wxWindowDisabler *disableAll = new wxWindowDisabler;
-	wxBusyInfo *info = new wxBusyInfo(
-                        wxBusyInfoFlags()
-                            .Parent(this)
-                            .Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
-                            .Title(wxT("<b>Building ") + basename + wxT("</b>"))
-                            .Text(wxT("Please wait..."))
-                            .Foreground(*wxWHITE)
-                            .Background(*wxBLACK)
-                            .Transparency(4*wxALPHA_OPAQUE/5));
+	#if wxCHECK_VERSION(3, 1, 0)
+		/* wxBusyInfoFlags not introduced to 3.1, fall back to uglier boxes */
+		wxBusyInfo *info = new wxBusyInfo(
+							wxBusyInfoFlags()
+								.Parent(this)
+								.Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
+								.Title(wxT("<b>Building ") + basename + wxT("</b>"))
+								.Text(wxT("Please wait..."))
+								.Foreground(*wxWHITE)
+								.Background(*wxBLACK)
+								.Transparency(4*wxALPHA_OPAQUE/5));
+	#else
+		wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
+	#endif
 	wxArrayString output;
 	wxArrayString errors;
 	long result = wxExecute(command + options, output, errors, wxEXEC_SYNC);
