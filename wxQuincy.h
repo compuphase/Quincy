@@ -87,10 +87,10 @@ public:
 	wxString GetDocPath() const			{ return DocPath; }
 	wxString GetUserDataPath() const	{ return UserDataPath; }
 
-    wxString GetRecentFile(unsigned idx) const { return (idx < RecentFiles.Count()) ? RecentFiles[idx] : wxEmptyString; }
+    wxString GetRecentFile(unsigned idx) const { return (idx < RecentFiles.Count()) ? RecentFiles[idx] : wxT(""); }
     void PushRecentFile(const wxString& path);
     void RemoveRecentFile(const wxString& path);
-    wxString GetRecentWorkspace(unsigned idx) const { return (idx < RecentWorkspaces.Count()) ? RecentWorkspaces[idx] : wxEmptyString; }
+    wxString GetRecentWorkspace(unsigned idx) const { return (idx < RecentWorkspaces.Count()) ? RecentWorkspaces[idx] : wxT(""); }
     void PushRecentWorkspace(const wxString& path);
     void RemoveRecentWorkspace(const wxString& path);
 
