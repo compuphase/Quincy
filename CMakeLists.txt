@@ -7,7 +7,7 @@ PROJECT(wxquincy)
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/")
 
 # for wxWidgets 2.8 remove "propgrid" in the list below and for Windows add "scintilla"
-FIND_PACKAGE(wxWidgets COMPONENTS base core adv aui html stc propgrid QUIET)
+FIND_PACKAGE(wxWidgets COMPONENTS base core adv aui html net stc propgrid QUIET)
 IF(NOT wxWidgets_FOUND)
     FIND_PACKAGE(wxWidgets COMPONENTS mono REQUIRED)
 ENDIF(NOT wxWidgets_FOUND)
@@ -21,6 +21,7 @@ ADD_DEFINITIONS(-DINI_ANSIONLY)
 SET(QUINCY_SRCS wxQuincy.cpp QuincyFrame.cpp QuincySettingsDlg.cpp
     QuincySearchDlg.cpp QuincyReplaceDlg.cpp QuincyReplacePrompt.cpp
     QuincyDialogs.cpp KbdShortcuts.cpp HelpIndex.cpp SymbolBrowser.cpp
+    QuincyDirPicker.cpp QuincySampleBrowser.cpp
     tinyxml/tinyxml2.cpp portscan.cpp minIni.c)
 IF(WIN32)
   SET(QUINCY_SRCS ${QUINCY_SRCS} wxquincy.rc)
@@ -62,7 +63,7 @@ INSTALL(FILES ${CMAKE_BINARY_DIR}/pawn32.png DESTINATION ${DEB_PIXMAPS_DIR})
 
 SET(CPACK_GENERATOR DEB)
 SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libwxgtk2.8-0 (>= 2.8.10-1), libc6 (>= 2.11)")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libwxgtk3.0-0 (>= 3.0.0-0), libc6 (>= 2.11)")
 SET(CPACK_PACKAGE_NAME "PawnIDE")
 SET(CPACK_PACKAGE_VENDOR "CompuPhase")
 SET(CPACK_DEBIAN_PACKAGE_LICENSE "Apache v2")

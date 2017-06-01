@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jun 17 2015)
+// C++ code generated with wxFormBuilder (version Feb 14 2017)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -39,6 +39,9 @@
 #include <wx/dialog.h>
 #include <wx/combobox.h>
 #include <wx/radiobox.h>
+#include <wx/filepicker.h>
+#include <wx/listbox.h>
+#include <wx/html/htmlwin.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -229,6 +232,60 @@ class ReplacePrompt : public wxDialog
 		
 		ReplacePrompt( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace this occurrence"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxCLOSE_BOX ); 
 		~ReplacePrompt();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class CustomDirPicker
+///////////////////////////////////////////////////////////////////////////////
+class CustomDirPicker : public wxDialog 
+{
+	private:
+	
+	protected:
+		wxStaticText* m_lblPicker;
+		wxDirPickerCtrl* m_dirPicker;
+		wxStdDialogButtonSizer* m_sdbSizerDirSelect;
+		wxButton* m_sdbSizerDirSelectOK;
+		wxButton* m_sdbSizerDirSelectCancel;
+		
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
+		
+	
+	public:
+		
+		CustomDirPicker( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Select folder"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxRESIZE_BORDER ); 
+		~CustomDirPicker();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class SampleBrowser
+///////////////////////////////////////////////////////////////////////////////
+class SampleBrowser : public wxDialog 
+{
+	private:
+	
+	protected:
+		wxListBox* m_listSamples;
+		wxHtmlWindow* m_htmlSample;
+		wxStdDialogButtonSizer* m_sdbSizerSamples;
+		wxButton* m_sdbSizerSamplesOK;
+		wxButton* m_sdbSizerSamplesCancel;
+		
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnInitDialog( wxInitDialogEvent& event ) { event.Skip(); }
+		virtual void OnSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
+		
+	
+	public:
+		
+		SampleBrowser( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Samples"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ); 
+		~SampleBrowser();
 	
 };
 

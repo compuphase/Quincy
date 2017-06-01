@@ -14,40 +14,33 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincySettingsDlg.h 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: QuincySettingsDlg.h 5591 2016-10-28 15:57:11Z  $
  */
-#ifndef _QUINCYSETTINGSDLG_H
-#define _QUINCYSETTINGSDLG_H
+#ifndef _QUINCYSSAMPLEBROWSER_H
+#define _QUINCYSSAMPLEBROWSER_H
 
-#include "QuincyDialogs.h"
 #include "QuincyFrame.h"
-#include <wx/dir.h>
+#include "QuincyDialogs.h"
+#include "wxMinIni.h"
 
-/** Implementing SettingsDlg */
-class QuincySettingsDlg : public SettingsDlg
+class QuincySampleBrowser : public SampleBrowser
 {
 protected:
 	// Handlers for SettingsDlg events.
+	virtual void OnInitDialog(wxInitDialogEvent& event);
+	virtual void OnSelect(wxCommandEvent& event);
 	virtual void OnCancel(wxCommandEvent& event);
 	virtual void OnOK(wxCommandEvent& event);
-	virtual void OnTargetHost(wxCommandEvent& event);
-	virtual void OnDebuggerLocal(wxCommandEvent& event);
-	virtual void OnDebuggerRS232(wxCommandEvent& event);
-	virtual void OnKbdChanged(wxPropertyGridEvent& event);
-	virtual void OnSnippetEdit(wxGridEvent& event);
-	virtual void OnUserPDFReader(wxCommandEvent& event);
-	virtual void OnUserReaderBrowse(wxCommandEvent& event);
 
 public:
-	QuincySettingsDlg(wxWindow* parent);
-	void InitData();
-	void CopyData();
+	QuincySampleBrowser(wxWindow* parent);
+    const wxString& GetFile(int idx) const { return filelist[idx]; }
+    unsigned GetFileCount() const { return filelist.Count(); }
 
 private:
 	QuincyFrame* Parent;
-	bool NeedRestart;
-
-	void CollectTargetHosts();
+	minIni* ini;
+    wxArrayString filelist;
 };
 
-#endif /* _QUINCYSETTINGSDLG_H */
+#endif _QUINCYSSAMPLEBROWSER_H */

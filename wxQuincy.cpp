@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2016
+ *  Copyright ITB CompuPhase, 2009-2017
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -21,10 +21,14 @@
 #include "minIni.h"
 #include <wx/dir.h>
 #include <wx/file.h>
+#include <wx/filesys.h>
+#include <wx/fs_zip.h>
 
 #if !defined wxDIR_NO_FOLLOW
 	#define wxDIR_NO_FOLLOW	0	/* only defined for wxWidgets 2.9 and up */
 #endif
+
+static void MergeIni(minIni* dest, minIni* source);
 
 IMPLEMENT_APP(QuincyApp)
 
@@ -34,12 +38,18 @@ bool QuincyApp::OnInit()
 {
 	theApp = this;
 
-	/* get the root path */
-	MainPath = wxStandardPaths::Get().GetExecutablePath();
-	MainPath = wxPathOnly(MainPath);
+	/* get the path where the binaries are and the root path (which may be the same) */
+	BinPath = wxStandardPaths::Get().GetExecutablePath();
+	BinPath = wxPathOnly(BinPath);
+
+	if (BinPath.Right(4).CmpNoCase(wxT(DIRSEP_STR) wxT("bin")) == 0)
+		RootPath = BinPath.Left(BinPath.Length() - 4); /* strip off "/bin" */
+	else
+		RootPath = BinPath;	/* not installed in ./bin, everything must be below the installation directory */
 
 	/* set other system directories */
-	DocPath = MainPath.BeforeLast(DIRSEP_CHAR) + wxT(DIRSEP_STR) + wxT("doc");
+	DocPath = RootPath + wxT(DIRSEP_STR) + wxT("doc");
+	/* "examples" path is set further down in this routine */
 
 	/* create INI file path, then get settings */
 	UserDataPath = wxStandardPaths::Get().GetUserDataDir();
@@ -50,6 +60,9 @@ bool QuincyApp::OnInit()
 			wxMkDir(UserDataPath.utf8_str(), 0777);
 		#endif
 	}
+
+	/* configure handlers for specific file formats */
+	wxFileSystem::AddHandler(new wxZipFSHandler);
 
 	/* create the list of menu shortcuts (which the menu needs); at the same
 	   time, set the defaults */
@@ -94,6 +107,7 @@ bool QuincyApp::OnInit()
 	Shortcuts.Add(wxT("ToggleBreakpoint"), wxT("Toggle &Breakpoint"), wxT("F9"), wxT("Breakpoints"));
 	Shortcuts.Add(wxT("ClearBreakpoints"), wxT("Clear all breakpoints"), wxEmptyString, wxT("Breakpoints"));
 	Shortcuts.Add(wxT("Options"), wxT("&Options..."), wxT("Alt+F7"), wxT("Tools"));
+	Shortcuts.Add(wxT("SampleBrowser"), wxT("&Sample browser..."), wxT("Alt+F1"), wxT("Tools"));
 	Shortcuts.Add(wxT("TabToSpace"), wxT("Tabs to Spaces"), wxEmptyString, wxT("Whitespace"));
 	Shortcuts.Add(wxT("IndentToTab"), wxT("Spaces to Tabs (indent only)"), wxEmptyString, wxT("Whitespace"));
 	Shortcuts.Add(wxT("SpaceToTab"), wxT("Spaces to Tabs (all)"), wxEmptyString, wxT("Whitespace"));
@@ -105,12 +119,31 @@ bool QuincyApp::OnInit()
 	   verify that it is writable). Otherwise go to the "application data"
 	   directory */
 	LocalIniFile = true;
-	wxString strIniName = MainPath + wxT(DIRSEP_STR) + wxT("quincy.ini");
+	wxString strIniName = BinPath + wxT(DIRSEP_STR) + wxT("quincy.ini");
 	if (!wxFileExists(strIniName) || !wxFile::Access(strIniName, wxFile::write)) {
 		wxString strIniName = UserDataPath + wxT(DIRSEP_STR) + wxT("quincy.ini");
 		LocalIniFile = false;
 	}
 	ini = new minIni(strIniName);
+	/* see whether there is a "merge" ini file and whether its timestamp is
+	   higher than the one stored in the main INI file; if so, merge */
+	wxString strMergeName = BinPath + wxT(DIRSEP_STR) + wxT("quincy_merge.ini");
+	if (wxFileExists(strMergeName)) {
+		minIni merge(strMergeName);
+		wxString mstamp = merge.gets(wxT("Merge"), wxT("stamp"));
+		long mdate = 0, mtime = 0;
+		mstamp.BeforeFirst('-').ToLong(&mdate);
+		mstamp.AfterFirst('-').ToLong(&mtime);
+		wxString qstamp = ini->gets(wxT("Merge"), wxT("stamp"));
+		long qdate = 0, qtime = 0;
+		qstamp.BeforeFirst('-').ToLong(&qdate);
+		qstamp.AfterFirst('-').ToLong(&qtime);
+		if (mdate > qdate || mdate == qdate && mtime > qtime) {
+			/* the merge file is of a later date, we should merge */
+			MergeIni(ini, &merge);
+		}
+	}
+	/* load the settings */
 	wxSize size;
 	LoadSettings(&size);
 
@@ -120,29 +153,65 @@ bool QuincyApp::OnInit()
 	/* check whether this is the first run and the installation directory is
 	   read-only; if so, copy the examples to a user-directory and set this
 	   as the default directory */
-	wxString strExamples = UserDataPath + wxT(DIRSEP_STR) + wxT("examples");
-	if (!LocalIniFile && !wxDirExists(strExamples) ) {
+	ExamplesPath = UserDataPath + wxT(DIRSEP_STR) + wxT("examples");
+	if (!LocalIniFile && !wxDirExists(ExamplesPath)) {
 		#if defined _MSC_VER && wxMAJOR_VERSION < 3
-			wxMkDir(strExamples);
+			wxMkDir(ExamplesPath);
 		#else
-			wxMkDir(strExamples.utf8_str(), 0777);
+			wxMkDir(ExamplesPath.utf8_str(), 0777);
 		#endif
-		ini->put(wxT("Session"), wxT("Directory"), strExamples);
-		wxString strSource = MainPath.BeforeLast(DIRSEP_CHAR) + wxT(DIRSEP_STR) + wxT("examples");
+		ini->put(wxT("Session"), wxT("Directory"), ExamplesPath);
+		wxString strSource = RootPath + wxT(DIRSEP_STR) wxT("examples");
 		wxDir dir(strSource);
 		if (dir.IsOpened()) {
 			wxString filename;
 			bool result = dir.GetFirst(&filename, wxEmptyString, wxDIR_FILES | wxDIR_NO_FOLLOW);
 			while (result) {
 				wxString source = strSource + wxT(DIRSEP_STR) + filename;
-				wxString target = strExamples + wxT(DIRSEP_STR) + filename;
+				wxString target = ExamplesPath + wxT(DIRSEP_STR) + filename;
 				wxCopyFile(source, target, false);
 				result = dir.GetNext(&filename);
 			}
 		}
+	} else if (LocalIniFile) {
+		wxString path = RootPath + wxT(DIRSEP_STR) wxT("examples");
+	    if (!wxDirExists(path)) {
+		    #if defined _MSC_VER && wxMAJOR_VERSION < 3
+			    wxMkDir(path);
+		    #else
+			    wxMkDir(path.utf8_str(), 0777);
+		    #endif
+        }
+        if (wxDirExists(path))
+            ExamplesPath = path;
+    }
+	if (!wxDirExists(ExamplesPath)) {
+		/* file copy failed, or file copy skipped (because the home directory is read-write) */
+		ExamplesPath = RootPath + wxT(DIRSEP_STR) wxT("examples");
 	}
 
 	return true;
+}
+
+static void MergeIni(minIni* dest, minIni* source)
+{
+	int sidx = 0;
+	for ( ;;) {
+		wxString section = source->getsection(sidx);
+		if (section.Length() == 0)
+			break;
+		int kidx = 0;
+		for ( ;;) {
+			wxString key = source->getkey(section, kidx);
+			if (key.Length() == 0)
+				break;
+			wxString value = source->gets(section, key);
+			if (value.Length() > 0)
+				dest->put(section, key, value);
+			kidx++;
+		}
+		sidx++;
+	}
 }
 
 void QuincyApp::PushRecentFile(const wxString& path)
@@ -229,6 +298,10 @@ void QuincyApp::LoadSettings(wxSize *size)
 
 	UserPDFReaderPath = ini->gets(wxT("Options"), wxT("PDFReader"));
 	UserPDFReaderActive = ini->getbool(wxT("Options"), wxT("PDFReaderActive"));
+
+	UpdateURL = ini->gets(wxT("Config"), wxT("UpdateURL"));
+	if (UpdateURL.Length() > 0 && UpdateURL[UpdateURL.Length() - 1] != '/')
+		UpdateURL += wxT("/");
 
 	for (int idx = 0;; idx++) {
 		wxString key = ini->getkey(wxT("Snippets"), idx);

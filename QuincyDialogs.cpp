@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jun 17 2015)
+// C++ code generated with wxFormBuilder (version Feb 14 2017)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -23,6 +23,9 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizerBuildPanel;
 	bSizerBuildPanel = new wxBoxSizer( wxVERTICAL );
 	
+	
+	bSizerBuildPanel->Add( 0, 12, 0, wxEXPAND, 5 );
+	
 	wxBoxSizer* bSizerInstructionSet;
 	bSizerInstructionSet = new wxBoxSizer( wxHORIZONTAL );
 	
@@ -39,7 +42,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	int m_TargetHostNChoices = sizeof( m_TargetHostChoices ) / sizeof( wxString );
 	m_TargetHost = new wxChoice( m_pBuild, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_TargetHostNChoices, m_TargetHostChoices, 0 );
 	m_TargetHost->SetSelection( 0 );
-	m_TargetHost->SetToolTip( wxT("A specific device or application may come with predefined settings.\\nChoose the appropriate device/application for your scripts.") );
+	m_TargetHost->SetToolTip( wxT("A specific device or application may come with predefined settings.\nChoose the appropriate device/application for your scripts.") );
 	
 	fgSizerInstructionSet->Add( m_TargetHost, 0, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 	
@@ -63,7 +66,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	int m_OptimizationNChoices = sizeof( m_OptimizationChoices ) / sizeof( wxString );
 	m_Optimization = new wxChoice( m_pBuild, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_OptimizationNChoices, m_OptimizationChoices, 0 );
 	m_Optimization->SetSelection( 0 );
-	m_Optimization->SetToolTip( wxT("The full instruction set runs faster than the core instruction set (except on a JIT).\\nHowever, not all devices (or applications) support the full instruction set.") );
+	m_Optimization->SetToolTip( wxT("The full instruction set runs faster than the core instruction set (except on a JIT).\nHowever, not all devices (or applications) support the full instruction set.") );
 	
 	fgSizerInstructionSet->Add( m_Optimization, 0, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 	
@@ -113,7 +116,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	sizerPaths->Add( m_lblDefines, 0, wxALL|wxEXPAND, 5 );
 	
 	m_Defines = new wxTextCtrl( m_pBuild, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_Defines->SetMaxLength( 0 ); 
 	m_Defines->SetToolTip( wxT("Type in a series of defined keywords (e.g. for conditional compilation).\nThe definitions must be separated with semicolons.") );
 	
 	sizerPaths->Add( m_Defines, 0, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
@@ -123,7 +125,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	sizerPaths->Add( m_lblIncludes, 0, wxALL|wxEXPAND, 5 );
 	
 	m_IncludePath = new wxTextCtrl( m_pBuild, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_IncludePath->SetMaxLength( 0 ); 
 	m_IncludePath->SetToolTip( wxT("One or more \"system\" include paths. Separate multiple paths with a semicolon.") );
 	
 	sizerPaths->Add( m_IncludePath, 0, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
@@ -133,7 +134,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	sizerPaths->Add( m_lblOutputPath, 0, wxALL|wxEXPAND, 5 );
 	
 	m_OutputPath = new wxTextCtrl( m_pBuild, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_OutputPath->SetMaxLength( 0 ); 
 	m_OutputPath->SetToolTip( wxT("The path where the compiled scripts must be stored.\nIf left empty, the output is in the same path as the input scripts.") );
 	
 	sizerPaths->Add( m_OutputPath, 0, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
@@ -178,7 +178,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	editSizerBlocks = new wxBoxSizer( wxVERTICAL );
 	
 	
-	editSizerBlocks->Add( 0, 0, 0, wxTOP, 5 );
+	editSizerBlocks->Add( 0, 8, 0, wxTOP, 5 );
 	
 	wxFlexGridSizer* fgSizerEditOptions;
 	fgSizerEditOptions = new wxFlexGridSizer( 0, 3, 0, 0 );
@@ -195,7 +195,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizerEditOptions->Add( m_TabWidth, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 	
 	m_UseTabs = new wxCheckBox( m_pEdit, wxID_ANY, wxT("TAB key inserts spaces"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_UseTabs->SetToolTip( wxT("If this option has a checkmark, the TAB key will insert space characters up to the next TAB stop.\\nIf not checked, the TAB key will insert a TAB character.") );
+	m_UseTabs->SetToolTip( wxT("If this option has a checkmark, the TAB key will insert space characters up to the next TAB stop.\nIf not checked, the TAB key will insert a TAB character.") );
 	
 	fgSizerEditOptions->Add( m_UseTabs, 0, wxALL, 5 );
 	
@@ -217,7 +217,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_lblFont->Wrap( -1 );
 	fgSizerEditOptions->Add( m_lblFont, 0, wxALL, 5 );
 	
-	m_EditFont = new wxFontPickerCtrl( m_pEdit, wxID_ANY, wxFont( 10, 76, 90, 90, false, wxT("Courier") ), wxDefaultPosition, wxDefaultSize, wxFNTP_DEFAULT_STYLE );
+	m_EditFont = new wxFontPickerCtrl( m_pEdit, wxID_ANY, wxFont( 10, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Courier") ), wxDefaultPosition, wxDefaultSize, wxFNTP_DEFAULT_STYLE );
 	m_EditFont->SetMaxPointSize( 100 ); 
 	m_EditFont->SetToolTip( wxT("Click this button to select the font for the source code (must be monospaced).") );
 	
@@ -367,6 +367,9 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_pDebug = new wxPanel( m_Notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizerDebug;
 	bSizerDebug = new wxBoxSizer( wxVERTICAL );
+	
+	
+	bSizerDebug->Add( 0, 12, 0, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizerConnection;
 	sbSizerConnection = new wxStaticBoxSizer( new wxStaticBox( m_pDebug, wxID_ANY, wxT("Debugger && Run-time target") ), wxVERTICAL );
@@ -518,6 +521,9 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_pOptions = new wxPanel( m_Notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bOptionsSizer;
 	bOptionsSizer = new wxBoxSizer( wxVERTICAL );
+	
+	
+	bOptionsSizer->Add( 0, 8, 0, 0, 5 );
 	
 	m_StripTrailingWhitespace = new wxCheckBox( m_pOptions, wxID_ANY, wxT("Strip trailing whitespace on save"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_StripTrailingWhitespace->SetToolTip( wxT("Remove whitespace at the end of the lines when saving a file.") );
@@ -829,5 +835,106 @@ ReplacePrompt::~ReplacePrompt()
 	btnAll->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ReplacePrompt::OnYesToAll ), NULL, this );
 	btnAll->Disconnect( wxEVT_KEY_DOWN, wxKeyEventHandler( ReplacePrompt::OnDialogKey ), NULL, this );
 	btnQuit->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ReplacePrompt::OnCancel ), NULL, this );
+	
+}
+
+CustomDirPicker::CustomDirPicker( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizerDirSelect;
+	bSizerDirSelect = new wxBoxSizer( wxVERTICAL );
+	
+	m_lblPicker = new wxStaticText( this, wxID_ANY, wxT("Please select the directory."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblPicker->Wrap( -1 );
+	bSizerDirSelect->Add( m_lblPicker, 1, wxALL|wxEXPAND, 5 );
+	
+	m_dirPicker = new wxDirPickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_SMALL|wxDIRP_USE_TEXTCTRL );
+	m_dirPicker->SetMinSize( wxSize( 300,-1 ) );
+	
+	bSizerDirSelect->Add( m_dirPicker, 0, wxALL|wxEXPAND, 5 );
+	
+	m_sdbSizerDirSelect = new wxStdDialogButtonSizer();
+	m_sdbSizerDirSelectOK = new wxButton( this, wxID_OK );
+	m_sdbSizerDirSelect->AddButton( m_sdbSizerDirSelectOK );
+	m_sdbSizerDirSelectCancel = new wxButton( this, wxID_CANCEL );
+	m_sdbSizerDirSelect->AddButton( m_sdbSizerDirSelectCancel );
+	m_sdbSizerDirSelect->Realize();
+	
+	bSizerDirSelect->Add( m_sdbSizerDirSelect, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+	
+	
+	this->SetSizer( bSizerDirSelect );
+	this->Layout();
+	bSizerDirSelect->Fit( this );
+	
+	this->Centre( wxBOTH );
+	
+	// Connect Events
+	m_sdbSizerDirSelectCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CustomDirPicker::OnCancel ), NULL, this );
+	m_sdbSizerDirSelectOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CustomDirPicker::OnOK ), NULL, this );
+}
+
+CustomDirPicker::~CustomDirPicker()
+{
+	// Disconnect Events
+	m_sdbSizerDirSelectCancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CustomDirPicker::OnCancel ), NULL, this );
+	m_sdbSizerDirSelectOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CustomDirPicker::OnOK ), NULL, this );
+	
+}
+
+SampleBrowser::SampleBrowser( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizerSamplesMain;
+	bSizerSamplesMain = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* bSizerSamplesFrame;
+	bSizerSamplesFrame = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_listSamples = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
+	m_listSamples->SetMinSize( wxSize( 200,-1 ) );
+	
+	bSizerSamplesFrame->Add( m_listSamples, 0, wxALL|wxEXPAND, 5 );
+	
+	m_htmlSample = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxDOUBLE_BORDER );
+	m_htmlSample->SetMinSize( wxSize( 400,300 ) );
+	
+	bSizerSamplesFrame->Add( m_htmlSample, 1, wxALL|wxEXPAND, 5 );
+	
+	
+	bSizerSamplesMain->Add( bSizerSamplesFrame, 1, wxEXPAND, 5 );
+	
+	m_sdbSizerSamples = new wxStdDialogButtonSizer();
+	m_sdbSizerSamplesOK = new wxButton( this, wxID_OK );
+	m_sdbSizerSamples->AddButton( m_sdbSizerSamplesOK );
+	m_sdbSizerSamplesCancel = new wxButton( this, wxID_CANCEL );
+	m_sdbSizerSamples->AddButton( m_sdbSizerSamplesCancel );
+	m_sdbSizerSamples->Realize();
+	
+	bSizerSamplesMain->Add( m_sdbSizerSamples, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+	
+	
+	this->SetSizer( bSizerSamplesMain );
+	this->Layout();
+	bSizerSamplesMain->Fit( this );
+	
+	this->Centre( wxBOTH );
+	
+	// Connect Events
+	this->Connect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( SampleBrowser::OnInitDialog ) );
+	m_listSamples->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( SampleBrowser::OnSelect ), NULL, this );
+	m_sdbSizerSamplesCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SampleBrowser::OnCancel ), NULL, this );
+	m_sdbSizerSamplesOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SampleBrowser::OnOK ), NULL, this );
+}
+
+SampleBrowser::~SampleBrowser()
+{
+	// Disconnect Events
+	this->Disconnect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( SampleBrowser::OnInitDialog ) );
+	m_listSamples->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( SampleBrowser::OnSelect ), NULL, this );
+	m_sdbSizerSamplesCancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SampleBrowser::OnCancel ), NULL, this );
+	m_sdbSizerSamplesOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SampleBrowser::OnOK ), NULL, this );
 	
 }

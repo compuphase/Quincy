@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2016
+ *  Copyright ITB CompuPhase, 2009-2017
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.cpp 5579 2016-09-12 07:58:43Z  $
+ *  Version: $Id: QuincyFrame.cpp 5589 2016-10-27 13:45:28Z  $
  */
 #define _CRT_SECURE_NO_DEPRECATE
 #include "wxQuincy.h"
@@ -32,7 +32,9 @@
 #include "QuincyReplaceDlg.h"
 #include "QuincyReplacePrompt.h"
 #include "QuincySearchDlg.h"
+#include "QuincySampleBrowser.h"
 #include "QuincySettingsDlg.h"
+#include "QuincyDirPicker.h"
 #include <amx.h>
 #include <amxdbg.h>
 #include "svnrev.h"
@@ -90,6 +92,7 @@
 #include "res/tb_settings.xpm"
 #include "res/tb_help.xpm"
 #include "res/tb_contexthelp.xpm"
+#include "res/tb_pawn.xpm"
 
 
 #if !defined wxStyledTextEventHandler
@@ -127,7 +130,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
 	}
 
 	/* default "current" directory is the one with the examples */
-	strCurrentDirectory = theApp->GetMainPath().BeforeLast(DIRSEP_CHAR) + wxT(DIRSEP_STR) + wxT("examples");
+	strCurrentDirectory = theApp->GetExamplesPath();
 
 	SetSizeHints(wxDefaultSize, wxDefaultSize);
 	SetIcon(wxIcon(Quincy32_xpm));
@@ -251,6 +254,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
 
 	menuTools = new wxMenu;
 	AppendIconItem(menuTools, wxID_PROPERTIES, MENU_ENTRY(wxT("Options")), tb_settings);
+    AppendIconItem(menuTools, IDM_SAMPLEBROWSER, MENU_ENTRY(wxT("SampleBrowser")), tb_pawn);
 	menuTabSpace = new wxMenu;
 	menuTabSpace->Append(IDM_TABSTOSPACES, MENU_ENTRY(wxT("TabToSpace")));
 	menuTabSpace->Append(IDM_INDENTSTOTABS, MENU_ENTRY(wxT("IndentToTab")));
@@ -311,6 +315,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
 	Connect(IDM_BREAKPOINTTOGGLE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnBreakpointToggle));
 	Connect(IDM_BREAKPOINTCLEAR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnBreakpointClear));
 	Connect(wxID_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnSettings));
+	Connect(IDM_SAMPLEBROWSER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnSampleBrowser));
 	Connect(IDM_TABSTOSPACES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnTabsToSpaces));
 	Connect(IDM_SPACESTOTABS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnSpacesToTabs));
 	Connect(IDM_INDENTSTOTABS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnIndentsToTabs));
@@ -564,6 +569,13 @@ void QuincyFrame::OnActivate(wxActivateEvent& event)
 void QuincyFrame::AdjustTitle()
 {
 	wxString title = wxT("Pawn");
+
+    /* add current target */
+    if (strTargetHost.Length() > 0) {
+        title += wxT(" [") + strTargetHost + wxT("]");
+    }
+
+    /* add current file */
 	wxASSERT(EditTab);
 	int sel = EditTab->GetSelection();
 	if (sel >= 0)
@@ -572,7 +584,7 @@ void QuincyFrame::AdjustTitle()
 		wxString project = strWorkspace;
 		if (project.Find(DIRSEP_CHAR) >= 0)
 			project = project.AfterLast(DIRSEP_CHAR);
-		title += wxT(" [") + project + wxT("]");
+		title += wxT(" (") + project + wxT(")");
 	}
 	SetTitle(title);
 }
@@ -642,7 +654,7 @@ void QuincyFrame::OnErrorSelect(wxListEvent& event)
 	wxString line = ErrorLog->GetItemText(event.GetIndex());
 	line.Trim(false);
 
-	/* line is filename(line1[-line2]) warning */
+	/* line is filename(line1[-line2]): warning|error|fatal error errno: text */
 	wxString filename = line.BeforeFirst(wxT('('));
 	line = line.AfterFirst(wxT('('));
 	wxString linenrs = line.BeforeFirst(wxT(')'));
@@ -1327,17 +1339,22 @@ bool QuincyFrame::LoadSession()
 	strPreBuild = ini->gets(wxT("Options"), wxT("PreBuild"));
 	strMiscCmdOptions = ini->gets(wxT("Options"), wxT("CmdOptions"));
 	strIncludePath = ini->gets(wxT("Directories"), wxT("Include"));
-	strCompilerPath = ini->gets(wxT("Directories"), wxT("Compiler"), theApp->GetMainPath());
+	strCompilerPath = ini->gets(wxT("Directories"), wxT("Compiler"), theApp->GetBinPath());
 	strOutputPath = ini->gets(wxT("Directories"), wxT("TargetPath"));
 	/* remove trailing slash, if necessary */
 	int len = strCompilerPath.Len();
 	if (len == 0)
-		strCompilerPath = theApp->GetMainPath();
+		strCompilerPath = theApp->GetBinPath();
 	else if (len > 0 && strCompilerPath[len - 1] == DIRSEP_CHAR)
 		strCompilerPath = strCompilerPath.Left(len - 1);
 	len = strOutputPath.Len();
 	if (len > 0 && strOutputPath[len - 1] == DIRSEP_CHAR)
 		strOutputPath = strOutputPath.Left(len - 1);
+
+	strTargetPath = strCompilerPath;
+	if (strTargetPath.Right(4).CmpNoCase(wxT(DIRSEP_STR) wxT("bin")) == 0)
+		strTargetPath = strTargetPath.Left(strTargetPath.Length() - 4); /* strip off "/bin" */
+	strTargetPath += wxT(DIRSEP_STR) wxT("target");
 
 	if (close_ini)
 		delete ini;
@@ -1453,18 +1470,18 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
 	RunTimeEnabled = RunTimeIsInstalled;	/* by default, what is installed is enabled */
 	DebuggerEnabled = DebuggerIsInstalled ? DEBUG_BOTH : DEBUG_NONE;
 
-	wxString CfgPath;
+	wxString HostFile;
 	if (strTargetHost.length() == 0)
-		CfgPath = wxT("pawn");
+		HostFile = wxT("default");
 	else
-		CfgPath = strTargetHost;
-	CfgPath = strCompilerPath + wxT(DIRSEP_STR) + CfgPath + wxT(".cfg");
-	if (!wxFileExists(CfgPath))
+		HostFile = strTargetHost;
+	HostFile = strTargetPath + wxT(DIRSEP_STR) + HostFile + wxT(".cfg");
+	if (!wxFileExists(HostFile))
 		return false;
-	/* parse through the pawn.cfg file to find an optional required output name
-	   and other options */
+	/* parse through the target host file (or default.cfg) to find an optional
+	   required output name and other options */
 	wxTextFile ifile;
-	if (!ifile.Open(CfgPath))
+	if (!ifile.Open(HostFile))
 		return false;
 	for (long idx = 0; idx < (long)ifile.GetLineCount(); idx++) {
 		wxString line = ifile.GetLine(idx);
@@ -2447,8 +2464,8 @@ void QuincyFrame::OnGotoSymbol(wxCommandEvent& /* event */)
 		return;
 	}
 
-    /* see whether there are more matches 
-       if there are more matches (not a likely scenario), collect them and let 
+    /* see whether there are more matches
+       if there are more matches (not a likely scenario), collect them and let
        the user choose */
     int count = 1;
     while (SymbolList.Lookup(word, count) != NULL)
@@ -3005,15 +3022,33 @@ bool QuincyFrame::CompileSource(const wxString& script)
 		wxString command = strPreBuild;
 		wxString path, basename, ext;
 		wxFileName::SplitPath(script, &path, &basename, &ext);
-		command.Replace(wxT("%file%"), script);
+		command.Replace(wxT("%fullname%"), script);
+		command.Replace(wxT("%name%"), basename);
+		command.Replace(wxT("%ext%"), basename);
 		command.Replace(wxT("%path%"), path);
 		wxArrayString output;
 		long result = wxExecute(command, output, wxEXEC_SYNC);
 		prebuild_error = (result < 0 || result >= 255);
 	}
 
+    /* check the compiler */
+    wxString pgmname = wxT("pawncc") wxT(EXE_EXT);
+	wxString command = strCompilerPath + wxT(DIRSEP_STR) + pgmname;
+    if (!wxFileExists(command)) {
+        QuincyDirPicker dlg(this, wxT("The Pawn compiler is not found in the configured folder.\nPlease choose the folder where the compiler is installed."), strCompilerPath, pgmname);
+        if (dlg.ShowModal() == wxID_OK) {
+            strCompilerPath = dlg.GetPath();
+	        /* remove trailing slash, if necessary */
+	        int len = strCompilerPath.Len();
+	        if (len > 0 && strCompilerPath[len - 1] == DIRSEP_CHAR)
+		        strCompilerPath = strCompilerPath.Left(len - 1);
+	        command = strCompilerPath + wxT(DIRSEP_STR) wxT("pawncc") wxT(EXE_EXT);
+        }
+    }
+    if (!wxFileExists(command))
+        return false;
+
 	/* build the command */
-	wxString command = strCompilerPath + wxT(DIRSEP_STR) wxT("pawncc") wxT(EXE_EXT);
 	wxString options;
 	options.Printf(wxT(" -d%d -O%d"), DebugLevel, OptimizationLevel);
 	if (strTargetHost.length() > 0)
@@ -3551,6 +3586,7 @@ void QuincyFrame::OnSettings(wxCommandEvent& /* event */)
 		/* since the target host may have changed, rescan the help index files
 		   and menu */
 		RebuildHelpMenu();
+        AdjustTitle();
 	}
 }
 
@@ -3649,6 +3685,22 @@ void QuincyFrame::OnTrimTrailing(wxCommandEvent& /* event */)
 		StripTrailingSpaces(edit);
 }
 
+void QuincyFrame::OnSampleBrowser(wxCommandEvent& /* event */)
+{
+	QuincySampleBrowser* dlg = new QuincySampleBrowser(this);
+	if (dlg->ShowModal() == wxID_OK) {
+        /* open the files on selection */
+        for (unsigned idx = 0; idx < dlg->GetFileCount(); idx++) {
+            wxString path = theApp->GetExamplesPath() + wxT(DIRSEP_STR);
+            wxString host = GetTargetHost();
+            if (host.Length() > 0)
+                path += host + wxT(DIRSEP_STR);
+            path += dlg->GetFile(idx);
+            LoadSourceFile(path);
+        }
+    }
+}
+
 void QuincyFrame::OnAbout(wxCommandEvent& /* event */)
 {
 	wxIcon icon(Quincy48_xpm);
@@ -3657,7 +3709,7 @@ void QuincyFrame::OnAbout(wxCommandEvent& /* event */)
     info.SetName(wxT("Pawn IDE"));
     info.SetVersion(wxT("0.6.") wxT(SVN_REVSTR));
     info.SetDescription(wxT("A tiny IDE for Pawn."));
-    info.SetCopyright(wxT("(C) 2009-2016 ITB CompuPhase"));
+    info.SetCopyright(wxT("(C) 2009-2017 ITB CompuPhase"));
     info.SetIcon(icon);
     info.SetWebSite(wxT("http://www.compuphase.com/pawn/"));
     wxAboutBox(info);
@@ -4817,7 +4869,7 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
         startline = lastline;
         if (startline >= edit->GetLineCount()) {
             if (startline != startline_save) {
-                /* first see whether the work names are identical to the saved ones 
+                /* first see whether the work names are identical to the saved ones
                    (the choice control does not need to be updated if they are) */
                 updatectrl = false;     /* preset */
                 if (Names.Count() != WorkNames.Count())

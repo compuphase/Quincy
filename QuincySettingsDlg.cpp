@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2016
+ *  Copyright ITB CompuPhase, 2009-2017
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -16,13 +16,18 @@
  *
  *  Version: $Id: QuincySettingsDlg.cpp 5504 2016-05-15 13:42:30Z  $
  */
+#include <wx/busyinfo.h>
+#include <wx/sstream.h>
+#include <wx/url.h>
 #include <wx/variant.h>
+#include <wx/wfstream.h>
+#include <wx/zipstrm.h>
 #include "wxQuincy.h"
 #include "QuincySettingsDlg.h"
 #include "portscan.h"
 
 QuincySettingsDlg::QuincySettingsDlg(wxWindow* parent)
-	: SettingsDlg( parent )
+	: SettingsDlg(parent)
 {
 	Parent = static_cast<QuincyFrame*>(parent);
 	NeedRestart = false;
@@ -44,9 +49,199 @@ void QuincySettingsDlg::OnOK(wxCommandEvent& /* event */)
 
 void QuincySettingsDlg::OnTargetHost(wxCommandEvent& /* event */)
 {
+	wxString host = m_TargetHost->GetStringSelection();
+
+	/* see whether the list must be refreshed */
+	if (host.Cmp(wxT("(install target)")) == 0) {
+		/* first check for write permissions in the "targets" directory, if you
+		   cannot write, the configuration must be manually installed */
+		wxString dir = Parent->GetTargetPath();
+		if (!wxDirExists(dir)) {
+			#if defined _MSC_VER && wxMAJOR_VERSION < 3
+				wxMkDir(dir);
+			#else
+				wxMkDir(dir.utf8_str(), 0777);
+			#endif
+		}
+		wxFileName tgtdir = wxFileName::DirName(dir, wxPATH_NATIVE);
+		if (!tgtdir.IsOk() || !tgtdir.DirExists() || !tgtdir.IsDirWritable()) {
+			wxMessageBox(wxT("No access rights to install new target hosts in\n")
+						 wxT("the installation directory.\n")
+						 wxT("Run the Pawn IDE as administrator (root).\n"),
+						 wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+			host = wxEmptyString;
+			m_TargetHost->SetSelection(0);
+		} else {
+			wxBusyInfo *info = new wxBusyInfo(
+								wxBusyInfoFlags()
+									.Parent(this)
+									.Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
+									.Title(wxT("<b>Collecting supported targets</b>"))
+									.Text(wxT("Please wait..."))
+									.Foreground(*wxWHITE)
+									.Background(*wxBLACK)
+									.Transparency(4*wxALPHA_OPAQUE/5));
+			wxArrayString targets;
+			wxString path = theApp->GetUpdateURL() + wxT("quincy_targets.txt");
+	        wxURL url;
+            bool redirect;
+            do {
+                redirect = false;
+			    url.SetURL(path);
+			    if (url.GetError() == wxURL_NOERR) {
+				    wxInputStream *in = url.GetInputStream();
+				    if (in && in->IsOk()) {
+					    wxString htmldata;
+					    wxStringOutputStream html_stream(&htmldata);
+					    in->Read(html_stream);
+                        /* check for redirects */
+                        if (htmldata.Find(wxT("301")) != wxNOT_FOUND && htmldata.Find(wxT("<a href=")) != wxNOT_FOUND) {
+                            int pos = htmldata.Find(wxT("<a href=")) + 8;
+                            htmldata = htmldata.Mid(pos);
+                            wxASSERT(htmldata[0] == '\'' || htmldata[0] == '"');
+                            if (htmldata[0] == wxT('\''))
+                                path = htmldata.AfterFirst(wxT('\'')).BeforeFirst(wxT('\''));
+                            else
+                                path = htmldata.AfterFirst(wxT('"')).BeforeFirst(wxT('"'));
+                            redirect = true;
+                        } else {
+					        while (htmldata.Length() > 0) {
+						        wxString line = htmldata.BeforeFirst(wxT('\n'));
+						        line.Trim();
+						        targets.Add(line);
+						        htmldata = htmldata.AfterFirst(wxT('\n'));
+					        }
+                        }
+				    }
+				    delete in;
+			    }
+            } while (redirect);
+            delete info;
+			if (targets.Count() == 0) {
+				wxMessageBox(wxT("No targets found on server ") + theApp->GetUpdateURL() + wxT("\nPlease check your internet connection."),
+							 wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+				host = wxEmptyString;
+				m_TargetHost->SetSelection(0);
+			} else {
+				wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, wxT("Select the target host to download and install."), wxT("Select target host"), targets);
+				if (dlg->ShowModal() != wxID_OK) {
+					host = wxEmptyString;
+					m_TargetHost->SetSelection(0);
+				} else {
+                    /* get the host name before showing the new busy box */
+					int idx = dlg->GetSelection();
+					host = targets[idx];
+					host = host.BeforeFirst(wxT('\t'));
+					host = host.BeforeFirst(wxT(' '));
+					wxBusyInfo *info = new wxBusyInfo(
+										wxBusyInfoFlags()
+											.Parent(this)
+											.Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
+											.Title(wxT("<b>Installing ") + host + wxT("</b>"))
+											.Text(wxT("Please wait..."))
+											.Foreground(*wxWHITE)
+											.Background(*wxBLACK)
+											.Transparency(4*wxALPHA_OPAQUE/5));
+					/* download the target host file */
+					path = path.BeforeLast(wxT('/')) + wxT("/") + host + wxT(".zip");   /* assume that is the index file is redirected, the host files are too */
+					url.SetURL(path);
+			        if (url.GetError() == wxURL_NOERR) {
+					    wxInputStream *in = url.GetInputStream();
+					    if (in && in->IsOk()) {
+                            /* if not redirected, save to file */
+					        path = theApp->GetUserDataPath() + wxT(DIRSEP_STR) + host + wxT(".zip");
+                            wxRemoveFile(path); /* delete it, because otherwise the download may fail */
+						    wxFileOutputStream bin_stream(path);
+						    in->Read(bin_stream);
+					    }
+					    delete in;
+                    }
+					/* make/check the directory structure */
+					wxString docdir = theApp->GetDocPath() + wxT(DIRSEP_STR) + host;
+					if (!wxDirExists(docdir)) {
+						#if defined _MSC_VER && wxMAJOR_VERSION < 3
+							wxMkDir(docdir);
+						#else
+							wxMkDir(docdir.utf8_str(), 0777);
+						#endif
+					}
+					wxString sampledir = theApp->GetExamplesPath() + wxT(DIRSEP_STR) + host;
+					if (!wxDirExists(sampledir)) {
+						#if defined _MSC_VER && wxMAJOR_VERSION < 3
+							wxMkDir(sampledir);
+						#else
+							wxMkDir(sampledir.utf8_str(), 0777);
+						#endif
+					}
+					/* Parent->GetTargetPath() was already made at the start of
+					   this routine; also create a string with the path to the
+					   system include files */
+					wxString incdir = Parent->GetTargetPath();
+					wxASSERT(incdir.AfterLast(DIRSEP_CHAR).Cmp(wxT("target")) == 0);
+					incdir = incdir.BeforeLast(DIRSEP_CHAR) + wxT(DIRSEP_STR) wxT("include") wxT(DIRSEP_STR) + host;
+					if (!wxDirExists(incdir)) {
+						#if defined _MSC_VER && wxMAJOR_VERSION < 3
+							wxMkDir(incdir);
+						#else
+							wxMkDir(incdir.utf8_str(), 0777);
+						#endif
+					}
+					/* unpack the downloaded file */
+					wxFileInputStream zipfile(path);
+					if (zipfile.IsOk()) {
+						wxZipInputStream zip(zipfile);
+						wxZipEntry* entry;
+						while ((entry = zip.GetNextEntry()) != NULL) {
+							if (!entry->IsDir()) {
+								zip.OpenEntry(*entry);
+								if (zip.CanRead()) {
+									/* since the files need not be stored to the
+									   same root location, we strip the paths and
+									   select the correct one */
+                                    wchar_t DirSep = wxT('/');                  /* ZIP spec. uses slash... */
+									dir = entry->GetName().BeforeFirst(DirSep);
+                                    if (dir.Find(wxT('\\')) != wxNOT_FOUND) {   /* ...but some implementations differ */
+                                        DirSep = wxT('\\');
+									    dir = entry->GetName().BeforeFirst(DirSep);
+                                    }
+									if (dir.CmpNoCase(wxT("target")) == 0)
+										dir = Parent->GetTargetPath();
+									else if (dir.CmpNoCase(wxT("include")) == 0)
+										dir = incdir;
+									else if (dir.CmpNoCase(wxT("doc")) == 0)
+										dir = docdir;
+									else if (dir.CmpNoCase(wxT("examples")) == 0)
+										dir = sampledir;
+									wxString name = dir + wxT(DIRSEP_STR) + entry->GetName().AfterLast(DirSep);
+									wxFileOutputStream file(name);
+									if (file.IsOk())
+										zip.Read(file);
+								}
+							}
+						}
+					}
+					delete info;
+				} /* if (wxChoiceDialog() confirmed) */
+				/* check whether the main configuration file exists */
+				path = Parent->GetTargetPath() + wxT(DIRSEP_STR) + host + wxT(".cfg");
+				if (!wxFileExists(path)) {
+					wxMessageBox(wxT("Failed to install the target host ") + host + wxT("\nPlease check that you have the correct permissions."),
+								 wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+					host = wxEmptyString;
+					m_TargetHost->SetSelection(0);
+				} else {
+					/* update the combo-box list, set the combo-box selection to
+					   the target just downloaded */
+					CollectTargetHosts();
+					int sel = m_TargetHost->FindString(host);
+					m_TargetHost->SetSelection(sel >= 0 ? sel : 0);
+				}
+			} /* if (target file downloaded) */
+		} /* if (IsDirWritable()) */
+	} /* if (install target) */
+
 	/* immediately load the target host, so that other settings may change
 	   according to the host capabilities */
-	wxString host = m_TargetHost->GetStringSelection();
 	if (host.Cmp(wxT("-")) == 0)
 		host = wxEmptyString;
 	Parent->LoadHostConfiguration(host);
@@ -111,26 +306,40 @@ void QuincySettingsDlg::OnUserReaderBrowse(wxCommandEvent& /* event */)
 		m_UserReaderPath->SetValue(FileDialog.GetPath());
 }
 
-void QuincySettingsDlg::InitData()
+void QuincySettingsDlg::CollectTargetHosts()
 {
 	/* accumulate the list of target hosts */
-	wxDir dir(theApp->GetMainPath());
+	wxArrayString list;
+	wxDir dir(Parent->GetTargetPath());
 	if (dir.IsOpened()) {
 		wxString filename;
 		bool cont = dir.GetFirst(&filename, wxT("*.cfg"), wxDIR_FILES);
 		while (cont) {
-			/* skip names that start with "uncrustify_", also ignore "pawn.cfg" */
+			/* skip names that start with "uncrustify_", also ignore "default.cfg" */
 			wxString prefix = filename.Left(11);
-			if (prefix.CmpNoCase(wxT("uncrustify_")) != 0 && filename.CmpNoCase(wxT("pawn.cfg")) != 0) {
+			if (prefix.CmpNoCase(wxT("uncrustify_")) != 0 && filename.CmpNoCase(wxT("default.cfg")) != 0) {
 				/* remove extension */
 				int len = filename.Length();
 				filename = filename.Left(len - 4);
-				m_TargetHost->Append(filename);
+				list.Add(filename);
 			}
 			cont = dir.GetNext(&filename);
 		}
 	}
+	list.Sort();
 
+	/* refresh the combo-box list */
+	m_TargetHost->Clear();
+	m_TargetHost->Append(wxT("-"));
+	for (size_t idx = 0; idx < list.Count(); idx++)
+		m_TargetHost->Append(list[idx]);
+	m_TargetHost->Append(wxT("(install target)"));
+}
+
+void QuincySettingsDlg::InitData()
+{
+	/* accumulate the list of target hosts */
+	CollectTargetHosts();
 	int sel = m_TargetHost->FindString(Parent->GetTargetHost());
 	m_TargetHost->SetSelection(sel >= 0 ? sel : 0);
 
@@ -223,7 +432,7 @@ void QuincySettingsDlg::InitData()
 void QuincySettingsDlg::CopyData()
 {
 	wxString host = m_TargetHost->GetStringSelection();
-	if (host.Cmp(wxT("-")) == 0)
+	if (host.Cmp(wxT("-")) == 0 || host.Cmp(wxT("(install target)")) == 0)
 		host = wxEmptyString;
 	Parent->SetTargetHost(host);
 
@@ -310,7 +519,7 @@ void QuincySettingsDlg::CopyData()
 
 	bool localini = m_LocalIniFile->GetValue();
 	if (localini != theApp->UseLocalIniFile()) {
-		wxString lclname = theApp->GetMainPath() + wxT(DIRSEP_STR) + wxT("quincy.ini");
+		wxString lclname = theApp->GetBinPath() + wxT(DIRSEP_STR) + wxT("quincy.ini");
 		wxString glbname = theApp->GetUserDataPath() + wxT(DIRSEP_STR) + wxT("quincy.ini");
 		if (localini) {
 			/* copy the INI file to the local directory */

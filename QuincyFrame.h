@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2016
+ *  Copyright ITB CompuPhase, 2009-2017
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.h 5567 2016-08-01 14:52:15Z  $
+ *  Version: $Id: QuincyFrame.h 5589 2016-10-27 13:45:28Z  $
  */
 #ifndef _QUINCYFRAME_H
 #define _QUINCYFRAME_H
@@ -56,15 +56,15 @@
 #define CTX_LINES   1
 class ContextParse {
 public:
-    ContextParse() { 
+    ContextParse() {
         choicectrl = NULL;
-        Names.Clear(); 
-        Ranges.Clear(); 
+        Names.Clear();
+        Ranges.Clear();
         currentselection = -1;
-        activeedit = NULL; 
-        startline = 0; 
+        activeedit = NULL;
+        startline = 0;
         nestlevel = 0;
-        incomment = inparamlist = false; 
+        incomment = inparamlist = false;
         context = wxEmptyString;
         topline = btmline = -1;
     }
@@ -72,7 +72,7 @@ public:
     void ShowContext(int linenr); /* sets the context name in the control */
     bool ScanContext(wxStyledTextCtrl* edit, int flags = 0);
     int Lookup(const wxString& name);
-    
+
 private:
     wxRegEx re;
 
@@ -145,6 +145,7 @@ public:
 	virtual void OnBreakpointToggle(wxCommandEvent& event);
 	virtual void OnBreakpointClear(wxCommandEvent& event);
 	virtual void OnSettings(wxCommandEvent& event);
+    virtual void OnSampleBrowser(wxCommandEvent& event);
 	virtual void OnTabsToSpaces(wxCommandEvent& event);
 	virtual void OnSpacesToTabs(wxCommandEvent& event);
 	virtual void OnIndentsToTabs(wxCommandEvent& event);
@@ -233,6 +234,7 @@ public:
 	void     SetPreBuild(const wxString& command)	{ strPreBuild = command; }
 	wxString GetMiscCmdOptions() const				{ return strMiscCmdOptions; }
 	void     SetMiscCmdOptions(const wxString& opt) { strMiscCmdOptions = opt; }
+	wxString GetTargetPath() const					{ return strTargetPath; }
 
 	wxString GetFixedAMXName() const				{ return strFixedAMXName; }
 	bool     HasFixedAMXName() const				{ return UseFixedAMXName; }
@@ -316,6 +318,7 @@ private:
 	wxString strOutputPath;		/* path to store the compiled scripts */
 	wxString strPreBuild;		/* optional command to run before the build */
 	wxString strMiscCmdOptions;	/* other options to pass to the Pawn compiler on the command line */
+	wxString strTargetPath;		/* path to target host files */
 	bool RunTimeIsInstalled;	/* whether the standard run-time is installed (it is often absent in embedded systems) */
 	bool DebuggerIsInstalled;	/* whether the standard debugger is installed */
 	wxString DebugPort;			/* port name for remote debugging */
@@ -459,6 +462,7 @@ enum {
 	IDM_TRIMTRAILING,
 	IDM_CONTEXTHELP,
     IDM_SELECTCONTEXT,
+    IDM_SAMPLEBROWSER,
     //-----
     IDM_RECENTFILE1,
     IDM_RECENTWORKSPACE1 = IDM_RECENTFILE1 + MAX_RECENTFILES,

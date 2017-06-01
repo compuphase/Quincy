@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2016
+ *  Copyright ITB CompuPhase, 2009-2017
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: wxQuincy.h 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: wxQuincy.h 5588 2016-10-25 11:13:28Z  $
  */
 #ifndef _QUINCY_H
 #define _QUINCY_H
@@ -83,8 +83,12 @@ public:
 	bool GetReaderPathValid() const		{ return UserPDFReaderActive; }
 	void SetReaderPathValid(bool valid)	{ UserPDFReaderActive = valid; }
 
-	wxString GetMainPath() const		{ return MainPath; }
+	wxString GetUpdateURL() const		{ return (UpdateURL.Length() != 0) ? UpdateURL : (const wxString)wxT("http://www.compuphase.com/pawn"); }
+
+	wxString GetRootPath() const		{ return RootPath; }
+	wxString GetBinPath() const			{ return BinPath; }
 	wxString GetDocPath() const			{ return DocPath; }
+	wxString GetExamplesPath() const	{ return ExamplesPath; }
 	wxString GetUserDataPath() const	{ return UserDataPath; }
 
     wxString GetRecentFile(unsigned idx) const { return (idx < RecentFiles.Count()) ? RecentFiles[idx] : wxT(""); }
@@ -114,8 +118,10 @@ private:
 	minIni* ini;
 	bool LocalIniFile;
 
-	wxString MainPath;
+	wxString RootPath;
+	wxString BinPath;
 	wxString DocPath;
+	wxString ExamplesPath;
 	wxString UserDataPath;
 
 	int EditTabWidth;
@@ -127,8 +133,10 @@ private:
 	wxString UserPDFReaderPath;
 	bool UserPDFReaderActive;
 
-    wxArrayString RecentFiles;
-    wxArrayString RecentWorkspaces;
+	wxString UpdateURL;
+
+	wxArrayString RecentFiles;
+	wxArrayString RecentWorkspaces;
 };
 
 extern QuincyApp* theApp;
