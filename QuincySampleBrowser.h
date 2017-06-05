@@ -26,20 +26,20 @@
 class QuincySampleBrowser : public SampleBrowser
 {
 protected:
-	// Handlers for SettingsDlg events.
-	virtual void OnInitDialog(wxInitDialogEvent& event);
-	virtual void OnSelect(wxCommandEvent& event);
-	virtual void OnCancel(wxCommandEvent& event);
-	virtual void OnOK(wxCommandEvent& event);
+    // Handlers for SettingsDlg events.
+    virtual void OnInitDialog(wxInitDialogEvent& event);
+    virtual void OnSelect(wxCommandEvent& event);
+    virtual void OnCancel(wxCommandEvent& event);
+    virtual void OnOK(wxCommandEvent& event);
 
 public:
-	QuincySampleBrowser(wxWindow* parent);
+    QuincySampleBrowser(wxWindow* parent);
     const wxString& GetFile(int idx) const { return filelist[idx]; }
     unsigned GetFileCount() const { return filelist.Count(); }
 
 private:
-	QuincyFrame* Parent;
-	minIni* ini;
+    QuincyFrame* Parent;
+    minIni* ini;
     wxArrayString filelist;
 };
 

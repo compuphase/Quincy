@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyDirPicker.cpp 5596 2016-11-02 17:18:02Z  $
+ *  Version: $Id: QuincyDirPicker.cpp 5689 2017-06-05 14:05:58Z thiadmer $
  */
 #include "wxQuincy.h"
 #include "QuincyDirPicker.h"
@@ -38,7 +38,7 @@ wxString QuincyDirPicker::GetPath()
 
 void QuincyDirPicker::OnCancel(wxCommandEvent& /*event*/)
 {
-	EndModal(wxID_CANCEL);
+    EndModal(wxID_CANCEL);
 }
 
 void QuincyDirPicker::OnOK(wxCommandEvent& /*event*/)
@@ -53,7 +53,7 @@ void QuincyDirPicker::OnOK(wxCommandEvent& /*event*/)
         if (!wxFileExists(path)) {
             int reply = wxMessageBox(wxT("The selected folder does not contain the required files.\nDo you want to select it anyway?"),
                                      wxT("Required files not present"), wxYES_NO);
-			if (reply == wxNO)
+            if (reply == wxNO)
                 return;
         }
     }

@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: HelpIndex.h 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: HelpIndex.h 5689 2017-06-05 14:05:58Z thiadmer $
  */
 #ifndef _HELPINDEX_H
 #define _HELPINDEX_H
@@ -23,33 +23,33 @@
 
 class CPageRef {
 public:
-	CPageRef(int id = 0, int page = 0)
-		{ m_id = id; m_page = page; }
-	void Set(int id, int page)
-		{ m_id = id; m_page = page; }
-	int GetPage() const
-		{ return m_page; }
-	int GetId() const
-		{ return m_id; }
-	int Valid() const
-		{ return m_id >0 && m_page > 0; }
+    CPageRef(int id = 0, int page = 0)
+        { m_id = id; m_page = page; }
+    void Set(int id, int page)
+        { m_id = id; m_page = page; }
+    int GetPage() const
+        { return m_page; }
+    int GetId() const
+        { return m_id; }
+    int Valid() const
+        { return m_id >0 && m_page > 0; }
 private:
-	int m_page;
-	int m_id;
+    int m_page;
+    int m_id;
 };
 
 class CHelpIndex {
 public:
-	CHelpIndex();
-	~CHelpIndex();
-	void AddPage(const char *key, int id, int page);
-	void AddFile(const char *filename, int id);
-	bool ScanFile(const char *indexfile, int id, const char *docfile = NULL);
-	std::map<const char*,int> *LookUp(const char *key);	// returns filename/page pairs
-	const char *LookUp(int id);	// returns filename
+    CHelpIndex();
+    ~CHelpIndex();
+    void AddPage(const char *key, int id, int page);
+    void AddFile(const char *filename, int id);
+    bool ScanFile(const char *indexfile, int id, const char *docfile = NULL);
+    std::map<const char*,int> *LookUp(const char *key); // returns filename/page pairs
+    const char *LookUp(int id); // returns filename
 private:
-	std::multimap<std::string, CPageRef> m_index;
-	std::multimap<int, std::string> m_filetable;
+    std::multimap<std::string, CPageRef> m_index;
+    std::multimap<int, std::string> m_filetable;
 };
 
 #endif /* _HELPINDEX_H */

@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincySettingsDlg.h 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: QuincySettingsDlg.h 5689 2017-06-05 14:05:58Z thiadmer $
  */
 #ifndef _QUINCYSETTINGSDLG_H
 #define _QUINCYSETTINGSDLG_H
@@ -27,27 +27,27 @@
 class QuincySettingsDlg : public SettingsDlg
 {
 protected:
-	// Handlers for SettingsDlg events.
-	virtual void OnCancel(wxCommandEvent& event);
-	virtual void OnOK(wxCommandEvent& event);
-	virtual void OnTargetHost(wxCommandEvent& event);
-	virtual void OnDebuggerLocal(wxCommandEvent& event);
-	virtual void OnDebuggerRS232(wxCommandEvent& event);
-	virtual void OnKbdChanged(wxPropertyGridEvent& event);
-	virtual void OnSnippetEdit(wxGridEvent& event);
-	virtual void OnUserPDFReader(wxCommandEvent& event);
-	virtual void OnUserReaderBrowse(wxCommandEvent& event);
+    // Handlers for SettingsDlg events.
+    virtual void OnCancel(wxCommandEvent& event);
+    virtual void OnOK(wxCommandEvent& event);
+    virtual void OnTargetHost(wxCommandEvent& event);
+    virtual void OnDebuggerLocal(wxCommandEvent& event);
+    virtual void OnDebuggerRS232(wxCommandEvent& event);
+    virtual void OnKbdChanged(wxPropertyGridEvent& event);
+    virtual void OnSnippetEdit(wxGridEvent& event);
+    virtual void OnUserPDFReader(wxCommandEvent& event);
+    virtual void OnUserReaderBrowse(wxCommandEvent& event);
 
 public:
-	QuincySettingsDlg(wxWindow* parent);
-	void InitData();
-	void CopyData();
+    QuincySettingsDlg(wxWindow* parent);
+    void InitData();
+    void CopyData();
 
 private:
-	QuincyFrame* Parent;
-	bool NeedRestart;
+    QuincyFrame* Parent;
+    bool NeedRestart;
 
-	void CollectTargetHosts();
+    void CollectTargetHosts();
 };
 
 #endif /* _QUINCYSETTINGSDLG_H */

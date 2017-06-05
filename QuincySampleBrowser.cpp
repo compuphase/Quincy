@@ -23,7 +23,7 @@
 QuincySampleBrowser::QuincySampleBrowser(wxWindow* parent)
     : SampleBrowser(parent)
 {
-	Parent = static_cast<QuincyFrame*>(parent);
+    Parent = static_cast<QuincyFrame*>(parent);
     filelist.Clear();
     ini = 0;
 }
@@ -31,19 +31,19 @@ QuincySampleBrowser::QuincySampleBrowser(wxWindow* parent)
 void QuincySampleBrowser::OnInitDialog(wxInitDialogEvent& event)
 {
     /* get the sample index file */
- 	wxString path = theApp->GetExamplesPath() + wxT(DIRSEP_STR);
+    wxString path = theApp->GetExamplesPath() + wxT(DIRSEP_STR);
     wxString host = Parent->GetTargetHost();
     if (host.Length() > 0)
         path += host + wxT(DIRSEP_STR);
     path += wxT("samples.idx");
-	if (!wxFileExists(path)) {
+    if (!wxFileExists(path)) {
         m_htmlSample->SetPage(wxT("<h1>No samples...</h1><p>No index with descriptions of the samples is available (for the current target or for this distribution)."));
         return;
-	}
-	ini = new minIni(path);
+    }
+    ini = new minIni(path);
     wxASSERT(ini);
 
-    /* fill the listbox */    
+    /* fill the listbox */
     int idx = 0;
     for ( ;; ) {
         wxString item = ini->getsection(idx);
@@ -59,7 +59,7 @@ void QuincySampleBrowser::OnInitDialog(wxInitDialogEvent& event)
 
 void QuincySampleBrowser::OnCancel(wxCommandEvent& /* event */)
 {
-	EndModal(wxID_CANCEL);
+    EndModal(wxID_CANCEL);
 }
 
 void QuincySampleBrowser::OnOK(wxCommandEvent& /* event */)
@@ -69,7 +69,7 @@ void QuincySampleBrowser::OnOK(wxCommandEvent& /* event */)
         wxString section = m_listSamples->GetString(idx);
         wxString files = ini->gets(section, wxT("files"));
         filelist = wxSplit(files, wxT(' '));
-	    EndModal(wxID_OK);
+        EndModal(wxID_OK);
     }
 }
 

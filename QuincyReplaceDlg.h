@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyReplaceDlg.h 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: QuincyReplaceDlg.h 5689 2017-06-05 14:05:58Z thiadmer $
  */
 #ifndef _QUINCYREPLACEDLG_H
 #define _QUINCYREPLACEDLG_H
@@ -24,15 +24,15 @@
 class QuincyReplaceDlg : public ReplaceDlg
 {
 public:
-	QuincyReplaceDlg(wxWindow* parent);
+    QuincyReplaceDlg(wxWindow* parent);
 
-	void SetFlags(unsigned flags);
-	unsigned GetFlags() const;
-	void SetSearchText(const wxString& text);
-	wxString GetSearchText() const;
-	wxString GetReplaceText() const;
-	void SetRecentList(const wxArrayString& choices);	/* recent search texts */
-	void SetReplaceList(const wxArrayString& choices);	/* recent replace texts */
+    void SetFlags(unsigned flags);
+    unsigned GetFlags() const;
+    void SetSearchText(const wxString& text);
+    wxString GetSearchText() const;
+    wxString GetReplaceText() const;
+    void SetRecentList(const wxArrayString& choices);   /* recent search texts */
+    void SetReplaceList(const wxArrayString& choices);  /* recent replace texts */
 };
 
 #endif /* _QUINCYREPLACEDLG_H */

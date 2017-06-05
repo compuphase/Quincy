@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyReplacePrompt.h 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: QuincyReplacePrompt.h 5689 2017-06-05 14:05:58Z thiadmer $
  */
 #ifndef _QUINCYREPLACEPROMPT_H
 #define _QUINCYREPLACEPROMPT_H
@@ -24,7 +24,7 @@
 class QuincyReplacePrompt : public ReplacePrompt
 {
 public:
-	QuincyReplacePrompt( wxWindow* parent );
+    QuincyReplacePrompt( wxWindow* parent );
 
     virtual void OnDialogKey(wxKeyEvent& event);
     virtual void OnYes(wxCommandEvent& event);

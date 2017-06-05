@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: SymbolBrowser.h 5519 2016-05-26 08:33:38Z  $
+ *  Version: $Id: SymbolBrowser.h 5689 2017-06-05 14:05:58Z thiadmer $
  */
 #ifndef _SYMBOLBROWSER_H
 #define _SYMBOLBROWSER_H
@@ -24,32 +24,32 @@
 class CSymbolEntry
 {
 public:
-	CSymbolEntry() : Next(0) {}
-	bool Add(const wxString &xmlfile, const wxString &symname, const wxString &syntax,
-		     const wxString &summary, const wxString &source, int line);
-	void Remove(const wxString &xmlfile = wxEmptyString);
+    CSymbolEntry() : Next(0), Line(0) {}
+    bool Add(const wxString &xmlfile, const wxString &symname, const wxString &syntax,
+             const wxString &summary, const wxString &source, int line);
+    void Remove(const wxString &xmlfile = wxEmptyString);
 
 public:
-	wxString SymbolName;	// name plus type
-	wxString Syntax;		// name plus decoration
-	wxString Source;		// source file where the symbol is defined
-	wxString Summary;		// symbol documentation (summary)
-	int Line;
+    wxString SymbolName;    // name plus type
+    wxString Syntax;        // name plus decoration
+    wxString Source;        // source file where the symbol is defined
+    wxString Summary;       // symbol documentation (summary)
+    int Line;
 
-	wxString XMLfile;		// XML report file from which the declaration comes
-	CSymbolEntry *Next;
+    wxString XMLfile;       // XML report file from which the declaration comes
+    CSymbolEntry *Next;
 };
 
 class CSymbolList
 {
 public:
-	~CSymbolList() { Clear(); }
-	void Clear() { SymbolList.Remove(); }
-	bool LoadReportFile(const wxString& file);
-	const CSymbolEntry* Lookup(const wxString& symbol, int skip = 0, bool partial = false) const;
-	const CSymbolEntry* Root() const { return SymbolList.Next; }
+    ~CSymbolList() { Clear(); }
+    void Clear() { SymbolList.Remove(); }
+    bool LoadReportFile(const wxString& file);
+    const CSymbolEntry* Lookup(const wxString& symbol, int skip = 0, bool partial = false) const;
+    const CSymbolEntry* Root() const { return SymbolList.Next; }
 private:
-	CSymbolEntry SymbolList;
+    CSymbolEntry SymbolList;
 };
 
 #endif /* _SYMBOLBROWSER_H */

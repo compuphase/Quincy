@@ -78,7 +78,6 @@ HPORT BeginEnumeratePorts(void)
 
 bool EnumeratePortsNext(HPORT DeviceInfoSet, wxString &PortName)
 {
-  int res1;
   TCHAR DevName[MAX_NAME_PORTS]={0};
   int numport;
 
@@ -100,7 +99,7 @@ bool EnumeratePortsNext(HPORT DeviceInfoSet, wxString &PortName)
   while (!result) {
     HKEY KeyDevice;
     DWORD len;
-    res1=SetupDiEnumDeviceInfo(DeviceInfoSet,Enum_numDev,&DeviceInfoData);
+    int res1=SetupDiEnumDeviceInfo(DeviceInfoSet,Enum_numDev,&DeviceInfoData);
 
     if (!res1) {
       SetupDiDestroyDeviceInfoList(DeviceInfoSet);

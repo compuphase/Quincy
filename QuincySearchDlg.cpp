@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincySearchDlg.cpp 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: QuincySearchDlg.cpp 5689 2017-06-05 14:05:58Z thiadmer $
  */
 #include "QuincySearchDlg.h"
 #include <wx/stc/stc.h>
@@ -58,8 +58,8 @@ int QuincySearchDlg::GetScope() const
 void QuincySearchDlg::SetSearchText(const wxString& text)
 {
     ctrlSearchText->SetValue(text);
-	ctrlSearchText->SelectAll();
-	ctrlSearchText->SetFocus();
+    ctrlSearchText->SelectAll();
+    ctrlSearchText->SetFocus();
 }
 
 wxString QuincySearchDlg::GetSearchText() const

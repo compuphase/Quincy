@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyDirPicker.h 5687 2017-06-01 14:56:24Z thiadmer $
+ *  Version: $Id: QuincyDirPicker.h 5689 2017-06-05 14:05:58Z thiadmer $
  */
 #ifndef _QUINCYDIRPICKER_H
 #define _QUINCYDIRPICKER_H
@@ -24,12 +24,12 @@
 class QuincyDirPicker : public CustomDirPicker
 {
 public:
-	/** Constructor */
-	QuincyDirPicker(wxWindow* parent, const wxString& Caption, const wxString& Path = wxEmptyString, const wxString& RequiredFile = wxEmptyString);
+    /** Constructor */
+    QuincyDirPicker(wxWindow* parent, const wxString& Caption, const wxString& Path = wxEmptyString, const wxString& RequiredFile = wxEmptyString);
     wxString GetPath();
 
     virtual void OnCancel(wxCommandEvent& event);
-	virtual void OnOK(wxCommandEvent& event);
+    virtual void OnOK(wxCommandEvent& event);
 
 private:
     wxString TestFile;
