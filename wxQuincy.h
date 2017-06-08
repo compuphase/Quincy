@@ -83,7 +83,7 @@ public:
     bool GetReaderPathValid() const     { return UserPDFReaderActive; }
     void SetReaderPathValid(bool valid) { UserPDFReaderActive = valid; }
 
-    wxString GetUpdateURL() const       { return (UpdateURL.Length() != 0) ? UpdateURL : (const wxString)wxT("http://www.compuphase.com/software/"); }
+    wxString GetUpdateURL() const       { return (UpdateURL.Length() != 0) ? UpdateURL : (const wxString)wxT("http://www.compuphase.com/update/"); }
 
     wxString GetRootPath() const        { return RootPath; }
     wxString GetBinPath() const         { return BinPath; }

@@ -192,7 +192,7 @@ public:
     void LoadWorkspace(const wxString& path);
     void RebuildRecentMenus();
 
-    bool LoadHostConfiguration(const wxString& host = wxEmptyString);
+    bool LoadHostConfiguration(const wxString& host);
     int  GetDebuggerEnabled() const                 { return DebuggerEnabled; }
     bool GetDebuggerEnabled(int mask) const         { return (DebuggerEnabled & mask) != 0; }
     int  GetDefaultDebugLevel() const               { return DefaultDebugLevel; }

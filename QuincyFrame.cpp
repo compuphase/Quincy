@@ -1363,7 +1363,7 @@ bool QuincyFrame::LoadSession()
     if (close_ini)
         delete ini;
 
-    LoadHostConfiguration();
+    LoadHostConfiguration(strTargetHost);
     if (strFixedAMXName.length() == 0)
         UseFixedAMXName = false;    /* force false if no fixed name is defined */
     else if (ini->getl(wxT("Options"), wxT("FixedAMXName"), -1) == -1)
@@ -1457,8 +1457,7 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
 {
     #define START_OPTION(pos,line)  ((pos) == 0 || ((pos) > 0 && (line)[(pos)-1] == ' '))
 
-    if (host.length() > 0)
-        strTargetHost = host;
+    strTargetHost = host;
 
     /* verify environment */
     RunTimeIsInstalled = wxFileExists(strCompilerPath + wxT(DIRSEP_STR) wxT("pawnrun") wxT(EXE_EXT));

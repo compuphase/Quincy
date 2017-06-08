@@ -43,4 +43,4 @@ private:
     wxArrayString filelist;
 };
 
-#endif _QUINCYSSAMPLEBROWSER_H */
+#endif /* _QUINCYSSAMPLEBROWSER_H */
