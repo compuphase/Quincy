@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2017
+ *  Copyright CompuPhase, 2009-2020
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: wxQuincy.cpp 5689 2017-06-05 14:05:58Z thiadmer $
+ *  Version: $Id: wxQuincy.cpp 6131 2020-04-29 19:47:15Z thiadmer $
  */
 #include "wxQuincy.h"
 #include "QuincyFrame.h"
@@ -24,6 +24,7 @@
 #include <wx/filesys.h>
 #include <wx/fs_inet.h>
 #include <wx/fs_zip.h>
+#include <wx/msw/wrapshl.h>
 
 #if !defined wxDIR_NO_FOLLOW
     #define wxDIR_NO_FOLLOW 0   /* only defined for wxWidgets 2.9 and up */
@@ -49,11 +50,18 @@ bool QuincyApp::OnInit()
         RootPath = BinPath; /* not installed in ./bin, everything must be below the installation directory */
 
     /* set other system directories */
-    DocPath = RootPath + wxT(DIRSEP_STR) + wxT("doc");
+    DocPath = RootPath + wxT(DIRSEP_STR) wxT("doc");
     /* "examples" path is set further down in this routine */
 
     /* create INI file path, then get settings */
-    UserDataPath = wxStandardPaths::Get().GetUserDataDir();
+    UserDataPath = wxStandardPaths::Get().GetUserConfigDir();
+    #if defined __WXMSW__
+        UserDataPath += wxT(DIRSEP_STR) wxT("pawn");
+    #elif defined __WXOSX__
+        UserDataPath += wxT(DIRSEP_STR) wxT("pawn");
+    #else
+        UserDataPath += wxT(DIRSEP_STR) wxT(".pawn");
+    #endif
     if (!wxDirExists(UserDataPath)) {
         #if defined _MSC_VER && wxMAJOR_VERSION < 3
             wxMkDir(UserDataPath);
@@ -122,10 +130,19 @@ bool QuincyApp::OnInit()
        directory */
     LocalIniFile = true;
     wxString strIniName = BinPath + wxT(DIRSEP_STR) + wxT("quincy.ini");
-    if (!wxFileExists(strIniName) || !wxFile::Access(strIniName, wxFile::write)) {
-        wxString strIniName = UserDataPath + wxT(DIRSEP_STR) + wxT("quincy.ini");
+    if (!wxFileExists(strIniName) || !wxFile::Access(strIniName, wxFile::write))
         LocalIniFile = false;
-    }
+    /* always consider ProgramFiles and ProgramFiles32 as read-only */
+    #if defined _WIN32
+        wxString ProgramFiles = wxStandardPaths::MSWGetShellDir(CSIDL_PROGRAM_FILES) + wxT(DIRSEP_STR);       /* for either 32-bit or 64-bit programs */
+        wxString ProgramFiles64 = wxStandardPaths::MSWGetShellDir(CSIDL_PROGRAM_FILESX86) + wxT(DIRSEP_STR);  /* for 32-bit programms in 64-bit Windows */
+        if (BinPath.Left(ProgramFiles64.Length()).CmpNoCase(ProgramFiles64) == 0)
+            LocalIniFile = false;
+        if (BinPath.Left(ProgramFiles.Length()).CmpNoCase(ProgramFiles) == 0)
+            LocalIniFile = false;
+    #endif
+    if (!LocalIniFile)
+        strIniName = UserDataPath + wxT(DIRSEP_STR) + wxT("quincy.ini");
     ini = new minIni(strIniName);
     /* see whether there is a "merge" ini file and whether its timestamp is
        higher than the one stored in the main INI file; if so, merge */
@@ -162,7 +179,6 @@ bool QuincyApp::OnInit()
         #else
             wxMkDir(ExamplesPath.utf8_str(), 0777);
         #endif
-        ini->put(wxT("Session"), wxT("Directory"), ExamplesPath);
         wxString strSource = RootPath + wxT(DIRSEP_STR) wxT("examples");
         wxDir dir(strSource);
         if (dir.IsOpened()) {
@@ -190,6 +206,31 @@ bool QuincyApp::OnInit()
     if (!wxDirExists(ExamplesPath)) {
         /* file copy failed, or file copy skipped (because the home directory is read-write) */
         ExamplesPath = RootPath + wxT(DIRSEP_STR) wxT("examples");
+    }
+
+    /* also make sure to copy the examples of the currently active target host */
+    wxString host = frame->GetTargetHost();
+    if (!LocalIniFile && host.Length() > 0) {
+        wxString strTarget = ExamplesPath + wxT(DIRSEP_STR) + host;
+        if (!wxDirExists(strTarget)) {
+            #if defined _MSC_VER && wxMAJOR_VERSION < 3
+                wxMkDir(strTarget);
+            #else
+                wxMkDir(strTarget.utf8_str(), 0777);
+            #endif
+            wxString strSource = RootPath + wxT(DIRSEP_STR) wxT("examples") wxT(DIRSEP_STR) + host;
+            wxDir dir(strSource);
+            if (dir.IsOpened()) {
+                wxString filename;
+                bool result = dir.GetFirst(&filename, wxEmptyString, wxDIR_FILES | wxDIR_NO_FOLLOW);
+                while (result) {
+                    wxString source = strSource + wxT(DIRSEP_STR) + filename;
+                    wxString target = strTarget + wxT(DIRSEP_STR) + filename;
+                    wxCopyFile(source, target, false);
+                    result = dir.GetNext(&filename);
+                }
+            }
+        }
     }
 
     return true;

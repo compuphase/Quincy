@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2017
+ *  Copyright CompuPhase, 2009-2020
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.h 5689 2017-06-05 14:05:58Z thiadmer $
+ *  Version: $Id: QuincyFrame.h 5752 2017-10-18 07:49:38Z thiadmer $
  */
 #ifndef _QUINCYFRAME_H
 #define _QUINCYFRAME_H
@@ -287,6 +287,7 @@ private:
     bool LoadSession();
     bool SaveSession();
     void StripTrailingSpaces(wxStyledTextCtrl *edit);
+    wxString OptionallyQuoteString(const wxString& string);
     bool IsPawnFile(const wxString& path, bool allow_inc = true);
     void PrepareSearchLog();
     void SpaceToTab(bool indent_only);

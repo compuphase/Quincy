@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2017
+ *  Copyright CompuPhase, 2009-2020
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.cpp 5689 2017-06-05 14:05:58Z thiadmer $
+ *  Version: $Id: QuincyFrame.cpp 6131 2020-04-29 19:47:15Z thiadmer $
  */
 #define _CRT_SECURE_NO_DEPRECATE
 #include "wxQuincy.h"
@@ -475,6 +475,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     minIni* ini = theApp->GetConfigFile();
     long pos = ini->getl(wxT("Position"), wxT("Splitter"), 0);
     SplitterFrame->SetSashPosition(pos);
+    SplitterFrame->SetSashGravity(1.0);
     Centre();
 
     /* Find settings */
@@ -1299,6 +1300,13 @@ void QuincyFrame::StripTrailingSpaces(wxStyledTextCtrl *edit)
             edit->ReplaceTarget(wxT(""));
         }
     }
+}
+
+wxString QuincyFrame::OptionallyQuoteString(const wxString& string)
+{
+    if (string.Find(wxT(' ')) >= 0)
+        return wxT("\"") + string + wxT("\"");
+    return string;
 }
 
 bool QuincyFrame::LoadSession()
@@ -3012,7 +3020,7 @@ void QuincyFrame::OnTerminateApp(wxProcessEvent& /* event */)
         }
         Terminal->AppendText(text);
     }
-    Terminal->Enable(false);
+    /* keep the control enabled, so user can still scroll */
 }
 
 bool QuincyFrame::CompileSource(const wxString& script)
@@ -3092,14 +3100,14 @@ bool QuincyFrame::CompileSource(const wxString& script)
             end++;
         extraoptions = extraoptions.Remove(namepos, end - namepos);
     }
-    options += wxT(" -o") + path + basename + wxT(".amx");
+    options += wxT(" ") + OptionallyQuoteString(wxT("-o") + path + basename + wxT(".amx"));
 
     if (CreateReport)
         options += wxT(" -r");
     extraoptions = extraoptions.Trim(false);
     if (extraoptions.length() > 0)
         options += wxT(" ") + extraoptions;
-    options += wxT(" ") + script;
+    options += wxT(" ") + OptionallyQuoteString(script);
 
     wxWindowDisabler *disableAll = new wxWindowDisabler;
     #if wxCHECK_VERSION(3, 1, 0)
@@ -3265,7 +3273,7 @@ bool QuincyFrame::RunCurrentScript(bool debug)
         command += wxT("pawndbg") wxT(EXE_EXT);
     else
         command += wxT("pawnrun") wxT(EXE_EXT);
-    command += wxT(" ") + amxname;
+    command += wxT(" ") + OptionallyQuoteString(amxname);
     if (debug) {
         command += wxT(" -term=off,");
         command += debug_prefix;
