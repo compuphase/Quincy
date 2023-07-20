@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright CompuPhase, 2009-2020
+ *  Copyright CompuPhase, 2009-2023
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.h 5752 2017-10-18 07:49:38Z thiadmer $
+ *  Version: $Id: QuincyFrame.h 6967 2023-07-20 20:15:38Z thiadmer $
  */
 #ifndef _QUINCYFRAME_H
 #define _QUINCYFRAME_H
@@ -191,6 +191,7 @@ public:
     void LoadSourceFile(const wxString& path);
     void LoadWorkspace(const wxString& path);
     void RebuildRecentMenus();
+    void SetEditorsStyle(wxStyledTextCtrl *edit);
 
     bool LoadHostConfiguration(const wxString& host);
     int  GetDebuggerEnabled() const                 { return DebuggerEnabled; }

@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright CompuPhase, 2009-2020
+ *  Copyright CompuPhase, 2009-2023
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.cpp 6131 2020-04-29 19:47:15Z thiadmer $
+ *  Version: $Id: QuincyFrame.cpp 6967 2023-07-20 20:15:38Z thiadmer $
  */
 #define _CRT_SECURE_NO_DEPRECATE
 #include "wxQuincy.h"
@@ -761,30 +761,8 @@ bool QuincyFrame::AddEditor(const wxString &name)
     /* the editor */
     wxStyledTextCtrl *edit = new wxStyledTextCtrl(EditTab, IDC_EDIT + idx, wxPoint(-1, -1), wxSize(-1, -1), wxTE_MULTILINE);
     Editor[idx] = edit;
-    edit->StyleSetFont(wxSTC_STYLE_DEFAULT, theApp->CodeFont);
-    for (int i = 0; i < wxSTC_STYLE_LASTPREDEFINED; i++)
-        edit->StyleSetFont(i, theApp->CodeFont);
-    edit->StyleSetBackground(wxSTC_STYLE_DEFAULT, theApp->EditColours[CLR_BACKGROUND]);
-    edit->StyleSetForeground(wxSTC_STYLE_DEFAULT, theApp->EditColours[CLR_TEXT]);
-    edit->SetCaretLineBackground(theApp->EditColours[CLR_ACTIVE]);
+    SetEditorsStyle(edit);
     edit->SetIndentationGuides(false);
-    edit->StyleSetForeground(wxSTC_STYLE_INDENTGUIDE, wxColour(80, 80, 40));
-    edit->StyleSetForeground(wxSTC_C_WORD, theApp->EditColours[CLR_KEYWORDS]);
-    edit->StyleSetForeground(wxSTC_C_STRING, theApp->EditColours[CLR_STRINGS]);
-    edit->StyleSetForeground(wxSTC_C_CHARACTER, theApp->EditColours[CLR_STRINGS]);
-    edit->StyleSetForeground(wxSTC_C_COMMENT, theApp->EditColours[CLR_COMMENTS]);
-    edit->StyleSetForeground(wxSTC_C_COMMENTLINE, theApp->EditColours[CLR_COMMENTS]);
-    edit->StyleSetForeground(wxSTC_C_NUMBER, theApp->EditColours[CLR_NUMBERS]);
-    edit->StyleSetForeground(wxSTC_C_OPERATOR, theApp->EditColours[CLR_OPERATORS]);
-    edit->StyleSetForeground(wxSTC_C_PREPROCESSOR, theApp->EditColours[CLR_PREPROCESSOR]);
-    edit->StyleSetForeground(wxSTC_C_STRINGEOL, theApp->EditColours[CLR_STRINGEOL]);
-    edit->StyleSetForeground(wxSTC_STYLE_BRACELIGHT, theApp->EditColours[CLR_HIGHLIGHT]);
-    edit->StyleSetForeground(wxSTC_STYLE_BRACEBAD, theApp->EditColours[CLR_STRINGEOL]);
-    edit->StyleSetBold(wxSTC_C_OPERATOR, true);
-    edit->StyleSetBold(wxSTC_STYLE_BRACELIGHT, true);
-    edit->StyleSetBold(wxSTC_STYLE_BRACEBAD, true);
-    edit->StyleSetUnderline(wxSTC_C_STRINGEOL, true);
-    edit->StyleSetUnderline(wxSTC_STYLE_BRACEBAD, true);
     edit->SetCaretLineVisible(true);
     edit->SetMarginType(1, wxSTC_MARGIN_SYMBOL);
     edit->SetMarginWidth(1, 16);
@@ -794,14 +772,6 @@ bool QuincyFrame::AddEditor(const wxString &name)
     edit->MarkerDefine(MARKER_BREAKPOINT, wxSTC_MARK_CIRCLE, wxColour(192, 192, 192), wxColour(160, 0, 0));
     edit->MarkerDefine(MARKER_CURRENTLINE, wxSTC_MARK_SHORTARROW, wxColour(0, 0, 0), wxColour(240, 192, 0));
 
-    edit->CallTipUseStyle(30);
-    wxFont tipfont = theApp->CodeFont;
-    wxSize sz = tipfont.GetPixelSize();
-    sz.SetHeight((sz.GetHeight() * 8) / 10);
-    sz.SetWidth((sz.GetWidth() * 8) / 10);
-    tipfont.SetPixelSize(sz);
-    edit->StyleSetFont(wxSTC_STYLE_CALLTIP, tipfont);
-
     if (name.Length() == 0 || IsPawnFile(name)) {
         edit->SetLexer(wxSTC_LEX_CPP);
         edit->SetProperty(wxT("lexer.cpp.track.preprocessor"), wxT("0"));   /* this is too complex with Pawn, because Pawn can also check definitions of variables & functions */
@@ -810,9 +780,6 @@ bool QuincyFrame::AddEditor(const wxString &name)
     }
 
     edit->SetCodePage(wxSTC_CP_UTF8);   /* required for the Unicode build of wxWidgets, which is now standard */
-    edit->SetTabWidth(theApp->GetTabWidth());
-    edit->SetUseTabs(theApp->GetUseTabs());
-    edit->SetIndent(theApp->GetTabWidth());
     edit->SetTabIndents(true);
     edit->SetBackSpaceUnIndents(true);
     edit->SetMouseDwellTime(500);
@@ -3556,38 +3523,7 @@ void QuincyFrame::OnSettings(wxCommandEvent& /* event */)
         for (idx = 0; idx < EditTab->GetPageCount(); idx++) {
             wxStyledTextCtrl *edit = dynamic_cast<wxStyledTextCtrl*>(EditTab->GetPage(idx));
             wxASSERT(edit);
-            edit->StyleSetFont(wxSTC_STYLE_DEFAULT, theApp->CodeFont);
-            for (int i = 0; i < wxSTC_STYLE_LASTPREDEFINED; i++)
-                edit->StyleSetFont(i, theApp->CodeFont);
-            edit->SetTabWidth(theApp->GetTabWidth());
-            edit->SetIndent(theApp->GetTabWidth());
-            edit->SetUseTabs(theApp->GetUseTabs());
-            edit->StyleSetBackground(wxSTC_STYLE_DEFAULT, theApp->EditColours[CLR_BACKGROUND]);
-            edit->StyleSetForeground(wxSTC_STYLE_DEFAULT, theApp->EditColours[CLR_TEXT]);
-            edit->StyleSetForeground(wxSTC_C_WORD, theApp->EditColours[CLR_KEYWORDS]);
-            edit->StyleSetForeground(wxSTC_C_STRING, theApp->EditColours[CLR_STRINGS]);
-            edit->StyleSetForeground(wxSTC_C_CHARACTER, theApp->EditColours[CLR_STRINGS]);
-            edit->StyleSetForeground(wxSTC_C_COMMENT, theApp->EditColours[CLR_COMMENTS]);
-            edit->StyleSetForeground(wxSTC_C_COMMENTLINE, theApp->EditColours[CLR_COMMENTS]);
-            edit->StyleSetForeground(wxSTC_C_NUMBER, theApp->EditColours[CLR_NUMBERS]);
-            edit->StyleSetForeground(wxSTC_C_OPERATOR, theApp->EditColours[CLR_OPERATORS]);
-            edit->StyleSetForeground(wxSTC_C_PREPROCESSOR, theApp->EditColours[CLR_PREPROCESSOR]);
-            edit->StyleSetForeground(wxSTC_C_STRINGEOL, theApp->EditColours[CLR_STRINGEOL]);
-            edit->StyleSetForeground(wxSTC_STYLE_BRACELIGHT, theApp->EditColours[CLR_HIGHLIGHT]);
-            edit->StyleSetForeground(wxSTC_STYLE_BRACEBAD, theApp->EditColours[CLR_STRINGEOL]);
-            edit->SetCaretLineBackground(theApp->EditColours[CLR_ACTIVE]);
-            edit->StyleSetBold(wxSTC_C_OPERATOR, true);
-            edit->StyleSetBold(wxSTC_STYLE_BRACELIGHT, true);
-            edit->StyleSetBold(wxSTC_STYLE_BRACEBAD, true);
-            edit->StyleSetUnderline(wxSTC_C_STRINGEOL, true);
-            edit->StyleSetUnderline(wxSTC_STYLE_BRACEBAD, true);
-            edit->CallTipUseStyle(30);
-            wxFont tipfont = theApp->CodeFont;
-            wxSize sz = tipfont.GetPixelSize();
-            sz.SetHeight((sz.GetHeight() * 8) / 10);
-            sz.SetWidth((sz.GetWidth() * 8) / 10);
-            tipfont.SetPixelSize(sz);
-            edit->StyleSetFont(wxSTC_STYLE_CALLTIP, tipfont);
+            SetEditorsStyle(edit);
         }
         /* add/remove a page for the search results, depending on which search
            dialog is used */
@@ -4763,6 +4699,72 @@ void QuincyFrame::RebuildHelpMenu()
             count += 1;
         } while (dir.GetNext(&filename) && count < MAX_HELPFILES);
     }
+}
+
+void QuincyFrame::SetEditorsStyle(wxStyledTextCtrl *edit)
+{
+    wxASSERT(edit);
+    edit->StyleSetFont(wxSTC_STYLE_DEFAULT, theApp->CodeFont);
+    for (int i = 0; i < wxSTC_STYLE_LASTPREDEFINED; i++)
+        edit->StyleSetFont(i, theApp->CodeFont);
+
+    edit->SetCaretLineBackground(theApp->EditColours[CLR_ACTIVE]);
+    edit->SetIndentationGuides(false);
+
+    edit->StyleSetBackground(wxSTC_STYLE_DEFAULT, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_STYLE_DEFAULT, theApp->EditColours[CLR_TEXT]);
+    edit->StyleSetBackground(wxSTC_C_DEFAULT, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_DEFAULT, theApp->EditColours[CLR_TEXT]);
+    edit->StyleSetForeground(wxSTC_STYLE_INDENTGUIDE, wxColour(80, 80, 40));
+    edit->StyleSetBackground(wxSTC_C_IDENTIFIER, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_IDENTIFIER, theApp->EditColours[CLR_TEXT]);
+    edit->StyleSetBackground(wxSTC_C_WORD, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_WORD, theApp->EditColours[CLR_KEYWORDS]);
+    edit->StyleSetBackground(wxSTC_C_WORD2, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_WORD2, theApp->EditColours[CLR_KEYWORDS]);
+    edit->StyleSetBackground(wxSTC_C_STRING, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_STRING, theApp->EditColours[CLR_STRINGS]);
+    edit->StyleSetBackground(wxSTC_C_CHARACTER, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_CHARACTER, theApp->EditColours[CLR_STRINGS]);
+    edit->StyleSetBackground(wxSTC_C_COMMENT, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_COMMENT, theApp->EditColours[CLR_COMMENTS]);
+    edit->StyleSetBackground(wxSTC_C_COMMENTLINE, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_COMMENTLINE, theApp->EditColours[CLR_COMMENTS]);
+    edit->StyleSetBackground(wxSTC_C_COMMENTDOC, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_COMMENTDOC, theApp->EditColours[CLR_COMMENTS]);
+    edit->StyleSetBackground(wxSTC_C_COMMENTDOCKEYWORD, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_COMMENTDOCKEYWORD, theApp->EditColours[CLR_COMMENTS]);
+    edit->StyleSetBackground(wxSTC_C_NUMBER, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_NUMBER, theApp->EditColours[CLR_NUMBERS]);
+    edit->StyleSetBackground(wxSTC_C_OPERATOR, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_OPERATOR, theApp->EditColours[CLR_OPERATORS]);
+    edit->StyleSetBackground(wxSTC_C_PREPROCESSOR, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_PREPROCESSOR, theApp->EditColours[CLR_PREPROCESSOR]);
+    edit->StyleSetBackground(wxSTC_C_STRINGEOL, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_C_STRINGEOL, theApp->EditColours[CLR_STRINGEOL]);
+    edit->StyleSetBackground(wxSTC_STYLE_BRACELIGHT, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_STYLE_BRACELIGHT, theApp->EditColours[CLR_HIGHLIGHT]);
+    edit->StyleSetBackground(wxSTC_STYLE_BRACEBAD, theApp->EditColours[CLR_BACKGROUND]);
+    edit->StyleSetForeground(wxSTC_STYLE_BRACEBAD, theApp->EditColours[CLR_STRINGEOL]);
+
+    edit->StyleSetBold(wxSTC_C_OPERATOR, true);
+    edit->StyleSetBold(wxSTC_STYLE_BRACELIGHT, true);
+    edit->StyleSetBold(wxSTC_STYLE_BRACEBAD, true);
+    edit->StyleSetBold(wxSTC_C_COMMENTDOCKEYWORD, true);
+    edit->StyleSetUnderline(wxSTC_C_STRINGEOL, true);
+    edit->StyleSetUnderline(wxSTC_STYLE_BRACEBAD, true);
+
+    edit->SetTabWidth(theApp->GetTabWidth());
+    edit->SetIndent(theApp->GetTabWidth());
+    edit->SetUseTabs(theApp->GetUseTabs());
+
+    edit->CallTipUseStyle(30);
+    wxFont tipfont = theApp->CodeFont;
+    wxSize sz = tipfont.GetPixelSize();
+    sz.SetHeight((sz.GetHeight() * 8) / 10);
+    sz.SetWidth((sz.GetWidth() * 8) / 10);
+    tipfont.SetPixelSize(sz);
+    edit->StyleSetFont(wxSTC_STYLE_CALLTIP, tipfont);
 }
 
 void QuincyFrame::OnSelectContext(wxCommandEvent& event)
