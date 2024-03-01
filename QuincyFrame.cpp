@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright CompuPhase, 2009-2023
+ *  Copyright CompuPhase, 2009-2024
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.cpp 6967 2023-07-20 20:15:38Z thiadmer $
+ *  Version: $Id: QuincyFrame.cpp 7113 2024-02-25 21:29:31Z thiadmer $
  */
 #define _CRT_SECURE_NO_DEPRECATE
 #include "wxQuincy.h"
@@ -79,8 +79,9 @@
 #include "res/tb_findnext.xpm"
 #include "res/tb_replace.xpm"
 #include "res/tb_bracematch.xpm"
-#include "res/tb_transfer.xpm"
 #include "res/tb_compile.xpm"
+#include "res/tb_transfer.xpm"
+#include "res/tb_device.xpm"
 #include "res/tb_debug.xpm"
 #include "res/tb_run.xpm"
 #include "res/tb_stop.xpm"
@@ -115,7 +116,7 @@ static const wxChar debug_prefix[] = wxT("}%`");
 static const wxChar PawnKeyWords[] = wxT("assert break case const continue default defined ")
                                      wxT("do else exit for forward goto if native new ")
                                      wxT("operator public return sizeof sleep state static ")
-                                     wxT("stock switch tagof while true false");
+                                     wxT("stock switch tagof var while true false");
 
 
 QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
@@ -158,6 +159,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     wxBitmap tb_bracematch(tb_bracematch_xpm);
     wxBitmap tb_compile(tb_compile_xpm);
     wxBitmap tb_transfer(tb_transfer_xpm);
+    wxBitmap tb_devicetool(tb_device_xpm);
     wxBitmap tb_debug(tb_debug_xpm);
     wxBitmap tb_run(tb_run_xpm);
     wxBitmap tb_abort(tb_stop_xpm);
@@ -378,6 +380,8 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     ToolBar->AddTool(IDM_STEPOUT, wxT("Step Out"), tb_stepout, wxT("Run up to the function return") + TB_SHORTCUT(wxT("StepOut")));
     ToolBar->AddTool(IDM_RUNTOCURSOR, wxT("Run to cursor"), tb_runtocursor, wxT("Run up to the current line") + TB_SHORTCUT(wxT("RunToCursor")));
     ToolBar->AddSeparator();
+    ToolBar->AddTool(IDM_DEVICETOOL, wxT("Device"), tb_devicetool, wxT("Configure the device") + TB_SHORTCUT(wxT("DeviceTool")));
+    ToolBar->AddSeparator();
     FunctionList = new wxChoice(ToolBar, IDM_SELECTCONTEXT, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
     FunctionList->SetMinSize(wxSize(200, -1));
     FunctionList->SetToolTip(wxT("The function name at the current cursor position."));
@@ -405,6 +409,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     Connect(IDM_STEPOVER, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(QuincyFrame::OnStepOver));
     Connect(IDM_STEPOUT, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(QuincyFrame::OnStepOut));
     Connect(IDM_RUNTOCURSOR, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(QuincyFrame::OnRunToCursor));
+    Connect(IDM_DEVICETOOL, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(QuincyFrame::OnDeviceTool));
     Connect(IDM_SELECTCONTEXT, wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(QuincyFrame::OnSelectContext));
 
     /* splitter window */
@@ -1310,6 +1315,7 @@ bool QuincyFrame::LoadSession()
     UseFixedAMXName = ini->getbool(wxT("Options"), wxT("FixedAMXName"));
     VerboseBuild = ini->getbool(wxT("Options"), wxT("Verbose"));
     CreateReport = ini->getbool(wxT("Options"), wxT("Report"));
+    AutoTransfer = ini->getbool(wxT("Options"), wxT("AutoTransfer"));
     DebuggerSelected = ini->getl(wxT("Options"), wxT("Debugger"));
     DebugPort = ini->gets(wxT("Options"), wxT("DebugPort"));
     DebugBaudrate = ini->getl(wxT("Options"), wxT("DebugBaudrate"));
@@ -1353,6 +1359,7 @@ bool QuincyFrame::LoadSession()
     UpdateSymBrowser();
     ReadInfoTips();
     RebuildHelpMenu();
+    RebuildToolsMenu();
     AdjustTitle();
 
     return true;
@@ -1411,6 +1418,7 @@ bool QuincyFrame::SaveSession()
     ini->put(wxT("Options"), wxT("FixedAMXName"), UseFixedAMXName);
     ini->put(wxT("Options"), wxT("Verbose"), VerboseBuild);
     ini->put(wxT("Options"), wxT("Report"), CreateReport);
+    ini->put(wxT("Options"), wxT("AutoTransfer"), AutoTransfer);
     ini->put(wxT("Options"), wxT("Debugger"), DebuggerSelected);
     ini->put(wxT("Options"), wxT("DebugPort"), DebugPort);
     ini->put(wxT("Options"), wxT("DebugBaudrate"), DebugBaudrate);
@@ -1440,6 +1448,8 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
 
     /* preset with compiler defaults */
     strFixedAMXName = wxEmptyString;
+    UploadTool = wxEmptyString;
+    DeviceTool = wxEmptyString;
     DefaultOptimize = 1;
     DefaultDebugLevel = 1;
     MaxOptimize = 3;
@@ -1502,6 +1512,14 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
             line.Mid(pos + 7).ToLong(&val);
             DebuggerEnabled = DebuggerEnabled & val;
         }
+        /* Quincy: upload tool */
+        pos = line.Find(wxT("#upload:"));
+        if (START_OPTION(pos, line))
+            UploadTool = line.Mid(pos + 8).Trim(true).Trim(false);
+        /* Quincy: device-specific tool */
+        pos = line.Find(wxT("#tool:"));
+        if (START_OPTION(pos, line))
+            DeviceTool = line.Mid(pos + 6).Trim(true).Trim(false);
         /* Quincy: max. optimization level supported */
         pos = line.Find(wxT("#optlevel:"));
         if (START_OPTION(pos, line)) {
@@ -2757,56 +2775,20 @@ void QuincyFrame::OnCompile(wxCommandEvent& /* event */)
         wxMessageBox(wxT("Unknown filename for the source file to compile."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
         return;
     }
-    CompileSource(fullpath);    /* status bar will show the compilation result */
+    CompileSource(fullpath);  /* status bar will show the compilation result */
+    if (GetAutoTransferEnabled() && strRecentAMXName.length() > 0)
+        TransferScript(strRecentAMXName);
 }
 
 void QuincyFrame::OnTransfer(wxCommandEvent& /* event */)
 {
-    if (ExecPID == 0 && DebuggerSelected == DEBUG_REMOTE) {
-        wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
-        if (!edit)
-            return;
-
-        wxString fullpath = wxEmptyString;
-        int idx;
-        for (idx = 0; idx < MAX_EDITORS && Editor[idx] != edit; idx++)
-            /* nothing */;
-        wxASSERT(idx < MAX_EDITORS);
-        fullpath = Filename[idx];
-        if (fullpath.Length() == 0)
-            return;
-
-        wxString amxname;
-        if (strOutputPath.length() > 0) {
-            wxString path, basename, ext;
-            wxFileName::SplitPath(fullpath, &path, &basename, &ext);
-            amxname = strOutputPath + wxT(DIRSEP_STR) + basename + wxT(".amx");
-        } else {
-            amxname = fullpath.BeforeLast(wxT('.')) + wxT(".amx");
-        }
-
-        wxString command = strCompilerPath + wxT(DIRSEP_STR) wxT("pawndbg") wxT(EXE_EXT);
-        command += wxT(" ") + amxname;
-        command += wxT(" -term=off,");
-        command += debug_prefix;
-        //??? halt the RS232 reception, if any
-        command += wxT(" -rs232=") + DebugPort;
-        command += wxString::Format(wxT(",%ld"), DebugBaudrate);
-        command += wxT(" -transfer -quit");
-        ExecPID = wxExecute(command, wxEXEC_ASYNC, ExecProcess);
-        if (ExecPID <= 0) {
-            wxMessageBox(wxT("Pawn debugger could not be started.\nPlease check the settings."),
+    if (ExecPID == 0 && (DebuggerSelected == DEBUG_REMOTE || UploadTool.length() > 0)) {
+        if (strRecentAMXName.length() == 0) {
+            wxMessageBox(wxT("No recent compiled file to transfer. Build the script first"),
                          wxT("Pawn IDE"), wxOK | wxICON_ERROR);
-            delete ExecProcess;
-            return;
+        } else {
+            TransferScript(strRecentAMXName);
         }
-        PaneTab->SetSelection(TAB_OUTPUT);
-        Terminal->Enable(true);
-        Terminal->Clear();
-        ExecInputQueue.Clear();
-        DebugMode = true;
-        DebugRunning = true;
-        DebugHoldback = 0;
     }
 }
 
@@ -3066,8 +3048,11 @@ bool QuincyFrame::CompileSource(const wxString& script)
         if (quote)
             end++;
         extraoptions = extraoptions.Remove(namepos, end - namepos);
+    } else if (UseFixedAMXName && strFixedAMXName.length() > 0) {
+        basename = strFixedAMXName;
     }
-    options += wxT(" ") + OptionallyQuoteString(wxT("-o") + path + basename + wxT(".amx"));
+    strRecentAMXName = path + basename + wxT(".amx");   /* may be reset later (if compile fails) */
+    options += wxT(" ") + OptionallyQuoteString(wxT("-o") + strRecentAMXName);
 
     if (CreateReport)
         options += wxT(" -r");
@@ -3099,6 +3084,7 @@ bool QuincyFrame::CompileSource(const wxString& script)
     if (result < 0 || result >= 255) {
         wxMessageBox(wxT("Pawn compiler could not be started.\nPlease check the settings."),
                      wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        strRecentAMXName = wxEmptyString;
         return false;
     }
 
@@ -3122,9 +3108,78 @@ bool QuincyFrame::CompileSource(const wxString& script)
         PaneTab->SetSelection(TAB_MESSAGES);
         wxString msg = wxString::Format(wxT("%d errors / warnings"), errors.Count());
         SetStatusText(msg, 0);
+        strRecentAMXName = wxEmptyString;
     }
     UpdateSymBrowser(script);   /* always update (even after errors) because we want to update after warnings */
     return errors.Count() == 0;
+}
+
+bool QuincyFrame::TransferScript(const wxString& path)
+{
+    //??? halt the RS232 reception, if any
+
+    bool success = false;
+    wxString command;
+    if (UploadTool.length() > 0) {
+        wxWindowDisabler *disableAll = new wxWindowDisabler;
+        #if wxCHECK_VERSION(3, 1, 0)
+            wxBusyInfo *info = new wxBusyInfo(
+                                wxBusyInfoFlags()
+                                    .Parent(this)
+                                    .Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
+                                    .Title(wxT("<b>Transferring ") + path.AfterLast(DIRSEP_CHAR) + wxT("</b>"))
+                                    .Text(wxT("Please wait..."))
+                                    .Foreground(*wxWHITE)
+                                    .Background(*wxBLACK)
+                                    .Transparency(4*wxALPHA_OPAQUE/5));
+        #else
+            /* wxBusyInfoFlags was introduced in 3.1, fall back to uglier boxes on earlier versions */
+            wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
+        #endif
+        wxArrayString output;
+        wxArrayString errors;
+        command = strCompilerPath + wxT(DIRSEP_STR) + UploadTool + wxT(EXE_EXT);
+        command += wxT(" ") + path;
+        long result = wxExecute(command, output, errors, wxEXEC_SYNC);
+        delete disableAll;
+        delete info;
+        if (result < 0 || result >= 255) {
+            wxMessageBox(wxT("Transfer could not be started.\nPlease check the settings."),
+                         wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            return false;
+        }
+        success = (result == 0);
+        wxString msg = success ? wxT("Transferred to target device.") : wxT("Failure to transfer the script.");
+        int cnt = BuildLog->GetItemCount();
+        BuildLog->InsertItem(cnt + 1, msg);
+        wxStatusBar* bar = GetStatusBar();
+        SetStatusText(bar->GetStatusText(0) + wxT(". ") + msg);
+    } else {
+        command = strCompilerPath + wxT(DIRSEP_STR) wxT("pawndbg") wxT(EXE_EXT);
+        command += wxT(" ") + path;
+        command += wxT(" -term=off,");
+        command += debug_prefix;
+        command += wxT(" -rs232=") + DebugPort;
+        command += wxString::Format(wxT(",%ld"), DebugBaudrate);
+        command += wxT(" -transfer -quit");
+
+        ExecPID = wxExecute(command, wxEXEC_ASYNC, ExecProcess);
+        if (ExecPID <= 0) {
+            wxMessageBox(wxT("Pawn debugger could not be started.\nPlease check the settings."), 
+                         wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            delete ExecProcess;
+            return success;
+        }
+        PaneTab->SetSelection(TAB_OUTPUT);
+        Terminal->Enable(true);
+        Terminal->Clear();
+        ExecInputQueue.Clear();
+        DebugMode = true;
+        DebugRunning = true;
+        DebugHoldback = 0;
+        success = true;
+    }
+    return success;
 }
 
 bool QuincyFrame::RunCurrentScript(bool debug)
@@ -3630,6 +3685,16 @@ void QuincyFrame::OnTrimTrailing(wxCommandEvent& /* event */)
         StripTrailingSpaces(edit);
 }
 
+void QuincyFrame::OnDeviceTool(wxCommandEvent& /* event */)
+{
+    wxString command = strCompilerPath + wxT(DIRSEP_STR) + DeviceTool + wxT(EXE_EXT);
+    long pid = wxExecute(command, wxEXEC_ASYNC);
+    if (pid <= 0) {
+        wxMessageBox(wxT("Device configuration tool could not be started.\nPlease check the installation and configuration."),
+                     wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+    }
+}
+
 void QuincyFrame::OnSampleBrowser(wxCommandEvent& /* event */)
 {
     QuincySampleBrowser* dlg = new QuincySampleBrowser(this);
@@ -3652,11 +3717,11 @@ void QuincyFrame::OnAbout(wxCommandEvent& /* event */)
 
     wxAboutDialogInfo info;
     info.SetName(wxT("Pawn IDE"));
-    info.SetVersion(wxT("0.6.") wxT(SVN_REVSTR));
+    info.SetVersion(wxT("0.7.") wxT(SVNREV_STR));
     info.SetDescription(wxT("A tiny IDE for Pawn."));
-    info.SetCopyright(wxT("(C) 2009-2017 ITB CompuPhase"));
+    info.SetCopyright(wxT("(C) 2009-2024 CompuPhase"));
     info.SetIcon(icon);
-    info.SetWebSite(wxT("http://www.compuphase.com/pawn/"));
+    info.SetWebSite(wxT("https://www.compuphase.com/pawn/"));
     wxAboutBox(info);
 }
 
@@ -4399,14 +4464,10 @@ void QuincyFrame::OnUIFind(wxUpdateUIEvent& /* event */)
 void QuincyFrame::OnUIRun(wxUpdateUIEvent& /* event */)
 {
     bool enable_abort = ExecPID != 0 && wxProcess::Exists(ExecPID);
-    bool enable_run;
-    if (enable_abort && DebugMode && DebugRunning)
-        enable_run = !DebugRunning;
-    else
-        enable_run = RunTimeEnabled;
+    bool enable_run = (enable_abort && DebugMode) ? !DebugRunning : RunTimeEnabled;
     bool enable_transfer = !enable_abort
-                           && (DebuggerEnabled & DEBUG_REMOTE) != 0
-                           && DebuggerSelected == DEBUG_REMOTE;
+                           && (((DebuggerEnabled & DEBUG_REMOTE) != 0 && DebuggerSelected == DEBUG_REMOTE)
+                               || UploadTool.length() > 0);
     int newflags = UIDisabledTools;
     newflags = enable_abort ? newflags & ~UI_ABORT : newflags | UI_ABORT;
     newflags = enable_abort ? newflags & ~UI_RUN : newflags | UI_RUN;
@@ -4417,6 +4478,7 @@ void QuincyFrame::OnUIRun(wxUpdateUIEvent& /* event */)
             ToolBar->EnableTool(IDM_DEBUG, DebuggerEnabled != DEBUG_NONE);
             ToolBar->EnableTool(IDM_RUN, enable_run);
             ToolBar->EnableTool(IDM_ABORT, enable_abort);
+            ToolBar->EnableTool(IDM_DEVICETOOL, DeviceTool.length() > 0);
             ToolBar->Refresh(false);
         }
         if (menuBuild) {
@@ -4701,6 +4763,29 @@ void QuincyFrame::RebuildHelpMenu()
     }
 }
 
+void QuincyFrame::RebuildToolsMenu()
+{
+    if (menuTools) {
+        if (menuTools->FindItem(IDM_DEVICETOOL) != NULL) {
+            Disconnect(IDM_DEVICETOOL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnDeviceTool));
+            menuTools->Destroy(IDM_DEVICETOOL);
+            size_t pos = menuTools->GetMenuItemCount();
+            if (pos > 0) {
+                wxMenuItem* item = menuTools->FindItemByPosition(pos - 1);
+                if (item->GetKind() == wxITEM_SEPARATOR)
+                    menuTools->Destroy(item);
+            }
+        }
+    }
+
+    if (DeviceTool.length() > 0) {
+        wxBitmap tb_devicetool(tb_device_xpm);
+        menuTools->AppendSeparator();
+        AppendIconItem(menuTools, IDM_CONTEXTHELP, MENU_ENTRY(wxT("DeviceTool")), tb_devicetool);
+        Connect(IDM_DEVICETOOL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnDeviceTool));
+    }
+}
+
 void QuincyFrame::SetEditorsStyle(wxStyledTextCtrl *edit)
 {
     wxASSERT(edit);
@@ -4857,7 +4942,8 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
                     if (nestlevel == 0  && context.Length() > 0) {
                         wxASSERT(topline >= 0);
                         btmline = idx;
-                        WorkRanges.Add((long)topline | ((long)btmline << 16));
+                        if (WorkRanges.Count() == WorkNames.Count() - 1)
+                            WorkRanges.Add((long)topline | ((long)btmline << 16));  /* with unbalanced braces, parsing fails */
                         wxASSERT(WorkNames.Count() == WorkRanges.Count());
                         context = wxEmptyString;
                         topline = -1;
@@ -4928,7 +5014,7 @@ void ContextParse::ShowContext(int linenr)
                 newidx = idx;
         if (newidx != currentselection) {
             currentselection = newidx;
-            int newsel = (newidx >= 0) ? choicectrl->FindString(Names[newidx]) : wxNOT_FOUND;
+            int newsel = (newidx >= 0 && newidx < (int)Names.Count()) ? choicectrl->FindString(Names[newidx]) : wxNOT_FOUND;
             choicectrl->SetSelection(newsel);
         }
     }

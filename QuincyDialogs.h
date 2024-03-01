@@ -1,12 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Feb 14 2017)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
-// PLEASE DO "NOT" EDIT THIS FILE!
+// PLEASE DO *NOT* EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __QUINCYDIALOGS_H__
-#define __QUINCYDIALOGS_H__
+#pragma once
 
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
@@ -50,10 +49,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Class SettingsDlg
 ///////////////////////////////////////////////////////////////////////////////
-class SettingsDlg : public wxDialog 
+class SettingsDlg : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxNotebook* m_Notebook;
 		wxPanel* m_pBuild;
@@ -66,7 +65,7 @@ class SettingsDlg : public wxDialog
 		wxCheckBox* m_OverlayCode;
 		wxCheckBox* m_chkStandardAMXname;
 		wxCheckBox* m_chkVerbose;
-		wxCheckBox* m_chkCreateReport;
+		wxCheckBox* m_chkAutoTransfer;
 		wxStaticLine* m_staticline2;
 		wxStaticText* m_lblDefines;
 		wxTextCtrl* m_Defines;
@@ -130,14 +129,15 @@ class SettingsDlg : public wxDialog
 		wxCheckBox* m_StripTrailingWhitespace;
 		wxCheckBox* m_ModalFind;
 		wxCheckBox* m_LocalIniFile;
+		wxCheckBox* m_chkCreateReport;
 		wxCheckBox* m_UserPDFReader;
 		wxTextCtrl* m_UserReaderPath;
 		wxBitmapButton* m_UserReaderBrowse;
 		wxStdDialogButtonSizer* m_sdbSizer;
 		wxButton* m_sdbSizerOK;
 		wxButton* m_sdbSizerCancel;
-		
-		// Virtual event handlers, overide them in your derived class
+
+		// Virtual event handlers, override them in your derived class
 		virtual void OnTargetHost( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDebuggerLocal( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDebuggerRS232( wxCommandEvent& event ) { event.Skip(); }
@@ -147,22 +147,23 @@ class SettingsDlg : public wxDialog
 		virtual void OnUserReaderBrowse( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
-		
-	
+
+
 	public:
-		
-		SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE ); 
+
+		SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE );
+
 		~SettingsDlg();
-	
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class SearchDlg
 ///////////////////////////////////////////////////////////////////////////////
-class SearchDlg : public wxDialog 
+class SearchDlg : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxStaticText* lblSearchText;
 		wxComboBox* ctrlSearchText;
@@ -172,21 +173,22 @@ class SearchDlg : public wxDialog
 		wxCheckBox* chkRegEx;
 		wxButton* btnOK;
 		wxButton* btnCancel;
-	
+
 	public:
-		
-		SearchDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find..."), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE ); 
+
+		SearchDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find..."), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE );
+
 		~SearchDlg();
-	
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ReplaceDlg
 ///////////////////////////////////////////////////////////////////////////////
-class ReplaceDlg : public wxDialog 
+class ReplaceDlg : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxStaticText* lblSearchText;
 		wxComboBox* ctrlSearchText;
@@ -197,96 +199,99 @@ class ReplaceDlg : public wxDialog
 		wxCheckBox* chkRegEx;
 		wxButton* btnOK;
 		wxButton* btnCancel;
-	
+
 	public:
-		
-		ReplaceDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace..."), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE ); 
+
+		ReplaceDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace..."), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE );
+
 		~ReplaceDlg();
-	
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ReplacePrompt
 ///////////////////////////////////////////////////////////////////////////////
-class ReplacePrompt : public wxDialog 
+class ReplacePrompt : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxButton* btnYes;
 		wxButton* btnNo;
 		wxButton* btnLast;
 		wxButton* btnAll;
 		wxButton* btnQuit;
-		
-		// Virtual event handlers, overide them in your derived class
+
+		// Virtual event handlers, override them in your derived class
 		virtual void OnDialogKey( wxKeyEvent& event ) { event.Skip(); }
 		virtual void OnYes( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNo( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLast( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnYesToAll( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
-		
-	
+
+
 	public:
-		
-		ReplacePrompt( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace this occurrence"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxCLOSE_BOX ); 
+
+		ReplacePrompt( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace this occurrence"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxCLOSE_BOX );
+
 		~ReplacePrompt();
-	
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class CustomDirPicker
 ///////////////////////////////////////////////////////////////////////////////
-class CustomDirPicker : public wxDialog 
+class CustomDirPicker : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxStaticText* m_lblPicker;
 		wxDirPickerCtrl* m_dirPicker;
 		wxStdDialogButtonSizer* m_sdbSizerDirSelect;
 		wxButton* m_sdbSizerDirSelectOK;
 		wxButton* m_sdbSizerDirSelectCancel;
-		
-		// Virtual event handlers, overide them in your derived class
+
+		// Virtual event handlers, override them in your derived class
 		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
-		
-	
+
+
 	public:
-		
-		CustomDirPicker( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Select folder"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxRESIZE_BORDER ); 
+
+		CustomDirPicker( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Select folder"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxRESIZE_BORDER );
+
 		~CustomDirPicker();
-	
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class SampleBrowser
 ///////////////////////////////////////////////////////////////////////////////
-class SampleBrowser : public wxDialog 
+class SampleBrowser : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxListBox* m_listSamples;
 		wxHtmlWindow* m_htmlSample;
 		wxStdDialogButtonSizer* m_sdbSizerSamples;
 		wxButton* m_sdbSizerSamplesOK;
 		wxButton* m_sdbSizerSamplesCancel;
-		
-		// Virtual event handlers, overide them in your derived class
+
+		// Virtual event handlers, override them in your derived class
 		virtual void OnInitDialog( wxInitDialogEvent& event ) { event.Skip(); }
 		virtual void OnSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
-		
-	
+
+
 	public:
-		
-		SampleBrowser( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Samples"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ); 
+
+		SampleBrowser( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Samples"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+
 		~SampleBrowser();
-	
+
 };
 
-#endif //__QUINCYDIALOGS_H__

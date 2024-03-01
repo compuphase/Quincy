@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2017
+ *  Copyright CompuPhase, 2009-2024
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: wxquincy.rc 5504 2016-05-15 13:42:30Z  $
+ *  Version: $Id: wxquincy.rc 7108 2024-02-19 22:02:45Z thiadmer $
  */
 #include <windows.h>
 #include <winver.h>
@@ -29,13 +29,13 @@ AppIcon ICON "res/quincy.ico"
  */
 #define VERSION              4
 #define REVISION             0
-#define BUILD                SVN_REV
-#define VERSIONSTR           "4.0." SVN_REVSTR "\0"
+#define BUILD                SVNREV_NUM
+#define VERSIONSTR           "4.1." SVNREV_STR "\0"
 #define VERSIONNAME          "wxQuicy.exe\0"
 #define VERSIONDESCRIPTION   "Quincy for Pawn\0"
 #define VERSIONCOMPANYNAME   "CompuPhase\0"
 #define VERSIONPRODUCTNAME   "wxQuincy\0"
-#define VERSIONCOPYRIGHT     "Copyright \251 ITB CompuPhase 2009-2017\0"
+#define VERSIONCOPYRIGHT     "Copyright \251 ITB CompuPhase 2009-2024\0"
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION    VERSION, REVISION, BUILD, 0

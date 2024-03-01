@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright CompuPhase, 2009-2023
+ *  Copyright CompuPhase, 2009-2024
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.h 6967 2023-07-20 20:15:38Z thiadmer $
+ *  Version: $Id: QuincyFrame.h 7113 2024-02-25 21:29:31Z thiadmer $
  */
 #ifndef _QUINCYFRAME_H
 #define _QUINCYFRAME_H
@@ -92,6 +92,11 @@ private:
     int currentselection;
 };
 
+#define DEBUG_NONE      0
+#define DEBUG_LOCAL     0x01
+#define DEBUG_REMOTE    0x02
+#define DEBUG_BOTH      (DEBUG_LOCAL | DEBUG_REMOTE)
+
 class QuincyFrame : public wxFrame
 {
     friend class DragAndDropFile;
@@ -150,6 +155,7 @@ public:
     virtual void OnSpacesToTabs(wxCommandEvent& event);
     virtual void OnIndentsToTabs(wxCommandEvent& event);
     virtual void OnTrimTrailing(wxCommandEvent& event);
+    virtual void OnDeviceTool(wxCommandEvent& event);
     virtual void OnAbout(wxCommandEvent& event);
     virtual void OnHelp(wxCommandEvent& event);
     virtual void OnContextHelp(wxCommandEvent& event);
@@ -206,6 +212,9 @@ public:
     void SetDebuggerSelected(int option)            { DebuggerSelected = option; }
     bool GetDebugLogEnabled() const                 { return DebugLogEnabled; }
     void SetDebugLogEnabled(bool enable)            { DebugLogEnabled = enable; }
+    bool GetTransferEnabled() const                 { return (DebuggerEnabled & DEBUG_REMOTE) != 0 || UploadTool.length() > 0; }
+    bool GetAutoTransferEnabled() const             { return AutoTransfer && GetTransferEnabled(); }
+    void SetAutoTransferEnabled(bool option)        { AutoTransfer = option && GetTransferEnabled(); }
     int  GetOptimizationLevel() const               { return OptimizationLevel; }
     void SetOptimizationLevel(int level)            { OptimizationLevel = level; }
     bool GetOverlayEnabled() const                  { return OverlayEnabled; }
@@ -293,6 +302,7 @@ private:
     void PrepareSearchLog();
     void SpaceToTab(bool indent_only);
     bool CompileSource(const wxString& script);
+    bool TransferScript(const wxString& path);
     bool RunCurrentScript(bool debug = false);
     void HandleDebugResponse(const wxString& cmd);
     void SendDebugCommand(const wxString& cmd);
@@ -327,7 +337,10 @@ private:
     long DebugBaudrate;         /* baud rate for remote debugging */
     bool DebugLogEnabled;       /* whether data received over the serial line is logged to the output pane */
 
+    wxString strRecentAMXName;  /* most recently compiled script (or empty on failure to build) */
     wxString strFixedAMXName;   /* name of the fixed compiled script (or empty) */
+    wxString UploadTool;        /* program to use for transferring the AMX file to the target */
+    wxString DeviceTool;        /* device-specific configuration tool */
     int DefaultOptimize;        /* default optimization level, depending on the target host */
     int MaxOptimize;            /* maximum optimization level supported by the target host */
     int DefaultDebugLevel;      /* default debug level */
@@ -335,6 +348,7 @@ private:
     bool RunTimeEnabled;        /* whether the run-time is enabled */
     int DebuggerEnabled;        /* whether the debugger is enabled, for local and/or remote debugging */
     int DebuggerSelected;       /* either local or remote (but never both) */
+    bool AutoTransfer;          /* whether automatic transfer after build is selected */
     long ExecPID;               /* process ID of running program/debugger */
     wxProcess *ExecProcess;     /* I/O redirection */
     wxString ExecInputQueue;    /* queue with text typed in the console pane */
@@ -371,6 +385,7 @@ private:
     std::map<wxString, wxString> InfoTipList;
     bool ReadInfoTips();
     void RebuildHelpMenu();
+    void RebuildToolsMenu();
     wxString LookUpInfoTip(const wxString& keyword, int flags);
 
     CHelpIndex* HelpIndex;
@@ -397,11 +412,6 @@ public:
 private:
     const CSymbolEntry* m_symbol;
 };
-
-#define DEBUG_NONE      0
-#define DEBUG_LOCAL     0x01
-#define DEBUG_REMOTE    0x02
-#define DEBUG_BOTH      (DEBUG_LOCAL | DEBUG_REMOTE)
 
 #define TIP_FUNCTION    0x01
 #define TIP_VARIABLE    0x02
@@ -462,6 +472,7 @@ enum {
     IDM_SPACESTOTABS,
     IDM_INDENTSTOTABS,
     IDM_TRIMTRAILING,
+    IDM_DEVICETOOL,
     IDM_CONTEXTHELP,
     IDM_SELECTCONTEXT,
     IDM_SAMPLEBROWSER,

@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: wxQuincy.h 5689 2017-06-05 14:05:58Z thiadmer $
+ *  Version: $Id: wxQuincy.h 7108 2024-02-19 22:02:45Z thiadmer $
  */
 #ifndef _QUINCY_H
 #define _QUINCY_H
@@ -83,7 +83,7 @@ public:
     bool GetReaderPathValid() const     { return UserPDFReaderActive; }
     void SetReaderPathValid(bool valid) { UserPDFReaderActive = valid; }
 
-    wxString GetUpdateURL() const       { return (UpdateURL.Length() != 0) ? UpdateURL : (const wxString)wxT("http://www.compuphase.com/update/"); }
+    wxString GetUpdateURL() const       { return (UpdateURL.Length() != 0) ? UpdateURL : (const wxString)wxT("https://www.compuphase.com/update/"); }
 
     wxString GetRootPath() const        { return RootPath; }
     wxString GetBinPath() const         { return BinPath; }

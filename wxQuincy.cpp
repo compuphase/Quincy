@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: wxQuincy.cpp 6131 2020-04-29 19:47:15Z thiadmer $
+ *  Version: $Id: wxQuincy.cpp 7113 2024-02-25 21:29:31Z thiadmer $
  */
 #include "wxQuincy.h"
 #include "QuincyFrame.h"
@@ -122,6 +122,7 @@ bool QuincyApp::OnInit()
     Shortcuts.Add(wxT("IndentToTab"), wxT("Spaces to Tabs (indent only)"), wxEmptyString, wxT("Whitespace"));
     Shortcuts.Add(wxT("SpaceToTab"), wxT("Spaces to Tabs (all)"), wxEmptyString, wxT("Whitespace"));
     Shortcuts.Add(wxT("TrimTrailing"), wxT("Trim trailing whitespace"), wxEmptyString, wxT("Whitespace"));
+    Shortcuts.Add(wxT("DeviceTool"), wxT("Configure Device"), wxEmptyString, wxT("Tools"));
     Shortcuts.Add(wxT("GeneralHelp"), wxT("&IDE User Guide"), wxT("Shift+F1"), wxT("Help"));
     Shortcuts.Add(wxT("ContextHelp"), wxT("Context help"), wxT("F1"), wxT("Help"));
 

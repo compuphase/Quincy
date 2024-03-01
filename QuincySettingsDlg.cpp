@@ -1,6 +1,6 @@
 /*  Quincy IDE for the Pawn scripting language
  *
- *  Copyright ITB CompuPhase, 2009-2017
+ *  Copyright CompuPhase, 2009-2024
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  use this file except in compliance with the License. You may obtain a copy
@@ -9,12 +9,12 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *  distributed under the License is distributed on an "AS IS" basis, WITHOUT
  *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincySettingsDlg.cpp 5689 2017-06-05 14:05:58Z thiadmer $
+ *  Version: $Id: QuincySettingsDlg.cpp 7113 2024-02-25 21:29:31Z thiadmer $
  */
 #include <wx/busyinfo.h>
 #include <wx/sstream.h>
@@ -89,6 +89,7 @@ void QuincySettingsDlg::OnTargetHost(wxCommandEvent& /* event */)
             wxFileSystem fs;
             wxArrayString targets;
             wxString path = theApp->GetUpdateURL() + wxT("quincy_targets.txt");
+            //??? wxWebRequest 
             wxFSFile* file = fs.OpenFile(path);
             if (file) {
                 wxInputStream *in = file->GetStream();
@@ -248,7 +249,14 @@ void QuincySettingsDlg::OnTargetHost(wxCommandEvent& /* event */)
 
     /* may also need to enable/disable local/remote debugger options */
     m_optDebugLocal->Enable(Parent->GetDebuggerEnabled(DEBUG_LOCAL));
+    if (!Parent->GetDebuggerEnabled(DEBUG_LOCAL))
+        m_optDebugLocal->SetValue(false);
     m_optDebugRS232->Enable(Parent->GetDebuggerEnabled(DEBUG_REMOTE));
+    if (!Parent->GetDebuggerEnabled(DEBUG_REMOTE))
+        m_optDebugRS232->SetValue(false);
+    m_chkAutoTransfer->Enable(Parent->GetTransferEnabled());
+    if (!Parent->GetTransferEnabled())
+        m_chkAutoTransfer->SetValue(false);
 }
 
 void QuincySettingsDlg::OnDebuggerLocal(wxCommandEvent& /* event */)
@@ -343,6 +351,8 @@ void QuincySettingsDlg::InitData()
     m_chkStandardAMXname->SetValue(Parent->HasFixedAMXName());
     m_chkStandardAMXname->Enable(Parent->GetFixedAMXName().length() > 0);
     m_chkVerbose->SetValue(Parent->GetVerboseBuild());
+    m_chkAutoTransfer->Enable(Parent->GetTransferEnabled());
+    m_chkAutoTransfer->SetValue(Parent->GetAutoTransferEnabled());
     m_chkCreateReport->SetValue(Parent->GetCreateReport());
     m_Defines->SetValue(Parent->GetDefineString());
     m_IncludePath->SetValue(Parent->GetIncludePath());
@@ -369,8 +379,8 @@ void QuincySettingsDlg::InitData()
     m_clrNumbers->SetColour(theApp->EditColours[CLR_NUMBERS]);
     m_clrPreprocessor->SetColour(theApp->EditColours[CLR_PREPROCESSOR]);
 
-    m_optDebugLocal->SetValue(Parent->GetDebuggerSelected() == DEBUG_LOCAL);
-    m_optDebugRS232->SetValue(Parent->GetDebuggerSelected() == DEBUG_REMOTE);
+    m_optDebugLocal->SetValue(Parent->GetDebuggerSelected() == DEBUG_LOCAL && Parent->GetDebuggerEnabled(DEBUG_LOCAL));
+    m_optDebugRS232->SetValue(Parent->GetDebuggerSelected() == DEBUG_REMOTE && Parent->GetDebuggerEnabled(DEBUG_REMOTE));
     m_optDebugLocal->Enable(Parent->GetDebuggerEnabled(DEBUG_LOCAL));
     m_optDebugRS232->Enable(Parent->GetDebuggerEnabled(DEBUG_REMOTE));
     wxArrayString portlist = EnumeratePortsList();
@@ -434,6 +444,7 @@ void QuincySettingsDlg::CopyData()
     Parent->SetOverlayCode(m_OverlayCode->GetValue());
     Parent->SetFixedAMXName(m_chkStandardAMXname->GetValue());
     Parent->SetVerboseBuild(m_chkVerbose->GetValue());
+    Parent->SetAutoTransferEnabled(m_chkAutoTransfer->GetValue());
     Parent->SetCreateReport(m_chkCreateReport->GetValue());
     Parent->SetDefineString(m_Defines->GetValue());
     Parent->SetIncludePath(m_IncludePath->GetValue());
