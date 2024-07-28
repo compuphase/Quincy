@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincySettingsDlg.h 5689 2017-06-05 14:05:58Z thiadmer $
+ *  Version: $Id: QuincySettingsDlg.h 7151 2024-03-23 16:08:18Z thiadmer $
  */
 #ifndef _QUINCYSETTINGSDLG_H
 #define _QUINCYSETTINGSDLG_H
@@ -48,6 +48,8 @@ private:
     bool NeedRestart;
 
     void CollectTargetHosts();
+    bool DownloadFile(const wxString& url, wxArrayString &contents, wxString& errormsg);
+    bool DownloadFile(const wxString& url, const wxString &path, wxString& errormsg);
 };
 
 #endif /* _QUINCYSETTINGSDLG_H */

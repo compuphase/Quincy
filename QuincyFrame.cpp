@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.cpp 7113 2024-02-25 21:29:31Z thiadmer $
+ *  Version: $Id: QuincyFrame.cpp 7203 2024-07-28 14:58:29Z thiadmer $
  */
 #define _CRT_SECURE_NO_DEPRECATE
 #include "wxQuincy.h"
@@ -450,10 +450,10 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     BrowserTree->SetFont(font);
     BrowserTree->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler(QuincyFrame::OnSymbolSelect), NULL, this);
     PaneTab->AddPage(BrowserTree, wxT("Symbols"), false); /* TAB_SYMBOLS */
-    WatchLog = new wxListView(PaneTab, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_NO_HEADER | wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_EDIT_LABELS);
+    WatchLog = new wxListView(PaneTab, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_EDIT_LABELS);
     WatchLog->SetFont(font);
-    WatchLog->InsertColumn(0, wxEmptyString);
-    WatchLog->InsertColumn(1, wxEmptyString);
+    WatchLog->InsertColumn(0, wxT("Symbol"));
+    WatchLog->InsertColumn(1, wxT("Value"));
     WatchLog->Connect(wxEVT_COMMAND_LIST_END_LABEL_EDIT, wxListEventHandler(QuincyFrame::OnWatchEdited), NULL, this);
     WatchLog->Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler(QuincyFrame::OnWatchActivated), NULL, this);
     WatchLog->Connect(wxEVT_COMMAND_LIST_DELETE_ITEM, wxListEventHandler(QuincyFrame::OnWatchDelete), NULL, this);
@@ -793,19 +793,19 @@ bool QuincyFrame::AddEditor(const wxString &name)
     edit->AutoCompSetChooseSingle(true);
     edit->AutoCompSetSeparator(wxT('|'));
     /* make sure special keys are not not handled by scintilla */
-    edit->CmdKeyClear(wxT('['), wxSTC_SCMOD_CTRL);  /* CmdKeyClear blocks the key from propagating */
-    edit->CmdKeyClear(wxT(']'), wxSTC_SCMOD_CTRL);
+    edit->CmdKeyClear(wxT('['), wxSTC_KEYMOD_CTRL);  /* CmdKeyClear blocks the key from propagating */
+    edit->CmdKeyClear(wxT(']'), wxSTC_KEYMOD_CTRL);
     for (int i = 0; i < theApp->Shortcuts.Count(); i++) {
         KbdShortcut* shortcut = theApp->Shortcuts.GetItem(i);
         wxAcceleratorEntry entry;
         if (entry.FromString(shortcut->GetShortcut())) {
-            int flags = wxSTC_SCMOD_NORM;   /* wxWidgets flags and Scintilla flags are not the same */
+            int flags = wxSTC_KEYMOD_NORM;   /* wxWidgets flags and Scintilla flags are not the same */
             if (entry.GetFlags() &  wxACCEL_SHIFT)
-                flags |= wxSTC_SCMOD_SHIFT;
+                flags |= wxSTC_KEYMOD_SHIFT;
             if (entry.GetFlags() &  wxACCEL_CTRL)
-                flags |= wxSTC_SCMOD_CTRL;
+                flags |= wxSTC_KEYMOD_CTRL;
             if (entry.GetFlags() &  wxACCEL_ALT)
-                flags |= wxSTC_SCMOD_ALT;
+                flags |= wxSTC_KEYMOD_ALT;
             edit->CmdKeyAssign(entry.GetKeyCode(), flags, 0);   /* propagate to parent window */
         }
     }
@@ -2932,7 +2932,11 @@ void QuincyFrame::OnIdle(wxIdleEvent& event)
                     }
                 }
             }
-            Terminal->AppendText(text);
+            if (!text.IsEmpty()) {
+                Terminal->AppendText(text);
+                if (PaneTab->GetSelection() != TAB_OUTPUT)
+                    PaneTab->SetSelection(TAB_OUTPUT);  /* make sure "output" window is visible */
+            }
         }
 
         if (DebugRunning) {
@@ -2967,7 +2971,11 @@ void QuincyFrame::OnTerminateApp(wxProcessEvent& /* event */)
             if (ch != EOF)
                 text += ch;
         }
-        Terminal->AppendText(text);
+        if (!text.IsEmpty()) {
+            Terminal->AppendText(text);
+            if (PaneTab->GetSelection() != TAB_OUTPUT)
+                PaneTab->SetSelection(TAB_OUTPUT);  /* make sure "output" window is visible */
+        }
     }
     /* keep the control enabled, so user can still scroll */
 }
@@ -3497,13 +3505,15 @@ void QuincyFrame::SendWatchList()
     wxASSERT(WatchUpdateList.Count() > 0);
     long line = WatchUpdateList[0];
     WatchUpdateList.RemoveAt(0);    /* do not update again */
-    wxString name = WatchLog->GetItemText(line);
-    wxString cmd;
-    if (name.length() > 0)
-        cmd = wxString::Format(wxT("w %d "), line + 1) + name;
-    else
-        cmd = wxString::Format(wxT("cw %d"), line + 1);
-    SendDebugCommand(cmd);
+    if (line < WatchLog->GetItemCount()) {
+        wxString name = WatchLog->GetItemText(line);
+        wxString cmd;
+        if (name.length() > 0)
+            cmd = wxString::Format(wxT("w %d "), line + 1) + name;
+        else
+            cmd = wxString::Format(wxT("cw %d"), line + 1);
+        SendDebugCommand(cmd);
+    }
 }
 
 void QuincyFrame::BuildBreakpointList()
@@ -4635,7 +4645,7 @@ bool QuincyFrame::ReadInfoTips()
                 }
                 keyword = line.Mid(skip, namelength - skip);
                 /* reformat the line somewhat */
-                if (line[namelength] == wxT('(')) {
+                if (line.length() > (size_t)namelength && line[namelength] == wxT('(')) {
                     int closing = line.Mid(namelength).Find(')');
                     if (closing > 0)
                         namelength += closing + 1;

@@ -14,12 +14,13 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincySettingsDlg.cpp 7113 2024-02-25 21:29:31Z thiadmer $
+ *  Version: $Id: QuincySettingsDlg.cpp 7151 2024-03-23 16:08:18Z thiadmer $
  */
 #include <wx/busyinfo.h>
 #include <wx/sstream.h>
 #include <wx/url.h>
 #include <wx/variant.h>
+#include <wx/webrequest.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include "wxQuincy.h"
@@ -65,93 +66,43 @@ void QuincySettingsDlg::OnTargetHost(wxCommandEvent& /* event */)
         }
         wxFileName tgtdir = wxFileName::DirName(dir, wxPATH_NATIVE);
         if (!tgtdir.IsOk() || !tgtdir.DirExists() || !tgtdir.IsDirWritable()) {
-            wxMessageBox(wxT("No access rights to install new target hosts in\n")
-                         wxT("the installation directory.\n")
-                         wxT("Run the Pawn IDE as administrator (root).\n"),
-                         wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("No access rights to install new target hosts in\n"
+                         "the installation directory.\n"
+                         "Run the Pawn IDE as administrator (root).\n",
+                         "Pawn IDE", wxOK | wxICON_ERROR);
             host = wxEmptyString;
             m_TargetHost->SetSelection(0);
         } else {
-            #if wxCHECK_VERSION(3, 1, 0)
-                wxBusyInfo *info = new wxBusyInfo(
-                                    wxBusyInfoFlags()
-                                        .Parent(this)
-                                        .Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
-                                        .Title(wxT("<b>Collecting supported targets</b>"))
-                                        .Text(wxT("Please wait..."))
-                                        .Foreground(*wxWHITE)
-                                        .Background(*wxBLACK)
-                                        .Transparency(4*wxALPHA_OPAQUE/5));
-            #else
-                /* wxBusyInfoFlags was introduced in 3.1, fall back to uglier boxes on earlier versions */
-                wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
-            #endif
-            wxFileSystem fs;
+            wxString url = theApp->GetUpdateURL() + "quincy_targets.txt";
             wxArrayString targets;
-            wxString path = theApp->GetUpdateURL() + wxT("quincy_targets.txt");
-            //??? wxWebRequest 
-            wxFSFile* file = fs.OpenFile(path);
-            if (file) {
-                wxInputStream *in = file->GetStream();
-                if (in && in->IsOk()) {
-                    wxString htmldata;
-                    wxStringOutputStream html_stream(&htmldata);
-                    in->Read(html_stream);
-                    while (htmldata.Length() > 0) {
-                        wxString line = htmldata.BeforeFirst(wxT('\n'));
-                        line.Trim();
-                        targets.Add(line);
-                        htmldata = htmldata.AfterFirst(wxT('\n'));
-                    }
-                    delete in;
-                }
-            }
-            delete info;
-            if (targets.Count() == 0) {
-                wxMessageBox(wxT("No targets found on server ") + theApp->GetUpdateURL() + wxT("\nPlease check your internet connection."),
-                             wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxString errormsg;
+            bool result = DownloadFile(url, targets, errormsg);
+            if (!result) {
+                wxMessageBox("Download failed: " + errormsg, "Pawn IDE", wxOK | wxICON_ERROR);
+                host = wxEmptyString;
+                m_TargetHost->SetSelection(0);
+            } else if (targets.Count() == 0) {
+                wxMessageBox("No targets found on server " + theApp->GetUpdateURL() + ".",
+                             "Pawn IDE", wxOK | wxICON_ERROR);
                 host = wxEmptyString;
                 m_TargetHost->SetSelection(0);
             } else {
-                wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, wxT("Select the target host to download and install."), wxT("Select target host"), targets);
+                wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, "Select the target host to download and install.", "Select target host", targets);
                 if (dlg->ShowModal() != wxID_OK) {
                     host = wxEmptyString;
                     m_TargetHost->SetSelection(0);
+                    errormsg = "Installation of a new target host was canceled.";
                 } else {
                     /* get the host name before showing the new busy box */
                     int idx = dlg->GetSelection();
                     host = targets[idx];
-                    host = host.BeforeFirst(wxT('\t'));
-                    host = host.BeforeFirst(wxT(' '));
-                    #if wxCHECK_VERSION(3, 1, 0)
-                        wxBusyInfo *info = new wxBusyInfo(
-                                            wxBusyInfoFlags()
-                                                .Parent(this)
-                                                .Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
-                                                .Title(wxT("<b>Installing ") + host + wxT("</b>"))
-                                                .Text(wxT("Please wait..."))
-                                                .Foreground(*wxWHITE)
-                                                .Background(*wxBLACK)
-                                                .Transparency(4*wxALPHA_OPAQUE/5));
-                    #else
-                        /* wxBusyInfoFlags was introduced in 3.1, fall back to uglier boxes on earlier versions */
-                        wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
-                    #endif
-                    /* download the target host file */
-                    path = path.BeforeLast(wxT('/')) + wxT("/") + host + wxT(".zip");   /* assume that if the index file is redirected, the host files are too */
-                    file = fs.OpenFile(path);
-                    path = theApp->GetUserDataPath() + wxT(DIRSEP_STR) + host + wxT(".zip");
-                    if (file) {
-                        wxInputStream *in = file->GetStream();
-                        if (in && in->IsOk()) {
-                            wxRemoveFile(path); /* delete it, because otherwise the download may fail */
-                            wxFileOutputStream bin_stream(path);
-                            in->Read(bin_stream);
-                            delete in;
-                        }
-                    }
+                    host = host.BeforeFirst('\t');
+                    host = host.Trim();
+                    url = theApp->GetUpdateURL() + host + ".zip";
+                    wxString path = theApp->GetUserDataPath() + DIRSEP_STR + host + ".zip";
+                    DownloadFile(url, path, errormsg);
                     /* make/check the directory structure */
-                    wxString docdir = theApp->GetDocPath() + wxT(DIRSEP_STR) + host;
+                    wxString docdir = theApp->GetDocPath() + DIRSEP_STR + host;
                     if (!wxDirExists(docdir)) {
                         #if defined _MSC_VER && wxMAJOR_VERSION < 3
                             wxMkDir(docdir);
@@ -159,7 +110,7 @@ void QuincySettingsDlg::OnTargetHost(wxCommandEvent& /* event */)
                             wxMkDir(docdir.utf8_str(), 0777);
                         #endif
                     }
-                    wxString sampledir = theApp->GetExamplesPath() + wxT(DIRSEP_STR) + host;
+                    wxString sampledir = theApp->GetExamplesPath() + DIRSEP_STR + host;
                     if (!wxDirExists(sampledir)) {
                         #if defined _MSC_VER && wxMAJOR_VERSION < 3
                             wxMkDir(sampledir);
@@ -171,8 +122,8 @@ void QuincySettingsDlg::OnTargetHost(wxCommandEvent& /* event */)
                        this routine; also create a string with the path to the
                        system include files */
                     wxString incdir = Parent->GetTargetPath();
-                    wxASSERT(incdir.AfterLast(DIRSEP_CHAR).Cmp(wxT("target")) == 0);
-                    incdir = incdir.BeforeLast(DIRSEP_CHAR) + wxT(DIRSEP_STR) wxT("include") wxT(DIRSEP_STR) + host;
+                    wxASSERT(incdir.AfterLast(DIRSEP_CHAR).Cmp("target") == 0);
+                    incdir = incdir.BeforeLast(DIRSEP_CHAR) + DIRSEP_STR "include" DIRSEP_STR + host;
                     if (!wxDirExists(incdir)) {
                         #if defined _MSC_VER && wxMAJOR_VERSION < 3
                             wxMkDir(incdir);
@@ -192,35 +143,54 @@ void QuincySettingsDlg::OnTargetHost(wxCommandEvent& /* event */)
                                     /* since the files need not be stored to the
                                        same root location, we strip the paths and
                                        select the correct one */
-                                    wchar_t DirSep = wxT('/');                  /* ZIP spec. uses slash... */
+                                    wchar_t DirSep = '/';                  /* ZIP spec. uses slash... */
                                     dir = entry->GetName().BeforeFirst(DirSep);
-                                    if (dir.Find(wxT('\\')) != wxNOT_FOUND) {   /* ...but some implementations differ */
-                                        DirSep = wxT('\\');
+                                    if (dir.Find('\\') != wxNOT_FOUND) {   /* ...but some implementations differ */
+                                        DirSep = '\\';
                                         dir = entry->GetName().BeforeFirst(DirSep);
                                     }
-                                    if (dir.CmpNoCase(wxT("target")) == 0)
+                                    bool skip = false;
+                                    if (dir.CmpNoCase("target") == 0) {
                                         dir = Parent->GetTargetPath();
-                                    else if (dir.CmpNoCase(wxT("include")) == 0)
+                                    } else if (dir.CmpNoCase("bin_windows") == 0) {
+                                        dir = theApp->GetBinPath();
+                                        #if !defined _MSC_VER
+                                            skip = true;
+                                        #endif
+                                    } else if (dir.CmpNoCase("bin_linux") == 0) {
+                                        dir = theApp->GetBinPath();
+                                        #if !defined __linux__
+                                            skip = true;
+                                        #endif
+                                    } else if (dir.CmpNoCase("include") == 0) {
                                         dir = incdir;
-                                    else if (dir.CmpNoCase(wxT("doc")) == 0)
+                                    } else if (dir.CmpNoCase("doc") == 0) {
                                         dir = docdir;
-                                    else if (dir.CmpNoCase(wxT("examples")) == 0)
+                                    } else if (dir.CmpNoCase("examples") == 0) {
                                         dir = sampledir;
-                                    wxString name = dir + wxT(DIRSEP_STR) + entry->GetName().AfterLast(DirSep);
-                                    wxFileOutputStream file(name);
-                                    if (file.IsOk())
-                                        zip.Read(file);
+                                    }
+                                    if (!skip) {
+                                        wxString name = dir + DIRSEP_STR + entry->GetName().AfterLast(DirSep);
+                                        wxFileOutputStream file(name);
+                                        if (file.IsOk())
+                                            zip.Read(file);
+                                    }
                                 }
                             }
                         }
                     }
-                    delete info;
                 } /* if (wxChoiceDialog() confirmed) */
                 /* check whether the main configuration file exists */
-                path = Parent->GetTargetPath() + wxT(DIRSEP_STR) + host + wxT(".cfg");
+                wxString path = Parent->GetTargetPath() + DIRSEP_STR + host + ".cfg";
                 if (!wxFileExists(path)) {
-                    wxMessageBox(wxT("Failed to install the target host ") + host + wxT("\nPlease check that you have the correct permissions."),
-                                 wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+                    if (errormsg.length() == 0) {
+                        /* set a general error message */
+                        if (host.length() > 0)
+                            errormsg = "Failed to install the target host " + host + ".\nPlease check that you have the correct permissions.";
+                        else
+                            errormsg = "General failure in installing a target host.\nPlease check the installation.";
+                    }
+                    wxMessageBox(errormsg, "Pawn IDE", wxOK | wxICON_ERROR);
                     host = wxEmptyString;
                     m_TargetHost->SetSelection(0);
                 } else {
@@ -335,6 +305,110 @@ void QuincySettingsDlg::CollectTargetHosts()
     for (size_t idx = 0; idx < list.Count(); idx++)
         m_TargetHost->Append(list[idx]);
     m_TargetHost->Append(wxT("(install target)"));
+}
+
+bool QuincySettingsDlg::DownloadFile(const wxString& url, wxArrayString &contents, wxString& errormsg)
+{
+    #if wxCHECK_VERSION(3, 1, 0)
+        wxBusyInfo *info = new wxBusyInfo(
+                            wxBusyInfoFlags()
+                                .Parent(this)
+                                .Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
+                                .Title(wxT("<b>Collecting supported targets</b>"))
+                                .Text(wxT("Please wait..."))
+                                .Foreground(*wxWHITE)
+                                .Background(*wxBLACK)
+                                .Transparency(4*wxALPHA_OPAQUE/5));
+    #else
+        /* wxBusyInfoFlags was introduced in 3.1, fall back to uglier boxes on earlier versions */
+        wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
+    #endif
+    errormsg="";
+    wxWebRequest request = wxWebSession::GetDefault().CreateRequest(this, url);
+    if (request.IsOk()) {
+        volatile bool in_request = true;
+        request.SetStorage(wxWebRequest::Storage_Memory);
+        Bind(wxEVT_WEBREQUEST_STATE, [&contents,&errormsg,&in_request](wxWebRequestEvent& evt) {
+            switch (evt.GetState()) {
+            case wxWebRequest::State_Completed: {   // Request completed
+                wxString htmldata = evt.GetResponse().AsString();
+                while (htmldata.Length() > 0) {
+                    wxString line = htmldata.BeforeFirst('\n');
+                    line.Trim();
+                    contents.Add(line);
+                    htmldata = htmldata.AfterFirst('\n');
+                }
+                in_request = false;
+                break;
+            }
+            case wxWebRequest::State_Failed:        // Request failed
+                errormsg = evt.GetErrorDescription();
+                in_request = false;
+                break;
+            }
+
+        });
+        request.Start();
+        while (in_request)
+            wxYield();
+    } else {
+        errormsg = "Connection failed";
+    }
+    delete info;
+    return (errormsg.length() == 0);
+}
+
+bool QuincySettingsDlg::DownloadFile(const wxString& url, const wxString &path, wxString& errormsg)
+{
+    wxString host = url.AfterLast('/');
+    host = host.BeforeLast('.');
+    #if wxCHECK_VERSION(3, 1, 0)
+        wxBusyInfo *info = new wxBusyInfo(
+                            wxBusyInfoFlags()
+                                .Parent(this)
+                                .Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
+                                .Title("<b>Downloading " + host + "</b>")
+                                .Text("Please wait...")
+                                .Foreground(*wxWHITE)
+                                .Background(*wxBLACK)
+                                .Transparency(4*wxALPHA_OPAQUE/5));
+    #else
+        /* wxBusyInfoFlags was introduced in 3.1, fall back to uglier boxes on earlier versions */
+        wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
+    #endif
+    errormsg="";
+    wxWebRequest request = wxWebSession::GetDefault().CreateRequest(this, url);
+    if (request.IsOk()) {
+        volatile bool in_request = true;
+        request.SetStorage(wxWebRequest::Storage_Memory);   /* target files are fairly small */
+        Bind(wxEVT_WEBREQUEST_STATE, [path,&errormsg,&in_request](wxWebRequestEvent& evt) {
+            switch (evt.GetState()) {
+            case wxWebRequest::State_Completed: {   // Request completed
+                wxInputStream* input = evt.GetResponse().GetStream();
+                if (input && input->IsOk()) {
+                    wxRemoveFile(path); /* delete it, because otherwise the download may fail */
+                    wxFileOutputStream target(path);
+                    input->Read(target);
+                    delete input;
+                }
+                in_request = false;
+                break;
+            }
+            case wxWebRequest::State_Failed:        // Request failed
+                errormsg = evt.GetErrorDescription();
+                in_request = false;
+                break;
+            }
+
+        });
+        request.Start();
+        while (in_request)
+            wxYield();
+    } else {
+        errormsg = "Connection failed";
+    }
+    delete info;
+    return (errormsg.length() == 0);
 }
 
 void QuincySettingsDlg::InitData()

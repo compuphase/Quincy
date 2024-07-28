@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: SymbolBrowser.h 5689 2017-06-05 14:05:58Z thiadmer $
+ *  Version: $Id: SymbolBrowser.h 5691 2017-06-09 19:48:22Z thiadmer $
  */
 #ifndef _SYMBOLBROWSER_H
 #define _SYMBOLBROWSER_H

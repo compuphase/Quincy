@@ -3,7 +3,7 @@
  * For the Microsoft Windows part: see http://www.codeproject.com/system/serial_portsenum_fifo.asp
  * For the Linux part: see the source code of setserial.
  *
- * Partial copyright 2006-2016 CompuPhase
+ * Partial copyright 2006-2024 CompuPhase
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy
@@ -17,11 +17,13 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  *
- * $Id: portscan.cpp 5504 2016-05-15 13:42:30Z  $
+ * $Id: portscan.cpp 7151 2024-03-23 16:08:18Z thiadmer $
  */
 
 #if defined __WIN32__ || defined _WIN32 || defined WIN32
   #define _CRT_SECURE_NO_WARNINGS
+  #define _WINSOCK2API_       /* avoid double-loading WinSock2 */
+  #define _WINSOCKAPI_
   #include <windows.h>
   #include <tchar.h>
 #endif
