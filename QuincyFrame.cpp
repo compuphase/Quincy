@@ -14,7 +14,7 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  *
- *  Version: $Id: QuincyFrame.cpp 7203 2024-07-28 14:58:29Z thiadmer $
+ *  Version: $Id: QuincyFrame.cpp 7205 2024-08-02 18:38:54Z thiadmer $
  */
 #define _CRT_SECURE_NO_DEPRECATE
 #include "wxQuincy.h"
@@ -183,95 +183,95 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     #define MENU_ENTRY(label)   theApp->Shortcuts.FormatShortCut(label, true)
     menuBar = new wxMenuBar;
     menuFile = new wxMenu;
-    AppendIconItem(menuFile, wxID_NEW, MENU_ENTRY(wxT("New")), tb_new);
-    AppendIconItem(menuFile, wxID_OPEN, MENU_ENTRY(wxT("Open")), tb_open);
-    AppendIconItem(menuFile, wxID_SAVE, MENU_ENTRY(wxT("Save")), tb_save);
-    AppendIconItem(menuFile, wxID_SAVEAS, MENU_ENTRY(wxT("SaveAs")), tb_saveas);
-    AppendIconItem(menuFile, IDM_SAVEALL, MENU_ENTRY(wxT("SaveAll")), tb_saveall);
-    AppendIconItem(menuFile, wxID_CLOSE, MENU_ENTRY(wxT("Close")), tb_close);
+    AppendIconItem(menuFile, wxID_NEW, MENU_ENTRY("New"), tb_new);
+    AppendIconItem(menuFile, wxID_OPEN, MENU_ENTRY("Open"), tb_open);
+    AppendIconItem(menuFile, wxID_SAVE, MENU_ENTRY("Save"), tb_save);
+    AppendIconItem(menuFile, wxID_SAVEAS, MENU_ENTRY("SaveAs"), tb_saveas);
+    AppendIconItem(menuFile, IDM_SAVEALL, MENU_ENTRY("SaveAll"), tb_saveall);
+    AppendIconItem(menuFile, wxID_CLOSE, MENU_ENTRY("Close"), tb_close);
     menuFile->AppendSeparator();
-    menuFile->Append(IDM_LOADWORKSPACE, MENU_ENTRY(wxT("OpenWorkspace")));
-    menuFile->Append(IDM_SAVEWORKSPACE, MENU_ENTRY(wxT("SaveWorkspace")));
-    menuFile->Append(IDM_CLOSEWORKSPACE, MENU_ENTRY(wxT("CloseWorkspace")));
+    menuFile->Append(IDM_LOADWORKSPACE, MENU_ENTRY("OpenWorkspace"));
+    menuFile->Append(IDM_SAVEWORKSPACE, MENU_ENTRY("SaveWorkspace"));
+    menuFile->Append(IDM_CLOSEWORKSPACE, MENU_ENTRY("CloseWorkspace"));
     menuFile->AppendSeparator();
-    AppendIconItem(menuFile, wxID_PRINT, MENU_ENTRY(wxT("Print")), tb_print);
+    AppendIconItem(menuFile, wxID_PRINT, MENU_ENTRY("Print"), tb_print);
     menuFile->AppendSeparator();
     menuRecentFiles = new wxMenu;   /* the "recent files/workspaces" menus are filled later */
     menuRecentWorkspaces = new wxMenu;
-    menuFile->Append(-1, wxT("Recent files"), menuRecentFiles);
-    menuFile->Append(-1, wxT("Recent workspaces"), menuRecentWorkspaces);
+    menuFile->Append(-1, "Recent files", menuRecentFiles);
+    menuFile->Append(-1, "Recent workspaces", menuRecentWorkspaces);
     menuFile->AppendSeparator();
-    AppendIconItem(menuFile, wxID_EXIT, MENU_ENTRY(wxT("Quit")), tb_quit);
-    menuBar->Append(menuFile, wxT("&File"));
+    AppendIconItem(menuFile, wxID_EXIT, MENU_ENTRY("Quit"), tb_quit);
+    menuBar->Append(menuFile, "&File");
 
     menuEdit = new wxMenu;
-    AppendIconItem(menuEdit, wxID_UNDO, MENU_ENTRY(wxT("Undo")), tb_undo);
-    AppendIconItem(menuEdit, wxID_REDO, MENU_ENTRY(wxT("Redo")), tb_redo);
-    AppendIconItem(menuEdit, wxID_CUT, MENU_ENTRY(wxT("Cut")), tb_cut);
-    AppendIconItem(menuEdit, wxID_COPY, MENU_ENTRY(wxT("Copy")), tb_copy);
-    AppendIconItem(menuEdit, wxID_PASTE, MENU_ENTRY(wxT("Paste")), tb_paste);
+    AppendIconItem(menuEdit, wxID_UNDO, MENU_ENTRY("Undo"), tb_undo);
+    AppendIconItem(menuEdit, wxID_REDO, MENU_ENTRY("Redo"), tb_redo);
+    AppendIconItem(menuEdit, wxID_CUT, MENU_ENTRY("Cut"), tb_cut);
+    AppendIconItem(menuEdit, wxID_COPY, MENU_ENTRY("Copy"), tb_copy);
+    AppendIconItem(menuEdit, wxID_PASTE, MENU_ENTRY("Paste"), tb_paste);
     menuEdit->AppendSeparator();
-    AppendIconItem(menuEdit, wxID_FIND, MENU_ENTRY(wxT("Find")), tb_find);
-    AppendIconItem(menuEdit, IDM_FINDNEXT, MENU_ENTRY(wxT("FindNext")), tb_findnext);
-    AppendIconItem(menuEdit, wxID_REPLACE,  MENU_ENTRY(wxT("Replace")), tb_replace);
+    AppendIconItem(menuEdit, wxID_FIND, MENU_ENTRY("Find"), tb_find);
+    AppendIconItem(menuEdit, IDM_FINDNEXT, MENU_ENTRY("FindNext"), tb_findnext);
+    AppendIconItem(menuEdit, wxID_REPLACE,  MENU_ENTRY("Replace"), tb_replace);
     menuEdit->AppendSeparator();
-    menuEdit->Append(wxID_INDEX, MENU_ENTRY(wxT("GotoLine")));
-    menuEdit->Append(IDM_GOTOSYMBOL, MENU_ENTRY(wxT("GotoSymbol")));
-    AppendIconItem(menuEdit, IDM_MATCHBRACE,  MENU_ENTRY(wxT("MatchBrace")), tb_bracematch);
+    menuEdit->Append(wxID_INDEX, MENU_ENTRY("GotoLine"));
+    menuEdit->Append(IDM_GOTOSYMBOL, MENU_ENTRY("GotoSymbol"));
+    AppendIconItem(menuEdit, IDM_MATCHBRACE,  MENU_ENTRY("MatchBrace"), tb_bracematch);
     menuBookmarks = new wxMenu;
-    menuBookmarks->Append(IDM_BOOKMARKTOGGLE, MENU_ENTRY(wxT("ToggleBookmark")));
-    menuBookmarks->Append(IDM_BOOKMARKNEXT, MENU_ENTRY(wxT("NextBookmark")));
-    menuBookmarks->Append(IDM_BOOKMARKPREV, MENU_ENTRY(wxT("PrevBookmark")));
+    menuBookmarks->Append(IDM_BOOKMARKTOGGLE, MENU_ENTRY("ToggleBookmark"));
+    menuBookmarks->Append(IDM_BOOKMARKNEXT, MENU_ENTRY("NextBookmark"));
+    menuBookmarks->Append(IDM_BOOKMARKPREV, MENU_ENTRY("PrevBookmark"));
     //??? list bookmarks (in all files)
-    menuEdit->Append(-1, wxT("Bookmarks"), menuBookmarks);
+    menuEdit->Append(-1, "Bookmarks", menuBookmarks);
     menuEdit->AppendSeparator();
-    menuEdit->Append(IDM_AUTOCOMPLETE, MENU_ENTRY(wxT("Autocomplete")));
-    AppendIconItem(menuEdit, IDM_FILLCOLUMN,  MENU_ENTRY(wxT("FillColumn")), tb_columnfill);
-    menuBar->Append(menuEdit, wxT("&Edit"));
+    menuEdit->Append(IDM_AUTOCOMPLETE, MENU_ENTRY("Autocomplete"));
+    AppendIconItem(menuEdit, IDM_FILLCOLUMN,  MENU_ENTRY("FillColumn"), tb_columnfill);
+    menuBar->Append(menuEdit, "&Edit");
 
     menuView = new wxMenu;
-    menuView->AppendCheckItem(IDM_VIEWWHITESPACE, MENU_ENTRY(wxT("ViewWhitespace")));
-    menuView->AppendCheckItem(IDM_VIEWINDENTGUIDES, MENU_ENTRY(wxT("ViewIndentGuides")));
-    menuBar->Append(menuView, wxT("&View"));
+    menuView->AppendCheckItem(IDM_VIEWWHITESPACE, MENU_ENTRY("ViewWhitespace"));
+    menuView->AppendCheckItem(IDM_VIEWINDENTGUIDES, MENU_ENTRY("ViewIndentGuides"));
+    menuBar->Append(menuView, "&View");
 
     menuBuild = new wxMenu;
-    AppendIconItem(menuBuild, IDM_COMPILE, MENU_ENTRY(wxT("Compile")), tb_compile);
-    AppendIconItem(menuBuild, IDM_TRANSFER, MENU_ENTRY(wxT("Transfer")), tb_transfer);
+    AppendIconItem(menuBuild, IDM_COMPILE, MENU_ENTRY("Compile"), tb_compile);
+    AppendIconItem(menuBuild, IDM_TRANSFER, MENU_ENTRY("Transfer"), tb_transfer);
     menuBuild->AppendSeparator();
-    AppendIconItem(menuBuild, IDM_DEBUG, MENU_ENTRY(wxT("Debug")), tb_debug);
-    AppendIconItem(menuBuild, IDM_RUN, MENU_ENTRY(wxT("Run")), tb_run);
-    AppendIconItem(menuBuild, IDM_ABORT, MENU_ENTRY(wxT("Stop")), tb_abort);
+    AppendIconItem(menuBuild, IDM_DEBUG, MENU_ENTRY("Debug"), tb_debug);
+    AppendIconItem(menuBuild, IDM_RUN, MENU_ENTRY("Run"), tb_run);
+    AppendIconItem(menuBuild, IDM_ABORT, MENU_ENTRY("Stop"), tb_abort);
     menuBuild->AppendSeparator();
-    AppendIconItem(menuBuild, IDM_STEPINTO, MENU_ENTRY(wxT("StepInto")), tb_stepinto);
-    AppendIconItem(menuBuild, IDM_STEPOVER, MENU_ENTRY(wxT("StepOver")), tb_stepover);
-    AppendIconItem(menuBuild, IDM_STEPOUT, MENU_ENTRY(wxT("StepOut")), tb_stepout);
-    AppendIconItem(menuBuild, IDM_RUNTOCURSOR, MENU_ENTRY(wxT("RunToCursor")), tb_runtocursor);
+    AppendIconItem(menuBuild, IDM_STEPINTO, MENU_ENTRY("StepInto"), tb_stepinto);
+    AppendIconItem(menuBuild, IDM_STEPOVER, MENU_ENTRY("StepOver"), tb_stepover);
+    AppendIconItem(menuBuild, IDM_STEPOUT, MENU_ENTRY("StepOut"), tb_stepout);
+    AppendIconItem(menuBuild, IDM_RUNTOCURSOR, MENU_ENTRY("RunToCursor"), tb_runtocursor);
     menuBuild->AppendSeparator();
     menuBreakpoints = new wxMenu;
-    AppendIconItem(menuBreakpoints, IDM_BREAKPOINTTOGGLE, MENU_ENTRY(wxT("ToggleBreakpoint")), tb_breakpoint);
-    menuBreakpoints->Append(IDM_BREAKPOINTCLEAR, MENU_ENTRY(wxT("ClearBreakpoints")));
+    AppendIconItem(menuBreakpoints, IDM_BREAKPOINTTOGGLE, MENU_ENTRY("ToggleBreakpoint"), tb_breakpoint);
+    menuBreakpoints->Append(IDM_BREAKPOINTCLEAR, MENU_ENTRY("ClearBreakpoints"));
     //??? list all breakpoints
-    menuBuild->Append(-1, wxT("Breakpoints"), menuBreakpoints);
-    menuBar->Append(menuBuild, wxT("&Build/Run"));
+    menuBuild->Append(-1, "Breakpoints", menuBreakpoints);
+    menuBar->Append(menuBuild, "&Build/Run");
 
     menuTools = new wxMenu;
-    AppendIconItem(menuTools, wxID_PROPERTIES, MENU_ENTRY(wxT("Options")), tb_settings);
-    AppendIconItem(menuTools, IDM_SAMPLEBROWSER, MENU_ENTRY(wxT("SampleBrowser")), tb_pawn);
+    AppendIconItem(menuTools, wxID_PROPERTIES, MENU_ENTRY("Options"), tb_settings);
+    AppendIconItem(menuTools, IDM_SAMPLEBROWSER, MENU_ENTRY("SampleBrowser"), tb_pawn);
     menuTabSpace = new wxMenu;
-    menuTabSpace->Append(IDM_TABSTOSPACES, MENU_ENTRY(wxT("TabToSpace")));
-    menuTabSpace->Append(IDM_INDENTSTOTABS, MENU_ENTRY(wxT("IndentToTab")));
-    menuTabSpace->Append(IDM_SPACESTOTABS, MENU_ENTRY(wxT("SpaceToTab")));
+    menuTabSpace->Append(IDM_TABSTOSPACES, MENU_ENTRY("TabToSpace"));
+    menuTabSpace->Append(IDM_INDENTSTOTABS, MENU_ENTRY("IndentToTab"));
+    menuTabSpace->Append(IDM_SPACESTOTABS, MENU_ENTRY("SpaceToTab"));
     menuTabSpace->AppendSeparator();
-    menuTabSpace->Append(IDM_TRIMTRAILING, MENU_ENTRY(wxT("TrimTrailing")));
-    menuTools->Append(-1, wxT("Whitespace conversions"), menuTabSpace);
-    menuBar->Append(menuTools, wxT("&Tools"));
+    menuTabSpace->Append(IDM_TRIMTRAILING, MENU_ENTRY("TrimTrailing"));
+    menuTools->Append(-1, "Whitespace conversions", menuTabSpace);
+    menuBar->Append(menuTools, "&Tools");
 
     menuHelp = new wxMenu;
-    AppendIconItem(menuHelp, wxID_HELP, MENU_ENTRY(wxT("GeneralHelp")), tb_help);
-    AppendIconItem(menuHelp, IDM_CONTEXTHELP, MENU_ENTRY(wxT("ContextHelp")), tb_contexthelp);
+    AppendIconItem(menuHelp, wxID_HELP, MENU_ENTRY("GeneralHelp"), tb_help);
+    AppendIconItem(menuHelp, IDM_CONTEXTHELP, MENU_ENTRY("ContextHelp"), tb_contexthelp);
     menuHelp->AppendSeparator();
-    menuHelp->Append(wxID_ABOUT/*, wxT("&About")*/);
-    menuBar->Append(menuHelp, wxT("&Help"));
+    menuHelp->Append(wxID_ABOUT/*, "&About"*/);
+    menuBar->Append(menuHelp, "&Help");
 
     SetMenuBar(menuBar);
     RebuildRecentMenus();
@@ -356,36 +356,36 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     #define TB_SHORTCUT(label)  theApp->Shortcuts.FormatShortCut(label, false, true)
     ToolBar = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT);
     ToolBar->SetToolBitmapSize(wxSize(16, 16));
-    ToolBar->AddTool(wxID_NEW, wxT("New"), tb_new, wxT("New file") + TB_SHORTCUT(wxT("New")));
-    ToolBar->AddTool(wxID_OPEN, wxT("Open"), tb_open, wxT("Open file") + TB_SHORTCUT(wxT("Open")));
-    ToolBar->AddTool(wxID_SAVE, wxT("Save"), tb_save, wxT("Save active file") + TB_SHORTCUT(wxT("Save")));
-    ToolBar->AddTool(IDM_SAVEALL, wxT("Save all"), tb_saveall, wxT("Save all modified files") + TB_SHORTCUT(wxT("SaveAll")));
+    ToolBar->AddTool(wxID_NEW, "New", tb_new, "New file" + TB_SHORTCUT("New"));
+    ToolBar->AddTool(wxID_OPEN, "Open", tb_open, "Open file" + TB_SHORTCUT("Open"));
+    ToolBar->AddTool(wxID_SAVE, "Save", tb_save, "Save active file" + TB_SHORTCUT("Save"));
+    ToolBar->AddTool(IDM_SAVEALL, "Save all", tb_saveall, "Save all modified files" + TB_SHORTCUT("SaveAll"));
     ToolBar->AddSeparator();
-    ToolBar->AddTool(wxID_PRINT, wxT("Print"), tb_print, wxT("Print file") + TB_SHORTCUT(wxT("Print")));
+    ToolBar->AddTool(wxID_PRINT, "Print", tb_print, "Print file" + TB_SHORTCUT("Print"));
     ToolBar->AddSeparator();
-    ToolBar->AddTool(wxID_CUT, wxT("Cut"), tb_cut, wxT("Cut to clipboard") + TB_SHORTCUT(wxT("Cut")));
-    ToolBar->AddTool(wxID_COPY, wxT("Copy"), tb_copy, wxT("Copy to clipboard") + TB_SHORTCUT(wxT("Copy")));
-    ToolBar->AddTool(wxID_PASTE, wxT("Paste"), tb_paste, wxT("Paste from clipboard") + TB_SHORTCUT(wxT("Paste")));
+    ToolBar->AddTool(wxID_CUT, "Cut", tb_cut, "Cut to clipboard" + TB_SHORTCUT("Cut"));
+    ToolBar->AddTool(wxID_COPY, "Copy", tb_copy, "Copy to clipboard" + TB_SHORTCUT("Copy"));
+    ToolBar->AddTool(wxID_PASTE, "Paste", tb_paste, "Paste from clipboard" + TB_SHORTCUT("Paste"));
     ToolBar->AddSeparator();
-    ToolBar->AddTool(wxID_UNDO, wxT("Undo"), tb_undo, wxT("Undo last operation") + TB_SHORTCUT(wxT("Undo")));
-    ToolBar->AddTool(wxID_REDO, wxT("Redo"), tb_redo, wxT("Redo last undo") + TB_SHORTCUT(wxT("Redo")));
+    ToolBar->AddTool(wxID_UNDO, "Undo", tb_undo, "Undo last operation" + TB_SHORTCUT("Undo"));
+    ToolBar->AddTool(wxID_REDO, "Redo", tb_redo, "Redo last undo" + TB_SHORTCUT("Redo"));
     ToolBar->AddSeparator();
-    ToolBar->AddTool(IDM_COMPILE, wxT("Build"), tb_compile, wxT("Compile the current script") + TB_SHORTCUT(wxT("Compile")));
-    ToolBar->AddTool(IDM_TRANSFER, wxT("Transfer"), tb_transfer, wxT("Transfer the compiled script to an external host") + TB_SHORTCUT(wxT("Transfer")));
-    ToolBar->AddTool(IDM_DEBUG, wxT("Debug"), tb_debug, wxT("Debug the script") + TB_SHORTCUT(wxT("Debug")));
-    ToolBar->AddTool(IDM_RUN, wxT("Run"), tb_run, wxT("Run the script") + TB_SHORTCUT(wxT("Run")));
-    ToolBar->AddTool(IDM_ABORT, wxT("Stop"), tb_abort, wxT("Abort the running script") + TB_SHORTCUT(wxT("Stop")));
-    ToolBar->AddTool(IDM_STEPINTO, wxT("Step Into"), tb_stepinto, wxT("Step into functions") + TB_SHORTCUT(wxT("StepInto")));
-    ToolBar->AddTool(IDM_STEPOVER, wxT("Step Over"), tb_stepover, wxT("Step over functions") + TB_SHORTCUT(wxT("StepOver")));
-    ToolBar->AddTool(IDM_STEPOUT, wxT("Step Out"), tb_stepout, wxT("Run up to the function return") + TB_SHORTCUT(wxT("StepOut")));
-    ToolBar->AddTool(IDM_RUNTOCURSOR, wxT("Run to cursor"), tb_runtocursor, wxT("Run up to the current line") + TB_SHORTCUT(wxT("RunToCursor")));
+    ToolBar->AddTool(IDM_COMPILE, "Build", tb_compile, "Compile the current script" + TB_SHORTCUT("Compile"));
+    ToolBar->AddTool(IDM_TRANSFER, "Transfer", tb_transfer, "Transfer the compiled script to an external host" + TB_SHORTCUT("Transfer"));
+    ToolBar->AddTool(IDM_DEBUG, "Debug", tb_debug, "Debug the script" + TB_SHORTCUT("Debug"));
+    ToolBar->AddTool(IDM_RUN, "Run", tb_run, "Run the script" + TB_SHORTCUT("Run"));
+    ToolBar->AddTool(IDM_ABORT, "Stop", tb_abort, "Abort the running script" + TB_SHORTCUT("Stop"));
+    ToolBar->AddTool(IDM_STEPINTO, "Step Into", tb_stepinto, "Step into functions" + TB_SHORTCUT("StepInto"));
+    ToolBar->AddTool(IDM_STEPOVER, "Step Over", tb_stepover, "Step over functions" + TB_SHORTCUT("StepOver"));
+    ToolBar->AddTool(IDM_STEPOUT, "Step Out", tb_stepout, "Run up to the function return" + TB_SHORTCUT("StepOut"));
+    ToolBar->AddTool(IDM_RUNTOCURSOR, "Run to cursor", tb_runtocursor, "Run up to the current line" + TB_SHORTCUT("RunToCursor"));
     ToolBar->AddSeparator();
-    ToolBar->AddTool(IDM_DEVICETOOL, wxT("Device"), tb_devicetool, wxT("Configure the device") + TB_SHORTCUT(wxT("DeviceTool")));
+    ToolBar->AddTool(IDM_DEVICETOOL, "Device", tb_devicetool, "Configure the device" + TB_SHORTCUT("DeviceTool"));
     ToolBar->AddSeparator();
     FunctionList = new wxChoice(ToolBar, IDM_SELECTCONTEXT, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
     FunctionList->SetMinSize(wxSize(200, -1));
-    FunctionList->SetToolTip(wxT("The function name at the current cursor position."));
-    ToolBar->AddControl(FunctionList, wxT("Context"));
+    FunctionList->SetToolTip("The function name at the current cursor position.");
+    ToolBar->AddControl(FunctionList, "Context");
     ToolBar->Realize();
     ToolBar->Refresh(false);
     bSizerFrame->Add(ToolBar, 0, wxEXPAND, 5);
@@ -433,37 +433,37 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     wxBoxSizer* bSizerPane = new wxBoxSizer(wxVERTICAL);
     PaneTab = new wxAuiNotebook(pnlPane, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_BOTTOM);
     #if defined _WIN32
-        wxFont font(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Courier New"));
+        wxFont font(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Courier New");
     #else
-        wxFont font(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Monospace"));
+        wxFont font(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Monospace");
     #endif
     BuildLog = new wxListView(PaneTab, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_NO_HEADER | wxLC_REPORT | wxLC_SINGLE_SEL);
     BuildLog->SetFont(font);
     BuildLog->InsertColumn(0, wxEmptyString);
-    PaneTab->AddPage(BuildLog, wxT("Build"), false);    /* TAB_BUILD */
+    PaneTab->AddPage(BuildLog, "Build", false);    /* TAB_BUILD */
     ErrorLog = new wxListView(PaneTab, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_NO_HEADER | wxLC_REPORT | wxLC_SINGLE_SEL);
     ErrorLog->SetFont(font);
     ErrorLog->InsertColumn(0, wxEmptyString);
     ErrorLog->Connect(wxEVT_COMMAND_LIST_ITEM_SELECTED, wxListEventHandler(QuincyFrame::OnErrorSelect), NULL, this);
-    PaneTab->AddPage(ErrorLog, wxT("Messages"), false); /* TAB_MESSAGES */
+    PaneTab->AddPage(ErrorLog, "Messages", false); /* TAB_MESSAGES */
     BrowserTree = new wxTreeCtrl(PaneTab, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_FULL_ROW_HIGHLIGHT|wxTR_HIDE_ROOT|wxTR_NO_LINES|wxTR_SINGLE|wxTR_DEFAULT_STYLE);
     BrowserTree->SetFont(font);
     BrowserTree->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler(QuincyFrame::OnSymbolSelect), NULL, this);
-    PaneTab->AddPage(BrowserTree, wxT("Symbols"), false); /* TAB_SYMBOLS */
+    PaneTab->AddPage(BrowserTree, "Symbols", false); /* TAB_SYMBOLS */
     WatchLog = new wxListView(PaneTab, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_EDIT_LABELS);
     WatchLog->SetFont(font);
-    WatchLog->InsertColumn(0, wxT("Symbol"));
-    WatchLog->InsertColumn(1, wxT("Value"));
+    WatchLog->InsertColumn(0, "Symbol");
+    WatchLog->InsertColumn(1, "Value");
     WatchLog->Connect(wxEVT_COMMAND_LIST_END_LABEL_EDIT, wxListEventHandler(QuincyFrame::OnWatchEdited), NULL, this);
     WatchLog->Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler(QuincyFrame::OnWatchActivated), NULL, this);
     WatchLog->Connect(wxEVT_COMMAND_LIST_DELETE_ITEM, wxListEventHandler(QuincyFrame::OnWatchDelete), NULL, this);
-    PaneTab->AddPage(WatchLog, wxT("Watches"), false);  /* TAB_WATCHES */
+    PaneTab->AddPage(WatchLog, "Watches", false);  /* TAB_WATCHES */
     Terminal = new wxTextCtrl(PaneTab, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxTE_LEFT | wxTE_MULTILINE | wxTE_READONLY);
     Terminal->SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
     Terminal->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
     Terminal->SetFont(font);
     Terminal->Connect(wxEVT_CHAR, wxKeyEventHandler(QuincyFrame::OnTerminalChar), NULL, this);
-    PaneTab->AddPage(Terminal, wxT("Output"), false);   /* TAB_OUTPUT */
+    PaneTab->AddPage(Terminal, "Output", false);   /* TAB_OUTPUT */
     PaneTab->Layout();
     bSizerPane->Add(PaneTab, 1, wxEXPAND | wxBOTTOM, 5);
     pnlPane->SetSizer(bSizerPane);
@@ -478,7 +478,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
 
     /* set initial splitter position, centre the application window */
     minIni* ini = theApp->GetConfigFile();
-    long pos = ini->getl(wxT("Position"), wxT("Splitter"), 0);
+    long pos = ini->getl("Position", "Splitter", 0);
     SplitterFrame->SetSashPosition(pos);
     SplitterFrame->SetSashGravity(1.0);
     Centre();
@@ -500,7 +500,7 @@ QuincyFrame::QuincyFrame(const wxString& title, const wxSize& size)
     /* see whether there are initial files to load */
     RectSelectChkSum = 0;
     HelpIndex = 0;
-    strWorkspace = ini->gets(wxT("Session"), wxT("Workspace"));
+    strWorkspace = ini->gets("Session", "Workspace");
     LoadSession();
     if (EditTab->GetPageCount() == 0)
         AddEditor();    /* no files in the session, create an empty file */
@@ -555,11 +555,11 @@ void QuincyFrame::OnActivate(wxActivateEvent& event)
                 time_t t = exists ? wxFileModificationTime(path) : 0;
                 if (exists && t != FileTimeStamp[index]) {
                     recurse = true;
-                    wxString msg = wxT("The file ") + path.AfterLast(DIRSEP_CHAR)
-                                   + wxT(" was changed outside the editor.\nReload?");
+                    wxString msg = "The file " + path.AfterLast(DIRSEP_CHAR)
+                                   + " was changed outside the editor.\nReload?";
                     if (EditorDirty[index])
-                        msg += wxT("\n\nNota Bene: the file has local changes. These are lost on a reload.");
-                    int reply = wxMessageBox(msg, wxT("Notice"), wxYES_NO);
+                        msg += "\n\nNota Bene: the file has local changes. These are lost on a reload.";
+                    int reply = wxMessageBox(msg, "Notice", wxYES_NO);
                     if (reply == wxYES) {
                         LoadFile(path, edit);
                         SetChanged(index, false);
@@ -574,23 +574,23 @@ void QuincyFrame::OnActivate(wxActivateEvent& event)
 
 void QuincyFrame::AdjustTitle()
 {
-    wxString title = wxT("Pawn");
+    wxString title = "Pawn";
 
     /* add current target */
     if (strTargetHost.Length() > 0) {
-        title += wxT(" [") + strTargetHost + wxT("]");
+        title += " [" + strTargetHost + "]";
     }
 
     /* add current file */
     wxASSERT(EditTab);
     int sel = EditTab->GetSelection();
     if (sel >= 0)
-        title += wxT(" - ") + EditTab->GetPageText(sel);
+        title += " - " + EditTab->GetPageText(sel);
     if (strWorkspace.Length() > 0) {
         wxString project = strWorkspace;
         if (project.Find(DIRSEP_CHAR) >= 0)
             project = project.AfterLast(DIRSEP_CHAR);
-        title += wxT(" (") + project + wxT(")");
+        title += " (" + project + ")";
     }
     SetTitle(title);
 }
@@ -630,7 +630,7 @@ bool DragAndDropFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenam
         if (wxFile::Exists(filenames[n])) {
             /* check whether this is a project file, if so, change to the project */
             wxASSERT(m_pOwner->EditTab);
-            if (filenames[n].Right(4).CmpNoCase(wxT(".prj"))==0) {
+            if (filenames[n].Right(4).CmpNoCase(".prj")==0) {
                 /* close all current files (query for save), also save the session */
                 if (!m_pOwner->SaveAllFiles(true))
                     return true;
@@ -661,12 +661,12 @@ void QuincyFrame::OnErrorSelect(wxListEvent& event)
     line.Trim(false);
 
     /* line is filename(line1[-line2]): warning|error|fatal error errno: text */
-    wxString filename = line.BeforeFirst(wxT('('));
-    line = line.AfterFirst(wxT('('));
-    wxString linenrs = line.BeforeFirst(wxT(')'));
+    wxString filename = line.BeforeFirst('(');
+    line = line.AfterFirst('(');
+    wxString linenrs = line.BeforeFirst(')');
     long first, last;
     linenrs.ToLong(&first);
-    linenrs = linenrs.AfterLast(wxT('-'));
+    linenrs = linenrs.AfterLast('-');
     if (linenrs.length() == 0)
         last = first;
     else
@@ -694,7 +694,7 @@ void QuincyFrame::OnErrorSelect(wxListEvent& event)
                 edit = Editor[idx];
     }
     if (!edit) {
-        wxMessageBox(wxT("Could not open ") + filename, wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Could not open " + filename, "Pawn IDE", wxOK | wxICON_ERROR);
         return;
     }
 
@@ -744,14 +744,14 @@ bool QuincyFrame::AddEditor(const wxString &name)
     /* Scintilla only supports UTF-8 when compiled for Unicode, and this
        is the default for the most wxWidgets distributions */
     if (name.length() > 0 && wxFileExists(name) && !ScanUTF8(name)) {
-        int reply = wxMessageBox(wxT("The file ") + name.AfterLast(DIRSEP_CHAR)
-                                 + wxT(" uses characters outside the ASCII range and needs to be converted to UTF-8.\n")
-                                   wxT("Do you wish to do that now?"), wxT("Notice"), wxYES_NO);
+        int reply = wxMessageBox("The file " + name.AfterLast(DIRSEP_CHAR)
+                                 + " uses characters outside the ASCII range and needs to be converted to UTF-8.\n"
+                                   "Do you wish to do that now?", "Notice", wxYES_NO);
         if (reply != wxYES)
             return false;
         if (!Latin1ToUTF8(name)) {
-            wxMessageBox(wxT("Conversion of ") + name.AfterLast(DIRSEP_CHAR) + wxT(" to UTF-8 has failed."),
-                         wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("Conversion of " + name.AfterLast(DIRSEP_CHAR) + " to UTF-8 has failed.",
+                         "Pawn IDE", wxOK | wxICON_ERROR);
             return false;
         }
     }
@@ -779,22 +779,22 @@ bool QuincyFrame::AddEditor(const wxString &name)
 
     if (name.Length() == 0 || IsPawnFile(name)) {
         edit->SetLexer(wxSTC_LEX_CPP);
-        edit->SetProperty(wxT("lexer.cpp.track.preprocessor"), wxT("0"));   /* this is too complex with Pawn, because Pawn can also check definitions of variables & functions */
+        edit->SetProperty("lexer.cpp.track.preprocessor", "0");   /* this is too complex with Pawn, because Pawn can also check definitions of variables & functions */
         edit->SetKeyWords(0, PawnKeyWords);
-        edit->SetWordChars(wxT("_@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"));
+        edit->SetWordChars("_@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
     }
 
     edit->SetCodePage(wxSTC_CP_UTF8);   /* required for the Unicode build of wxWidgets, which is now standard */
     edit->SetTabIndents(true);
     edit->SetBackSpaceUnIndents(true);
     edit->SetMouseDwellTime(500);
-    edit->AutoCompStops(wxT(" ()[]{}<>`~!#$%^&*-+|\\;:'\",./?"));
+    edit->AutoCompStops("[]{}<>`~!#$%^&*-+|\\;:'\",./?");
     edit->AutoCompSetDropRestOfWord(true);
     edit->AutoCompSetChooseSingle(true);
-    edit->AutoCompSetSeparator(wxT('|'));
+    edit->AutoCompSetSeparator('|');
     /* make sure special keys are not not handled by scintilla */
-    edit->CmdKeyClear(wxT('['), wxSTC_KEYMOD_CTRL);  /* CmdKeyClear blocks the key from propagating */
-    edit->CmdKeyClear(wxT(']'), wxSTC_KEYMOD_CTRL);
+    edit->CmdKeyClear('[', wxSTC_KEYMOD_CTRL);  /* CmdKeyClear blocks the key from propagating */
+    edit->CmdKeyClear(']', wxSTC_KEYMOD_CTRL);
     for (int i = 0; i < theApp->Shortcuts.Count(); i++) {
         KbdShortcut* shortcut = theApp->Shortcuts.GetItem(i);
         wxAcceleratorEntry entry;
@@ -823,7 +823,7 @@ bool QuincyFrame::AddEditor(const wxString &name)
     if (name.Length() == 0) {
         Filename[idx] = wxEmptyString;
         FileTimeStamp[idx] = 0;
-        str = wxT("(new)");
+        str = "(new)";
     } else {
         Filename[idx] = name;
         FileTimeStamp[idx] = wxFileModificationTime(name);
@@ -838,7 +838,7 @@ bool QuincyFrame::AddEditor(const wxString &name)
 
     if (name.Length() > 0) {
         if (!LoadFile(name, edit))
-            wxMessageBox(wxT("Failed to load file ") + str, wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("Failed to load file " + str, "Pawn IDE", wxOK | wxICON_ERROR);
     } else {
         edit->ClearAll();
     }
@@ -1102,21 +1102,21 @@ bool QuincyFrame::CheckSaveFile(bool force_save, bool force_prompt, wxStyledText
         wxString path = wxEmptyString;
         path = Filename[idx];
         if (path.Length() == 0 || force_prompt) {
-            wxFileDialog * saveFileDialog = new wxFileDialog(this, wxT("Save file..."),
+            wxFileDialog * saveFileDialog = new wxFileDialog(this, "Save file...",
                                                             strCurrentDirectory, path,
-                                                            wxT("Pawn scripts|*.p;*.pwn;*.pawn|Pawn include files|*.i;*.inc|All files|*"),
+                                                            "Pawn scripts|*.p;*.pwn;*.pawn|Pawn include files|*.i;*.inc|All files|*",
                                                             wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
             if (saveFileDialog->ShowModal() != wxID_OK)
                 return false;
             /* get the name, set the default extension */
             path = saveFileDialog->GetPath();
-            wxString ext = path.AfterLast(wxT('.'));
+            wxString ext = path.AfterLast('.');
             if (ext.Length() == 0 || ext.Length() > 4) {
                 int type = saveFileDialog->GetFilterIndex();
                 if (type == 0)
-                    path += wxT(".p");
+                    path += ".p";
                 else if (type == 1)
-                    path += wxT(".i");
+                    path += ".i";
             }
             Filename[idx] = path;
             strCurrentDirectory = wxPathOnly(Filename[idx]);
@@ -1147,7 +1147,7 @@ bool QuincyFrame::CheckSaveFile(bool force_save, bool force_prompt, wxStyledText
            to be sure that the file is properly converted to UTF8 */
         FILE *fp = fopen(Filename[idx].utf8_str(), "wt");
         if (!fp) {
-            wxMessageBox(wxT("Failed to save the file."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("Failed to save the file.", "Pawn IDE", wxOK | wxICON_ERROR);
             return false;
         }
         /* store the file line by line, to enforce clean line ends */
@@ -1186,12 +1186,12 @@ bool QuincyFrame::SaveAllFiles(bool prompt)
                 /* nothing */;
             wxASSERT(index < MAX_EDITORS);
             if (index < MAX_EDITORS && EditorDirty[index])
-                filenames += Filename[index] + wxT("\n");
+                filenames += Filename[index] + "\n";
         }
         if (filenames.Length() > 0) {
-            wxString msg = wxT("The following file(s) was/were modified:\n")
-                           + filenames + wxT("\nSave changes?");
-            int reply = wxMessageBox(msg, wxT("Pawn IDE"), wxYES_NO | wxCANCEL);
+            wxString msg = "The following file(s) was/were modified:\n"
+                           + filenames + "\nSave changes?";
+            int reply = wxMessageBox(msg, "Pawn IDE", wxYES_NO | wxCANCEL);
             if (reply == wxCANCEL)
                 return false;
             if (reply == wxNO)
@@ -1232,7 +1232,7 @@ void QuincyFrame::CloseCurrentFile(bool deletetab)
                 if (idx >= 0 && idx < (int)EditTab->GetPageCount())
                     name = EditTab->GetPageText(idx);
             }
-            int reply = wxMessageBox(wxT("Save changes in ") + name, wxT("Pawn IDE"), wxYES_NO | wxCANCEL);
+            int reply = wxMessageBox("Save changes in " + name, "Pawn IDE", wxYES_NO | wxCANCEL);
             if (reply == wxCANCEL || (reply == wxYES && !CheckSaveFile(false, false, edit)))
                 return;
         }
@@ -1269,15 +1269,15 @@ void QuincyFrame::StripTrailingSpaces(wxStyledTextCtrl *edit)
         if (i < lineEnd - 1) {
             edit->SetTargetStart(i + 1);
             edit->SetTargetEnd(lineEnd);
-            edit->ReplaceTarget(wxT(""));
+            edit->ReplaceTarget("");
         }
     }
 }
 
 wxString QuincyFrame::OptionallyQuoteString(const wxString& string)
 {
-    if (string.Find(wxT(' ')) >= 0)
-        return wxT("\"") + string + wxT("\"");
+    if (string.Find(' ') >= 0)
+        return "\"" + string + "\"";
     return string;
 }
 
@@ -1294,38 +1294,38 @@ bool QuincyFrame::LoadSession()
         close_ini = true;
     }
     wxASSERT(ini);
-    strCurrentDirectory = ini->gets(wxT("Session"), wxT("Directory"), strCurrentDirectory);
+    strCurrentDirectory = ini->gets("Session", "Directory", strCurrentDirectory);
 
     int idx;
     wxString item;
     wxString path;
     for (idx = 0; idx < MAX_EDITORS; idx++) {
-        item.Printf(wxT("File%d"), idx + 1);
-        path = ini->gets(wxT("Session"), item);
+        item.Printf("File%d", idx + 1);
+        path = ini->gets("Session", item);
         if (path.Length() == 0)
             break;
         AddEditor(path);
     }
 
     /* load workspace settings */
-    strTargetHost = ini->gets(wxT("Options"), wxT("TargetHost"), wxT(""));
-    DebugLevel = (int)ini->getl(wxT("Options"), wxT("Debugging"), 1);
-    OptimizationLevel = (int)ini->getl(wxT("Options"), wxT("Optimize"), 1);
-    OverlayCode = ini->getbool(wxT("Options"), wxT("Overlays"));
-    UseFixedAMXName = ini->getbool(wxT("Options"), wxT("FixedAMXName"));
-    VerboseBuild = ini->getbool(wxT("Options"), wxT("Verbose"));
-    CreateReport = ini->getbool(wxT("Options"), wxT("Report"));
-    AutoTransfer = ini->getbool(wxT("Options"), wxT("AutoTransfer"));
-    DebuggerSelected = ini->getl(wxT("Options"), wxT("Debugger"));
-    DebugPort = ini->gets(wxT("Options"), wxT("DebugPort"));
-    DebugBaudrate = ini->getl(wxT("Options"), wxT("DebugBaudrate"));
-    DebugLogEnabled = ini->getbool(wxT("Options"), wxT("DebugLogging"));
-    strDefines = ini->gets(wxT("Options"), wxT("Defines"));
-    strPreBuild = ini->gets(wxT("Options"), wxT("PreBuild"));
-    strMiscCmdOptions = ini->gets(wxT("Options"), wxT("CmdOptions"));
-    strIncludePath = ini->gets(wxT("Directories"), wxT("Include"));
-    strCompilerPath = ini->gets(wxT("Directories"), wxT("Compiler"), theApp->GetBinPath());
-    strOutputPath = ini->gets(wxT("Directories"), wxT("TargetPath"));
+    strTargetHost = ini->gets("Options", "TargetHost", "");
+    DebugLevel = (int)ini->getl("Options", "Debugging", 1);
+    OptimizationLevel = (int)ini->getl("Options", "Optimize", 1);
+    OverlayCode = ini->getbool("Options", "Overlays");
+    UseFixedAMXName = ini->getbool("Options", "FixedAMXName");
+    VerboseBuild = ini->getbool("Options", "Verbose");
+    CreateReport = ini->getbool("Options", "Report");
+    AutoTransfer = ini->getbool("Options", "AutoTransfer");
+    DebuggerSelected = ini->getl("Options", "Debugger");
+    DebugPort = ini->gets("Options", "DebugPort");
+    DebugBaudrate = ini->getl("Options", "DebugBaudrate");
+    DebugLogEnabled = ini->getbool("Options", "DebugLogging");
+    strDefines = ini->gets("Options", "Defines");
+    strPreBuild = ini->gets("Options", "PreBuild");
+    strMiscCmdOptions = ini->gets("Options", "CmdOptions");
+    strIncludePath = ini->gets("Directories", "Include");
+    strCompilerPath = ini->gets("Directories", "Compiler", theApp->GetBinPath());
+    strOutputPath = ini->gets("Directories", "TargetPath");
     /* remove trailing slash, if necessary */
     int len = strCompilerPath.Len();
     if (len == 0)
@@ -1337,9 +1337,9 @@ bool QuincyFrame::LoadSession()
         strOutputPath = strOutputPath.Left(len - 1);
 
     strTargetPath = strCompilerPath;
-    if (strTargetPath.Right(4).CmpNoCase(wxT(DIRSEP_STR) wxT("bin")) == 0)
+    if (strTargetPath.Right(4).CmpNoCase(DIRSEP_STR "bin") == 0)
         strTargetPath = strTargetPath.Left(strTargetPath.Length() - 4); /* strip off "/bin" */
-    strTargetPath += wxT(DIRSEP_STR) wxT("target");
+    strTargetPath += DIRSEP_STR "target";
 
     if (close_ini)
         delete ini;
@@ -1347,7 +1347,7 @@ bool QuincyFrame::LoadSession()
     LoadHostConfiguration(strTargetHost);
     if (strFixedAMXName.length() == 0)
         UseFixedAMXName = false;    /* force false if no fixed name is defined */
-    else if (ini->getl(wxT("Options"), wxT("FixedAMXName"), -1) == -1)
+    else if (ini->getl("Options", "FixedAMXName", -1) == -1)
         UseFixedAMXName = true;     /* set to "true" by default if the option is not yet in the INI file/workspace */
     if (!OverlayEnabled)
         OverlayCode = false;        /* force to false if the host does not support overlays */
@@ -1377,7 +1377,7 @@ bool QuincyFrame::SaveSession()
     minIni *ini;
     /* store workspace always in global INI */
     ini = theApp->GetConfigFile();
-    ini->put(wxT("Session"), wxT("Workspace"), strWorkspace);
+    ini->put("Session", "Workspace", strWorkspace);
 
     /* the other data may be stored in the workspace file */
     bool close_ini = false;
@@ -1386,49 +1386,49 @@ bool QuincyFrame::SaveSession()
         close_ini = true;
     }
     wxASSERT(ini);
-    ini->put(wxT("Session"), wxT("Directory"), strCurrentDirectory);
+    ini->put("Session", "Directory", strCurrentDirectory);
     int page, idx;
     wxString item;
     wxString fullpath;
     for (page = 0; page < (int)EditTab->GetPageCount(); page++) {
-        item.Printf(wxT("File%d"), page + 1);
+        item.Printf("File%d", page + 1);
         wxStyledTextCtrl *edit = dynamic_cast<wxStyledTextCtrl*>(EditTab->GetPage(page));
         wxASSERT(edit);
         for (idx = 0; idx < MAX_EDITORS && Editor[idx] != edit; idx++)
             /* nothing */;
         wxASSERT(idx < MAX_EDITORS);
         fullpath = Filename[idx];
-        ini->put(wxT("Session"), item, fullpath);
+        ini->put("Session", item, fullpath);
     }
     /* remove any files not currently open */
     for ( ;; ) {
-        item.Printf(wxT("File%d"), page + 1);
-        wxString name = ini->gets(wxT("Session"), item);
+        item.Printf("File%d", page + 1);
+        wxString name = ini->gets("Session", item);
         if (name.Length() == 0)
             break;
-        ini->del(wxT("Session"), item);
+        ini->del("Session", item);
         page++;
     }
 
     /* save workspace settings */
-    ini->put(wxT("Options"), wxT("TargetHost"), strTargetHost);
-    ini->put(wxT("Options"), wxT("Debugging"), DebugLevel);
-    ini->put(wxT("Options"), wxT("Optimize"), OptimizationLevel);
-    ini->put(wxT("Options"), wxT("Overlays"), OverlayCode);
-    ini->put(wxT("Options"), wxT("FixedAMXName"), UseFixedAMXName);
-    ini->put(wxT("Options"), wxT("Verbose"), VerboseBuild);
-    ini->put(wxT("Options"), wxT("Report"), CreateReport);
-    ini->put(wxT("Options"), wxT("AutoTransfer"), AutoTransfer);
-    ini->put(wxT("Options"), wxT("Debugger"), DebuggerSelected);
-    ini->put(wxT("Options"), wxT("DebugPort"), DebugPort);
-    ini->put(wxT("Options"), wxT("DebugBaudrate"), DebugBaudrate);
-    ini->put(wxT("Options"), wxT("DebugLogging"), DebugLogEnabled);
-    ini->put(wxT("Options"), wxT("Defines"), strDefines);
-    ini->put(wxT("Options"), wxT("PreBuild"), strPreBuild);
-    ini->put(wxT("Options"), wxT("CmdOptions"), strMiscCmdOptions);
-    ini->put(wxT("Directories"), wxT("Include"), strIncludePath);
-    ini->put(wxT("Directories"), wxT("Compiler"), strCompilerPath);
-    ini->put(wxT("Directories"), wxT("TargetPath"), strOutputPath);
+    ini->put("Options", "TargetHost", strTargetHost);
+    ini->put("Options", "Debugging", DebugLevel);
+    ini->put("Options", "Optimize", OptimizationLevel);
+    ini->put("Options", "Overlays", OverlayCode);
+    ini->put("Options", "FixedAMXName", UseFixedAMXName);
+    ini->put("Options", "Verbose", VerboseBuild);
+    ini->put("Options", "Report", CreateReport);
+    ini->put("Options", "AutoTransfer", AutoTransfer);
+    ini->put("Options", "Debugger", DebuggerSelected);
+    ini->put("Options", "DebugPort", DebugPort);
+    ini->put("Options", "DebugBaudrate", DebugBaudrate);
+    ini->put("Options", "DebugLogging", DebugLogEnabled);
+    ini->put("Options", "Defines", strDefines);
+    ini->put("Options", "PreBuild", strPreBuild);
+    ini->put("Options", "CmdOptions", strMiscCmdOptions);
+    ini->put("Directories", "Include", strIncludePath);
+    ini->put("Directories", "Compiler", strCompilerPath);
+    ini->put("Directories", "TargetPath", strOutputPath);
 
     if (close_ini)
         delete ini;
@@ -1443,8 +1443,8 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
     strTargetHost = host;
 
     /* verify environment */
-    RunTimeIsInstalled = wxFileExists(strCompilerPath + wxT(DIRSEP_STR) wxT("pawnrun") wxT(EXE_EXT));
-    DebuggerIsInstalled = wxFileExists(strCompilerPath + wxT(DIRSEP_STR) wxT("pawndbg") wxT(EXE_EXT));
+    RunTimeIsInstalled = wxFileExists(strCompilerPath + DIRSEP_STR "pawnrun" EXE_EXT);
+    DebuggerIsInstalled = wxFileExists(strCompilerPath + DIRSEP_STR "pawndbg" EXE_EXT);
 
     /* preset with compiler defaults */
     strFixedAMXName = wxEmptyString;
@@ -1459,10 +1459,10 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
 
     wxString HostFile;
     if (strTargetHost.length() == 0)
-        HostFile = wxT("default");
+        HostFile = "default";
     else
         HostFile = strTargetHost;
-    HostFile = strTargetPath + wxT(DIRSEP_STR) + HostFile + wxT(".cfg");
+    HostFile = strTargetPath + DIRSEP_STR + HostFile + ".cfg";
     if (!wxFileExists(HostFile))
         return false;
     /* parse through the target host file (or default.cfg) to find an optional
@@ -1476,7 +1476,7 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
         line = line.Trim(true);
         int pos;
         /* fixed output file */
-        pos = line.Find(wxT("-o:"));
+        pos = line.Find("-o:");
         if (START_OPTION(pos, line)) {
             pos += 3;
             unsigned i2;
@@ -1489,45 +1489,45 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
         } /* if */
         /* default optimization */
         long val;
-        pos = line.Find(wxT("-O:"));
+        pos = line.Find("-O:");
         if (START_OPTION(pos, line)) {
             line.Mid(pos + 3).ToLong(&val);
             DefaultOptimize = (int)val;
         }
         /* default debugging level */
-        pos = line.Find(wxT("-d:"));
+        pos = line.Find("-d:");
         if (START_OPTION(pos, line)) {
             line.Mid(pos + 3).ToLong(&val);
             DefaultDebugLevel = (int)val;
         }
         /* Quincy: run-time enabled */
-        pos = line.Find(wxT("#runtime:"));
+        pos = line.Find("#runtime:");
         if (START_OPTION(pos, line)) {
             line.Mid(pos + 9).ToLong(&val);
             RunTimeEnabled = RunTimeEnabled && (val > 0);
         }
         /* Quincy: debug enabled */
-        pos = line.Find(wxT("#debug:"));
+        pos = line.Find("#debug:");
         if (START_OPTION(pos, line)) {
             line.Mid(pos + 7).ToLong(&val);
             DebuggerEnabled = DebuggerEnabled & val;
         }
         /* Quincy: upload tool */
-        pos = line.Find(wxT("#upload:"));
+        pos = line.Find("#upload:");
         if (START_OPTION(pos, line))
             UploadTool = line.Mid(pos + 8).Trim(true).Trim(false);
         /* Quincy: device-specific tool */
-        pos = line.Find(wxT("#tool:"));
+        pos = line.Find("#tool:");
         if (START_OPTION(pos, line))
             DeviceTool = line.Mid(pos + 6).Trim(true).Trim(false);
         /* Quincy: max. optimization level supported */
-        pos = line.Find(wxT("#optlevel:"));
+        pos = line.Find("#optlevel:");
         if (START_OPTION(pos, line)) {
             line.Mid(pos + 10).ToLong(&val);
             MaxOptimize = (int)val;
         }
         /* Quincy: overlays allowed */
-        pos = line.Find(wxT("#overlay:"));
+        pos = line.Find("#overlay:");
         if (START_OPTION(pos, line)) {
             line.Mid(pos + 9).ToLong(&val);
             OverlayEnabled = (val > 0);
@@ -1540,11 +1540,11 @@ bool QuincyFrame::LoadHostConfiguration(const wxString& host)
 /* IsPawnFile() only looks at the file extension */
 bool QuincyFrame::IsPawnFile(const wxString& path, bool allow_inc)
 {
-    wxString ext = path.AfterLast(wxT('.'));
-    return (ext.CmpNoCase(wxT("p")) == 0
-            || ext.CmpNoCase(wxT("pawn")) == 0
-            || ext.CmpNoCase(wxT("pwn")) == 0
-            || ((ext.CmpNoCase(wxT("i")) == 0 || ext.CmpNoCase(wxT("inc")) == 0) && allow_inc));
+    wxString ext = path.AfterLast('.');
+    return (ext.CmpNoCase("p") == 0
+            || ext.CmpNoCase("pawn") == 0
+            || ext.CmpNoCase("pwn") == 0
+            || ((ext.CmpNoCase("i") == 0 || ext.CmpNoCase("inc") == 0) && allow_inc));
 }
 
 void QuincyFrame::OnNewFile(wxCommandEvent& /* event */)
@@ -1566,16 +1566,16 @@ void QuincyFrame::LoadSourceFile(const wxString& path)
         theApp->PushRecentFile(path);
         RebuildRecentMenus();
     } else {
-        wxMessageBox(wxT("Failed to load the file."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Failed to load the file.", "Pawn IDE", wxOK | wxICON_ERROR);
     }
     AdjustTitle();
 }
 
 void QuincyFrame::OnOpen(wxCommandEvent& /* event */)
 {
-    wxFileDialog * openFileDialog = new wxFileDialog(this, wxT("Open file..."),
+    wxFileDialog * openFileDialog = new wxFileDialog(this, "Open file...",
                                                     strCurrentDirectory, wxEmptyString,
-                                                    wxT("Pawn scripts|*.p;*.pwn;*.pawn;*.i;*.inc|All files|*"),
+                                                    "Pawn scripts|*.p;*.pwn;*.pawn;*.i;*.inc|All files|*",
                                                     wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (openFileDialog->ShowModal() == wxID_OK)
         LoadSourceFile(openFileDialog->GetPath());
@@ -1588,7 +1588,7 @@ void QuincyFrame::OnRecentFile(wxCommandEvent& event)
     if (wxFileExists(path)) {
         LoadSourceFile(path);
     } else {
-        wxMessageBox(wxT("The workspace could not be opened."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("The workspace could not be opened.", "Pawn IDE", wxOK | wxICON_ERROR);
         theApp->RemoveRecentWorkspace(path);
         RebuildRecentMenus();
     }
@@ -1652,9 +1652,9 @@ void QuincyFrame::LoadWorkspace(const wxString& path)
 
 void QuincyFrame::OnLoadWorkSpace(wxCommandEvent& event)
 {
-    wxFileDialog * openFileDialog = new wxFileDialog(this, wxT("Open workspace..."),
+    wxFileDialog * openFileDialog = new wxFileDialog(this, "Open workspace...",
                                                     strCurrentDirectory, wxEmptyString,
-                                                    wxT("Workspace files|*.qws|All files|*"),
+                                                    "Workspace files|*.qws|All files|*",
                                                     wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (openFileDialog->ShowModal() == wxID_OK)
         LoadWorkspace(openFileDialog->GetPath());
@@ -1667,7 +1667,7 @@ void QuincyFrame::OnRecentWorkspace(wxCommandEvent& event)
     if (wxFileExists(path)) {
         LoadWorkspace(path);
     } else {
-        wxMessageBox(wxT("The workspace could not be opened."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("The workspace could not be opened.", "Pawn IDE", wxOK | wxICON_ERROR);
         theApp->RemoveRecentFile(path);
         RebuildRecentMenus();
     }
@@ -1675,16 +1675,16 @@ void QuincyFrame::OnRecentWorkspace(wxCommandEvent& event)
 
 void QuincyFrame::OnSaveWorkSpace(wxCommandEvent& event)
 {
-    wxFileDialog * saveFileDialog = new wxFileDialog(this, wxT("Save workspace..."),
+    wxFileDialog * saveFileDialog = new wxFileDialog(this, "Save workspace...",
                                                     strCurrentDirectory, strWorkspace,
-                                                    wxT("Workspace files|*.qws|All files|*"),
+                                                    "Workspace files|*.qws|All files|*",
                                                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog->ShowModal() != wxID_OK)
         return;
     strWorkspace = saveFileDialog->GetPath();
     int idx;
     if ((idx = strWorkspace.Find('.', true)) < 0 || strWorkspace.Mid(idx).Find(DIRSEP_CHAR) > 0)
-        strWorkspace += wxT(".qws");
+        strWorkspace += ".qws";
 
     SaveAllFiles(false);
     SaveSession();
@@ -1709,11 +1709,11 @@ void QuincyFrame::OnCloseWorkSpace(wxCommandEvent& event)
 
 void QuincyFrame::OnPrint(wxCommandEvent& /* event */)
 {
-    static wxHtmlEasyPrinting print(wxT("Pawn Print-out"));
+    static wxHtmlEasyPrinting print("Pawn Print-out");
 
     wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
     if (!edit) {
-        wxMessageBox(wxT("No file is selected (or opened)."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("No file is selected (or opened.)", "Pawn IDE", wxOK | wxICON_ERROR);
         return;
     }
 
@@ -1724,17 +1724,17 @@ void QuincyFrame::OnPrint(wxCommandEvent& /* event */)
             break;
         }
     }
-    print.SetFooter(wxT("<center>@PAGENUM@ of @PAGESCNT@</center>"));
+    print.SetFooter("<center>@PAGENUM@ of @PAGESCNT@</center>");
     int pointsizes[] = { 4, 6, 8, 10, 12, 14, 16 };
-    print.SetFonts(wxT("helvetica"), wxT("courier"), pointsizes);
+    print.SetFonts("helvetica", "courier", pointsizes);
     print.PageSetup();
     wxPageSetupDialogData* options = print.GetPageSetupData();
     if (options->IsOk()) {
         wxString text = edit->GetText();
-        text.Replace(wxT("&"), wxT("&amp;"));
-        text.Replace(wxT("<"), wxT("&lt;"));
-        text.Replace(wxT(">"), wxT("&gt;"));
-        print.PreviewText(wxT("<pre>") + text + wxT("</pre"));
+        text.Replace("&", "&amp;");
+        text.Replace("<", "&lt;");
+        text.Replace(">", "&gt;");
+        print.PreviewText("<pre>" + text + "</pre");
     }
 }
 
@@ -1875,11 +1875,11 @@ void QuincyFrame::OnPaste(wxCommandEvent& /* event */)
         int col = edit->GetColumn(pos);
         while (clip.Length() > 0) {
             /* extract a row from the clipboard data */
-            int len = clip.Find(wxT('\n'));
+            int len = clip.Find('\n');
             if (len < 0)
                 len = (int)clip.Length();
             wxString sect;
-            if (len > 0 && clip[len - 1] == wxT('\r'))
+            if (len > 0 && clip[len - 1] == '\r')
                 sect = clip.Left(len - 1);
             else
                 sect = clip.Left(len);
@@ -1887,7 +1887,7 @@ void QuincyFrame::OnPaste(wxCommandEvent& /* event */)
             /* insert it in the editor */
             pos = edit->FindColumn(row, col);
             while (edit->GetColumn(pos) < col) {
-                edit->InsertText(pos, wxT(" "));
+                edit->InsertText(pos, " ");
                 pos = edit->FindColumn(row, col);
             }
             edit->InsertText(pos, sect);
@@ -1913,10 +1913,10 @@ void QuincyFrame::OnPaste(wxCommandEvent& /* event */)
                 }
                 wxTheClipboard->Close();
             }
-            if (clip.Length() > 0 && clip[clip.Length() - 1] == wxT('\n')) {
+            if (clip.Length() > 0 && clip[clip.Length() - 1] == '\n') {
                 /* create an array of the lines */
                 wxArrayString Lines;
-                wxStringTokenizer tokenizer(clip, wxT("\n"), wxTOKEN_RET_EMPTY_ALL);
+                wxStringTokenizer tokenizer(clip, "\n", wxTOKEN_RET_EMPTY_ALL);
                 while (tokenizer.HasMoreTokens()) {
                     wxString line = tokenizer.GetNextToken();
                     line.Trim();
@@ -1931,10 +1931,10 @@ void QuincyFrame::OnPaste(wxCommandEvent& /* event */)
                 bool bracebelow = false;
                 for (int row = curline; row < edit->GetLineCount(); row++) {
                     wxString line = edit->GetLine(row);
-                    for (indentDoc = 0; indentDoc < line.Length() && line[indentDoc] <= wxT(' '); indentDoc++)
+                    for (indentDoc = 0; indentDoc < line.Length() && line[indentDoc] <= ' '; indentDoc++)
                         /* nothing */;
                     if (indentDoc < line.Length()) {
-                        if (line[indentDoc] == wxT('}'))
+                        if (line[indentDoc] == '}')
                             bracebelow = true;  /* closing brace found on the next line */
                         break;
                     }
@@ -1947,7 +1947,7 @@ void QuincyFrame::OnPaste(wxCommandEvent& /* event */)
                     for (int row = curline - 1; row >= 0; row--) {
                         wxString line = edit->GetLine(row);
                         indent = 0;
-                        while (indent < line.Length() && line[indent] <= wxT(' '))
+                        while (indent < line.Length() && line[indent] <= ' ')
                             indent = (line[indent] == '\t') ? (indent / theApp->GetTabWidth() + 1) * theApp->GetTabWidth() : indent + 1;
                         if (indent < line.Length()) {
                             if (line[indent] == '}')
@@ -1995,9 +1995,9 @@ void QuincyFrame::OnPaste(wxCommandEvent& /* event */)
                    (optionally inserting either TABs or spaces) */
                 if (indentDoc > 0) {
                     unsigned delta = indentDoc;
-                    wxChar ch = wxT(' ');
+                    wxChar ch = ' ';
                     if (theApp->GetUseTabs() && (delta % theApp->GetTabWidth()) == 0) {
-                        ch = wxT('\t');
+                        ch = '\t';
                         delta /= theApp->GetTabWidth();
                     }
                     for (unsigned row = 0; row < Lines.Count(); row++)
@@ -2007,7 +2007,7 @@ void QuincyFrame::OnPaste(wxCommandEvent& /* event */)
                 /* paste clip */
                 clip.Empty();
                 for (unsigned row = 0; row < Lines.Count() - 1; row++)
-                    clip += Lines[row] + wxT("\n");
+                    clip += Lines[row] + "\n";
                 edit->InsertText(pos, clip);
                 handled = true;
             }
@@ -2061,27 +2061,27 @@ void QuincyFrame::OnFindDlg(wxCommandEvent& /* event */)
                 if (!dir.IsOpened())
                     return;
                 wxString fname;
-                if (dir.GetFirst(&fname, wxT("*"), wxDIR_FILES )) {
+                if (dir.GetFirst(&fname, "*", wxDIR_FILES )) {
                     wxWindowDisabler *disableAll = new wxWindowDisabler;
                     #if wxCHECK_VERSION(3, 1, 0)
                         wxBusyInfo *info = new wxBusyInfo(
                             wxBusyInfoFlags()
                                 .Parent(this)
                                 .Icon(wxArtProvider::GetIcon(wxART_FIND))
-                                .Title(wxT("Search ") + path)
-                                .Text(wxT("Please wait..."))
+                                .Title("Search " + path)
+                                .Text("Please wait...")
                                 .Foreground(*wxWHITE)
                                 .Background(*wxBLACK)
                                 .Transparency(4*wxALPHA_OPAQUE/5));
                     #else
                         /* wxBusyInfoFlags was introduced in 3.1, fall back to uglier boxes on earlier version */
-                        wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
+                        wxBusyInfo *info = new wxBusyInfo("Please wait...", this);
                     #endif
                     do {
                         /* check the file type (by verifing the extension) */
                         if (IsPawnFile(fname)) {
                             /* get the full path of the script/include file, verify whether it exists */
-                            fname = path + wxT(DIRSEP_STR) + fname;
+                            fname = path + DIRSEP_STR + fname;
                             wxASSERT(wxFileExists(fname));
                             /* load the file in a temporary editor */
                             wxStyledTextCtrl* tmp = new wxStyledTextCtrl(EditTab, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTRANSPARENT_WINDOW);
@@ -2105,7 +2105,7 @@ void QuincyFrame::OnFindDlg(wxCommandEvent& /* event */)
     } else if (!FindDlg) {
         FindData.SetFindString(word);
         FindDlg = new wxFindReplaceDialog();
-        FindDlg->Create(this, &FindData, wxT("Find..."));
+        FindDlg->Create(this, &FindData, "Find...");
         FindDlg->Show();
         int line = edit->GetCurrentLine();
         if ((edit->MarkerGet(line) & ((1 << MARKER_BOOKMARK) | (1 << MARKER_NAVIGATE))) == 0) {
@@ -2155,15 +2155,15 @@ void QuincyFrame::OnReplaceDlg(wxCommandEvent& /* event */)
                     result = edit->FindText(0, edit->GetLength() - 1, dlg->GetSearchText(), dlg->GetFlags());
                     bool wrapsearch = false;
                     if (result >= 0) {
-                        int reply = wxMessageBox(wxT("No more matches.\nWrap back to the beginning?"), wxT("Pawn IDE"), wxYES_NO | wxICON_QUESTION);
+                        int reply = wxMessageBox("No more matches.\nWrap back to the beginning?", "Pawn IDE", wxYES_NO | wxICON_QUESTION);
                         if (reply == wxYES)
                             wrapsearch = true;
                     }
                     if (!wrapsearch) {
                         if (!foundmatch)
-                            wxMessageBox(wxT("Search Text not found."), wxT("Pawn IDE"), wxOK | wxICON_INFORMATION);
+                            wxMessageBox("Search Text not found.", "Pawn IDE", wxOK | wxICON_INFORMATION);
                         else
-                            wxMessageBox(wxT("No more matches found."), wxT("Pawn IDE"), wxOK | wxICON_INFORMATION);
+                            wxMessageBox("No more matches found.", "Pawn IDE", wxOK | wxICON_INFORMATION);
                         break;  /* done with search/replace */
                     }
                 }
@@ -2203,7 +2203,7 @@ void QuincyFrame::OnReplaceDlg(wxCommandEvent& /* event */)
     } else if (FindDlg) {
         FindData.SetFindString(word);
         FindDlg = new wxFindReplaceDialog();
-        FindDlg->Create(this, &FindData, wxT("Replace..."), wxFR_REPLACEDIALOG);
+        FindDlg->Create(this, &FindData, "Replace...", wxFR_REPLACEDIALOG);
         FindDlg->Show();
         int line = edit->GetCurrentLine();
         if ((edit->MarkerGet(line) & ((1 << MARKER_BOOKMARK) | (1 << MARKER_NAVIGATE))) == 0) {
@@ -2328,7 +2328,7 @@ bool QuincyFrame::FindNextItem(bool warnnotfound)
                position, but there is a match before it; give an option to wrap
                around (actually, the wrap-around has already happened; the user
                only needs to confirm it) */
-            int reply = wxMessageBox(wxT("No more matches in this file.\nWrap back to the beginning?"), wxT("Pawn IDE"), wxYES_NO | wxICON_QUESTION);
+            int reply = wxMessageBox("No more matches in this file.\nWrap back to the beginning?", "Pawn IDE", wxYES_NO | wxICON_QUESTION);
             if (reply == wxYES) {
                 edit->EnsureCaretVisible();
                 restore_cursor = false;
@@ -2339,9 +2339,9 @@ bool QuincyFrame::FindNextItem(bool warnnotfound)
             edit->SetSelection(currentpos, currentpos); /* clear any selection */
         }
         if (notfound && warnnotfound)
-            wxMessageBox(wxT("Search Text not found."), wxT("Pawn IDE"), wxOK | wxICON_INFORMATION);
+            wxMessageBox("Search Text not found.", "Pawn IDE", wxOK | wxICON_INFORMATION);
         else if (no_next && warnnotfound)
-            wxMessageBox(wxT("No more matches found."), wxT("Pawn IDE"), wxOK | wxICON_INFORMATION);
+            wxMessageBox("No more matches found.", "Pawn IDE", wxOK | wxICON_INFORMATION);
     } else {
         edit->EnsureCaretVisible();
     }
@@ -2366,7 +2366,7 @@ void QuincyFrame::FindAllInEditor(wxStyledTextCtrl* edit, const wxString& fullpa
     }
     wxTreeItemId root = SearchLog->GetRootItem();
     if (!root.IsOk())
-        root = SearchLog->AddRoot(wxT("root"));
+        root = SearchLog->AddRoot("root");
     int flags = theApp->SearchAdvanced ? theApp->SearchFlags | wxFR_DOWN : FindData.GetFlags();
     wxTreeItemId file;
     int start = 0;
@@ -2380,7 +2380,7 @@ void QuincyFrame::FindAllInEditor(wxStyledTextCtrl* edit, const wxString& fullpa
         linetext.Trim(true);
         if (!file.IsOk())
             file = SearchLog->AppendItem(root, filename);
-        wxString string = wxString::Format(wxT("%4d: "), line) + linetext;
+        wxString string = wxString::Format("%4d: ", line) + linetext;
         SearchLog->AppendItem(file, string);
         start = result + 1;
     }
@@ -2408,7 +2408,7 @@ void QuincyFrame::OnSearchSelect(wxTreeEvent& event)
                 edit = Editor[idx];
     }
     if (!edit) {
-        wxMessageBox(wxT("Could not open \"") + filename + wxT("\"."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Could not open \"" + filename + "\".", "Pawn IDE", wxOK | wxICON_ERROR);
         return;
     }
 
@@ -2436,8 +2436,8 @@ void QuincyFrame::OnGotoDlg(wxCommandEvent& /* event */)
         return;
 
     static long line = 1;
-    wxNumberEntryDialog dlg(this, wxT("Jump to a line in the current file."),
-                            wxT("Line number"), wxT("Go to line..."),
+    wxNumberEntryDialog dlg(this, "Jump to a line in the current file.",
+                            "Line number", "Go to line...",
                             line, 1, edit->GetLineCount());
     if (dlg.ShowModal() == wxID_OK) {
         line = dlg.GetValue();
@@ -2455,7 +2455,7 @@ void QuincyFrame::OnGotoSymbol(wxCommandEvent& /* event */)
         return;
     const CSymbolEntry* symbol = SymbolList.Lookup(word);
     if (!symbol) {
-        wxMessageBox(wxT("Symbol \"") + word + wxT("\"not found."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Symbol \"" + word + "\"not found.", "Pawn IDE", wxOK | wxICON_ERROR);
         return;
     }
 
@@ -2471,12 +2471,12 @@ void QuincyFrame::OnGotoSymbol(wxCommandEvent& /* event */)
             wxArrayString matches;
             for (int idx = 0; idx < count; idx++) {
                 symbollist[idx] = SymbolList.Lookup(word, idx);
-                matches.Add(symbollist[idx]->Syntax + wxT(" - ") + symbollist[idx]->Source);
+                matches.Add(symbollist[idx]->Syntax + " - " + symbollist[idx]->Source);
             }
             /* create a dialog that the user can choose from */
             static int dlgwidth = wxDefaultCoord;
             static int dlgheight = wxDefaultCoord;
-            wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, wxT("This symbol appears in multiple source files."), wxT("Select source file"), matches);
+            wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, "This symbol appears in multiple source files.", "Select source file", matches);
             dlg->SetSize(wxDefaultCoord, wxDefaultCoord, dlgwidth, dlgheight, wxSIZE_AUTO);
             int result = dlg->ShowModal();
             dlg->GetSize(&dlgwidth, &dlgheight);
@@ -2513,7 +2513,7 @@ bool QuincyFrame::GotoSymbol(const CSymbolEntry* symbol)
        paths of the filenames) */
     wxString filename = symbol->Source;
     if (!wxFileExists(filename)) {
-        wxMessageBox(wxT("The file \"") + filename + wxT("\" no longer exists."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("The file \"" + filename + "\" no longer exists.", "Pawn IDE", wxOK | wxICON_ERROR);
         return false;
     }
     wxStyledTextCtrl* edit = 0;
@@ -2528,7 +2528,7 @@ bool QuincyFrame::GotoSymbol(const CSymbolEntry* symbol)
                 edit = Editor[idx];
     }
     if (!edit) {
-        wxMessageBox(wxT("Could not open \"") + filename + wxT("\"."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Could not open \"" + filename + "\".", "Pawn IDE", wxOK | wxICON_ERROR);
         return false;
     }
 
@@ -2545,7 +2545,7 @@ bool QuincyFrame::GotoSymbol(const CSymbolEntry* symbol)
     int line = symbol->Line - 1;
     int pos = edit->PositionFromLine(line);
     wxString name = symbol->SymbolName;
-    if (name.Length() > 1 && name[1] == wxT(':'))
+    if (name.Length() > 1 && name[1] == ':')
         name = name.Mid(2);
     //??? if the type is F, also look for the word "new" on the same line; if the
     //    type is C, als look for the word "const" on the same line
@@ -2647,8 +2647,8 @@ void QuincyFrame::OnFillColumn(wxCommandEvent& /* event */)
         return;
 
     /* pop up a dialog */
-    wxString text = wxGetTextFromUser(wxT("Text to insert/replace in the selection"),
-                                      wxT("Fill selection"), wxEmptyString, this);
+    wxString text = wxGetTextFromUser("Text to insert/replace in the selection",
+                                      "Fill selection", wxEmptyString, this);
     if (text.IsEmpty())
         return;
     /* get the row start/end and starting column of the selection */
@@ -2669,7 +2669,7 @@ void QuincyFrame::OnFillColumn(wxCommandEvent& /* event */)
         /* insert it in the editor */
         int pos = edit->FindColumn(row, col);
         while (edit->GetColumn(pos) < col) {
-            edit->InsertText(pos, wxT(" "));
+            edit->InsertText(pos, " ");
             pos = edit->FindColumn(row, col);
         }
         edit->InsertText(pos, text);
@@ -2706,7 +2706,7 @@ void QuincyFrame::OnViewIndentGuides(wxCommandEvent& /* event */)
 void QuincyFrame::OnCompile(wxCommandEvent& /* event */)
 {
     if (ExecPID != 0 && wxProcess::Exists(ExecPID)) {
-        int reply = wxMessageBox(wxT("Do you want to abort the running script?"), wxT("Pawn IDE"), wxYES_NO | wxICON_QUESTION);
+        int reply = wxMessageBox("Do you want to abort the running script?", "Pawn IDE", wxYES_NO | wxICON_QUESTION);
         if (reply != wxYES)
             return;
         wxProcess::Kill(ExecPID, wxSIGTERM);
@@ -2717,7 +2717,7 @@ void QuincyFrame::OnCompile(wxCommandEvent& /* event */)
 
     wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
     if (!edit) {
-        wxMessageBox(wxT("No source file to compile."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("No source file to compile.", "Pawn IDE", wxOK | wxICON_ERROR);
         return;
     }
     if (!SaveAllFiles(false))
@@ -2727,8 +2727,8 @@ void QuincyFrame::OnCompile(wxCommandEvent& /* event */)
     unsigned page = EditTab->GetSelection();
     wxASSERT(page < MAX_EDITORS);
     wxString name = EditTab->GetPageText(page);
-    wxString ext = name.AfterLast(wxT('.'));
-    if (ext.CmpNoCase(wxT("i")) == 0 || ext.CmpNoCase(wxT("inc")) == 0) {
+    wxString ext = name.AfterLast('.');
+    if (ext.CmpNoCase("i") == 0 || ext.CmpNoCase("inc") == 0) {
         /* collect all scripts */
         wxString scriptname;
         wxArrayString scripts;
@@ -2740,7 +2740,7 @@ void QuincyFrame::OnCompile(wxCommandEvent& /* event */)
         static int dlgwidth = wxDefaultCoord;
         static int dlgheight = wxDefaultCoord;
         if (scripts.Count() > 1) {
-            wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, wxT("Please select a script to compile."), wxT("Select script"), scripts);
+            wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, "Please select a script to compile.", "Select script", scripts);
             dlg->SetSize(wxDefaultCoord, wxDefaultCoord, dlgwidth, dlgheight, wxSIZE_AUTO);
             int result = dlg->ShowModal();
             dlg->GetSize(&dlgwidth, &dlgheight);
@@ -2751,7 +2751,7 @@ void QuincyFrame::OnCompile(wxCommandEvent& /* event */)
         } else if (scripts.Count() == 1) {
             scriptname = scripts[0];
         } else {
-            wxMessageBox(wxT("This is not a script; cannot compile."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("This is not a script; cannot compile.", "Pawn IDE", wxOK | wxICON_ERROR);
             return;
         }
         /* find the edit control for the named script */
@@ -2772,7 +2772,7 @@ void QuincyFrame::OnCompile(wxCommandEvent& /* event */)
     wxASSERT(idx < MAX_EDITORS);
     fullpath = Filename[idx];
     if (fullpath.Length() == 0) {
-        wxMessageBox(wxT("Unknown filename for the source file to compile."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Unknown filename for the source file to compile.", "Pawn IDE", wxOK | wxICON_ERROR);
         return;
     }
     CompileSource(fullpath);  /* status bar will show the compilation result */
@@ -2784,8 +2784,8 @@ void QuincyFrame::OnTransfer(wxCommandEvent& /* event */)
 {
     if (ExecPID == 0 && (DebuggerSelected == DEBUG_REMOTE || UploadTool.length() > 0)) {
         if (strRecentAMXName.length() == 0) {
-            wxMessageBox(wxT("No recent compiled file to transfer. Build the script first"),
-                         wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("No recent compiled file to transfer. Build the script first",
+                         "Pawn IDE", wxOK | wxICON_ERROR);
         } else {
             TransferScript(strRecentAMXName);
         }
@@ -2796,7 +2796,7 @@ void QuincyFrame::OnDebug(wxCommandEvent& /* event */)
 {
     LastWatchIndex = 0;
     if (ExecPID != 0 && wxProcess::Exists(ExecPID) && DebugMode && !DebugRunning)
-        SendDebugCommand(wxT("g"));
+        SendDebugCommand("g");
     else
         RunCurrentScript(true);
 }
@@ -2805,7 +2805,7 @@ void QuincyFrame::OnRun(wxCommandEvent& /* event */)
 {
     LastWatchIndex = 0;
     if (ExecPID != 0 && wxProcess::Exists(ExecPID) && DebugMode && !DebugRunning)
-        SendDebugCommand(wxT("g"));
+        SendDebugCommand("g");
     else
         RunCurrentScript();
 }
@@ -2823,19 +2823,19 @@ void QuincyFrame::OnAbort(wxCommandEvent& /* event */)
 void QuincyFrame::OnStepInto(wxCommandEvent& /* event */)
 {
     LastWatchIndex = 0;
-    SendDebugCommand(wxT("s"));
+    SendDebugCommand("s");
 }
 
 void QuincyFrame::OnStepOver(wxCommandEvent& /* event */)
 {
     LastWatchIndex = 0;
-    SendDebugCommand(wxT("n"));
+    SendDebugCommand("n");
 }
 
 void QuincyFrame::OnStepOut(wxCommandEvent& /* event */)
 {
     LastWatchIndex = 0;
-    SendDebugCommand(wxT("g func"));
+    SendDebugCommand("g func");
 }
 
 void QuincyFrame::OnRunToCursor(wxCommandEvent& /* event */)
@@ -2845,7 +2845,7 @@ void QuincyFrame::OnRunToCursor(wxCommandEvent& /* event */)
         return;
     LastWatchIndex = 0;
     int line = edit->GetCurrentLine();
-    wxString cmd = wxString::Format(wxT("g %d"), line + 1);
+    wxString cmd = wxString::Format("g %d", line + 1);
     SendDebugCommand(cmd);
 }
 
@@ -2913,7 +2913,7 @@ void QuincyFrame::OnIdle(wxIdleEvent& event)
                         do {
                             ch = (wxChar)istream->GetC();
                             cmd += ch;
-                        } while (ch != '\n' && (ch != ' ' || cmd.Cmp(wxT("dbg> ")) != 0));
+                        } while (ch != '\n' && (ch != ' ' || cmd.Cmp("dbg> ") != 0));
                         DebugHoldback = 0;
                         HandleDebugResponse(cmd);
                     }
@@ -2989,27 +2989,27 @@ bool QuincyFrame::CompileSource(const wxString& script)
         wxString command = strPreBuild;
         wxString path, basename, ext;
         wxFileName::SplitPath(script, &path, &basename, &ext);
-        command.Replace(wxT("%fullname%"), script);
-        command.Replace(wxT("%name%"), basename);
-        command.Replace(wxT("%ext%"), basename);
-        command.Replace(wxT("%path%"), path);
+        command.Replace("%fullname%", script);
+        command.Replace("%name%", basename);
+        command.Replace("%ext%", basename);
+        command.Replace("%path%", path);
         wxArrayString output;
         long result = wxExecute(command, output, wxEXEC_SYNC);
         prebuild_error = (result < 0 || result >= 255);
     }
 
     /* check the compiler */
-    wxString pgmname = wxT("pawncc") wxT(EXE_EXT);
-    wxString command = strCompilerPath + wxT(DIRSEP_STR) + pgmname;
+    wxString pgmname = "pawncc" EXE_EXT;
+    wxString command = strCompilerPath + DIRSEP_STR + pgmname;
     if (!wxFileExists(command)) {
-        QuincyDirPicker dlg(this, wxT("The Pawn compiler is not found in the configured folder.\nPlease choose the folder where the compiler is installed."), strCompilerPath, pgmname);
+        QuincyDirPicker dlg(this, "The Pawn compiler is not found in the configured folder.\nPlease choose the folder where the compiler is installed.", strCompilerPath, pgmname);
         if (dlg.ShowModal() == wxID_OK) {
             strCompilerPath = dlg.GetPath();
             /* remove trailing slash, if necessary */
             int len = strCompilerPath.Len();
             if (len > 0 && strCompilerPath[len - 1] == DIRSEP_CHAR)
                 strCompilerPath = strCompilerPath.Left(len - 1);
-            command = strCompilerPath + wxT(DIRSEP_STR) wxT("pawncc") wxT(EXE_EXT);
+            command = strCompilerPath + DIRSEP_STR "pawncc" EXE_EXT;
         }
     }
     if (!wxFileExists(command))
@@ -3017,28 +3017,28 @@ bool QuincyFrame::CompileSource(const wxString& script)
 
     /* build the command */
     wxString options;
-    options.Printf(wxT(" -d%d -O%d"), DebugLevel, OptimizationLevel);
+    options.Printf(" -d%d -O%d", DebugLevel, OptimizationLevel);
     if (strTargetHost.length() > 0)
-        options = wxT(" -T") + strTargetHost + options;
+        options = " -T" + strTargetHost + options;
     if (strIncludePath.length() > 0)
-        options += wxT(" -i") + strIncludePath;
+        options += " -i" + strIncludePath;
     if (theApp->GetUseTabs())
-        options += wxString::Format(wxT(" -t%d"), theApp->GetTabWidth());
+        options += wxString::Format(" -t%d", theApp->GetTabWidth());
     if (VerboseBuild)
-        options += wxT(" -v");
+        options += " -v";
     if (OverlayCode)
-        options += wxT(" -V");
+        options += " -V";
     if (strDefines.length() > 0)
-        options += wxT(" ") + strDefines;
+        options += " " + strDefines;
 
     wxString basename, path, ext;
     wxFileName::SplitPath(script, &path, &basename, &ext);
     if (strOutputPath.length() > 0)
         path = strOutputPath;
-    if (path.Right(1) != wxT(DIRSEP_STR))
-        path += wxT(DIRSEP_STR);
+    if (path.Right(1) != DIRSEP_STR)
+        path += DIRSEP_STR;
     wxString extraoptions = strMiscCmdOptions;
-    int namepos = extraoptions.Find(wxT("-o"));
+    int namepos = extraoptions.Find("-o");
     if (namepos >= 0) {
         size_t start = namepos + 2;
         if (extraoptions[start] == ':' || extraoptions[start] == '=')
@@ -3059,15 +3059,15 @@ bool QuincyFrame::CompileSource(const wxString& script)
     } else if (UseFixedAMXName && strFixedAMXName.length() > 0) {
         basename = strFixedAMXName;
     }
-    strRecentAMXName = path + basename + wxT(".amx");   /* may be reset later (if compile fails) */
-    options += wxT(" ") + OptionallyQuoteString(wxT("-o") + strRecentAMXName);
+    strRecentAMXName = path + basename + ".amx";   /* may be reset later (if compile fails) */
+    options += " " + OptionallyQuoteString("-o" + strRecentAMXName);
 
     if (CreateReport)
-        options += wxT(" -r");
+        options += " -r";
     extraoptions = extraoptions.Trim(false);
     if (extraoptions.length() > 0)
-        options += wxT(" ") + extraoptions;
-    options += wxT(" ") + OptionallyQuoteString(script);
+        options += " " + extraoptions;
+    options += " " + OptionallyQuoteString(script);
 
     wxWindowDisabler *disableAll = new wxWindowDisabler;
     #if wxCHECK_VERSION(3, 1, 0)
@@ -3075,14 +3075,14 @@ bool QuincyFrame::CompileSource(const wxString& script)
                             wxBusyInfoFlags()
                                 .Parent(this)
                                 .Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
-                                .Title(wxT("<b>Building ") + basename + wxT("</b>"))
-                                .Text(wxT("Please wait..."))
+                                .Title("<b>Building " + basename + "</b>")
+                                .Text("Please wait...")
                                 .Foreground(*wxWHITE)
                                 .Background(*wxBLACK)
                                 .Transparency(4*wxALPHA_OPAQUE/5));
     #else
         /* wxBusyInfoFlags was introduced in 3.1, fall back to uglier boxes on earlier versions */
-        wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
+        wxBusyInfo *info = new wxBusyInfo("Please wait...", this);
     #endif
     wxArrayString output;
     wxArrayString errors;
@@ -3090,8 +3090,8 @@ bool QuincyFrame::CompileSource(const wxString& script)
     delete disableAll;
     delete info;
     if (result < 0 || result >= 255) {
-        wxMessageBox(wxT("Pawn compiler could not be started.\nPlease check the settings."),
-                     wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Pawn compiler could not be started.\nPlease check the settings.",
+                     "Pawn IDE", wxOK | wxICON_ERROR);
         strRecentAMXName = wxEmptyString;
         return false;
     }
@@ -3105,16 +3105,16 @@ bool QuincyFrame::CompileSource(const wxString& script)
     for (unsigned idx = 0; idx < errors.Count(); idx++)
         ErrorLog->InsertItem(idx, errors[idx]);
     if (prebuild_error)
-        ErrorLog->InsertItem(0, wxT("Pre-build step return with an error"));
+        ErrorLog->InsertItem(0, "Pre-build step return with an error");
     ErrorLog->SetColumnWidth(0, wxLIST_AUTOSIZE);
 
     if (errors.Count() == 0 && !prebuild_error) {
         BuildLog->EnsureVisible(BuildLog->GetItemCount() - 1);
         PaneTab->SetSelection(TAB_BUILD);
-        SetStatusText(wxT("Build completed successfully"), 0);
+        SetStatusText("Build completed successfully", 0);
     } else {
         PaneTab->SetSelection(TAB_MESSAGES);
-        wxString msg = wxString::Format(wxT("%d errors / warnings"), errors.Count());
+        wxString msg = wxString::Format("%d errors / warnings", errors.Count());
         SetStatusText(msg, 0);
         strRecentAMXName = wxEmptyString;
     }
@@ -3135,46 +3135,46 @@ bool QuincyFrame::TransferScript(const wxString& path)
                                 wxBusyInfoFlags()
                                     .Parent(this)
                                     .Icon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE))
-                                    .Title(wxT("<b>Transferring ") + path.AfterLast(DIRSEP_CHAR) + wxT("</b>"))
-                                    .Text(wxT("Please wait..."))
+                                    .Title("<b>Transferring " + path.AfterLast(DIRSEP_CHAR) + "</b>")
+                                    .Text("Please wait...")
                                     .Foreground(*wxWHITE)
                                     .Background(*wxBLACK)
                                     .Transparency(4*wxALPHA_OPAQUE/5));
         #else
             /* wxBusyInfoFlags was introduced in 3.1, fall back to uglier boxes on earlier versions */
-            wxBusyInfo *info = new wxBusyInfo(wxT("Please wait..."), this);
+            wxBusyInfo *info = new wxBusyInfo("Please wait...", this);
         #endif
         wxArrayString output;
         wxArrayString errors;
-        command = strCompilerPath + wxT(DIRSEP_STR) + UploadTool + wxT(EXE_EXT);
-        command += wxT(" ") + path;
+        command = strCompilerPath + DIRSEP_STR + UploadTool + EXE_EXT;
+        command += " " + path;
         long result = wxExecute(command, output, errors, wxEXEC_SYNC);
         delete disableAll;
         delete info;
         if (result < 0 || result >= 255) {
-            wxMessageBox(wxT("Transfer could not be started.\nPlease check the settings."),
-                         wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("Transfer could not be started.\nPlease check the settings.",
+                         "Pawn IDE", wxOK | wxICON_ERROR);
             return false;
         }
         success = (result == 0);
-        wxString msg = success ? wxT("Transferred to target device.") : wxT("Failure to transfer the script.");
+        wxString msg = success ? "Transferred to target device." : "Failure to transfer the script.";
         int cnt = BuildLog->GetItemCount();
         BuildLog->InsertItem(cnt + 1, msg);
         wxStatusBar* bar = GetStatusBar();
-        SetStatusText(bar->GetStatusText(0) + wxT(". ") + msg);
+        SetStatusText(bar->GetStatusText(0) + ". " + msg);
     } else {
-        command = strCompilerPath + wxT(DIRSEP_STR) wxT("pawndbg") wxT(EXE_EXT);
-        command += wxT(" ") + path;
-        command += wxT(" -term=off,");
+        command = strCompilerPath + DIRSEP_STR "pawndbg" EXE_EXT;
+        command += " " + path;
+        command += " -term=off,";
         command += debug_prefix;
-        command += wxT(" -rs232=") + DebugPort;
-        command += wxString::Format(wxT(",%ld"), DebugBaudrate);
-        command += wxT(" -transfer -quit");
+        command += " -rs232=" + DebugPort;
+        command += wxString::Format(",%ld", DebugBaudrate);
+        command += " -transfer -quit";
 
         ExecPID = wxExecute(command, wxEXEC_ASYNC, ExecProcess);
         if (ExecPID <= 0) {
-            wxMessageBox(wxT("Pawn debugger could not be started.\nPlease check the settings."), 
-                         wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("Pawn debugger could not be started.\nPlease check the settings.",
+                         "Pawn IDE", wxOK | wxICON_ERROR);
             delete ExecProcess;
             return success;
         }
@@ -3194,14 +3194,14 @@ bool QuincyFrame::RunCurrentScript(bool debug)
 {
     /* check whether already running */
     if (ExecPID != 0 && wxProcess::Exists(ExecPID)) {
-        wxMessageBox(wxT("A script is already running."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("A script is already running.", "Pawn IDE", wxOK | wxICON_ERROR);
         return false;
     }
     ExecPID = 0;    /* if not running, preset to an invalid value */
 
     wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
     if (!edit) {
-        wxMessageBox(wxT("No source file to run."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("No source file to run.", "Pawn IDE", wxOK | wxICON_ERROR);
         return false;
     }
     if (!SaveAllFiles(false))
@@ -3214,7 +3214,7 @@ bool QuincyFrame::RunCurrentScript(bool debug)
     wxASSERT(idx < MAX_EDITORS);
     fullpath = Filename[idx];
     if (fullpath.Length() == 0) {
-        wxMessageBox(wxT("Unknown filename for the source file to run."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Unknown filename for the source file to run.", "Pawn IDE", wxOK | wxICON_ERROR);
         return false;
     }
 
@@ -3223,15 +3223,15 @@ bool QuincyFrame::RunCurrentScript(bool debug)
         wxString path, basename, ext;
         wxFileName::SplitPath(fullpath, &path, &basename, &ext);
         /* check whether the file is a script (i.e. the extension is .p, .pwn or .pawn) */
-        if (ext.CmpNoCase(wxT("p")) != 0 && ext.CmpNoCase(wxT("pawn")) != 0 && ext.CmpNoCase(wxT("pwn")) != 0) {
-            wxString msg = wxT("The file \"") + basename + wxT(".") + ext + wxT("\" appears not to be a script.\nRun anyway?");
-            int reply = wxMessageBox(msg, wxT("Pawn IDE"), wxYES_NO | wxICON_QUESTION);
+        if (ext.CmpNoCase("p") != 0 && ext.CmpNoCase("pawn") != 0 && ext.CmpNoCase("pwn") != 0) {
+            wxString msg = "The file \"" + basename + "." + ext + "\" appears not to be a script.\nRun anyway?";
+            int reply = wxMessageBox(msg, "Pawn IDE", wxYES_NO | wxICON_QUESTION);
             if (reply != wxYES)
                 return false;
         }
-        amxname = strOutputPath + wxT(DIRSEP_STR) + basename + wxT(".amx");
+        amxname = strOutputPath + DIRSEP_STR + basename + ".amx";
     } else {
-        amxname = fullpath.BeforeLast(wxT('.')) + wxT(".amx");
+        amxname = fullpath.BeforeLast('.') + ".amx";
     }
 
     /* check whether this script can run (or whether it must be compiled) */
@@ -3244,17 +3244,17 @@ bool QuincyFrame::RunCurrentScript(bool debug)
         /* if the output file does not exist, assume "source code" modified (but
          * with a different prompt)
          */
-        ModifiedPrompt = wxT("The source file must be compiled before it can run.\nDo you wish to compile it now?");
+        ModifiedPrompt = "The source file must be compiled before it can run.\nDo you wish to compile it now?";
     }
     /* to be really sure, also check the time stamps of source and target */
     if (wxFileExists(fullpath)) {
         srctime = wxFileModificationTime(fullpath);
         if (amxtime < srctime)
-            ModifiedPrompt = wxT("The current source file was modified since last build\nDo you wish to compile it first?");
+            ModifiedPrompt = "The current source file was modified since last build\nDo you wish to compile it first?";
     }
 
     if (ModifiedPrompt.length() > 0) {
-        wxMessageDialog *dial = new wxMessageDialog(NULL, ModifiedPrompt, wxT("Script was modified"), wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+        wxMessageDialog *dial = new wxMessageDialog(NULL, ModifiedPrompt, "Script was modified", wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
         int result = dial->ShowModal();
         if (result == wxID_YES) {
             if (!CompileSource(fullpath))
@@ -3266,7 +3266,7 @@ bool QuincyFrame::RunCurrentScript(bool debug)
         /* verify that the AMX file has debug info. */
         FILE *fp = fopen(amxname.utf8_str(), "rb");
         if (fp == NULL) {
-            wxMessageBox(wxT("The script cannot run, because it fails to load."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("The script cannot run, because it fails to load.", "Pawn IDE", wxOK | wxICON_ERROR);
             return false;
         }
         /* read size & signature of the AMX header */
@@ -3275,7 +3275,7 @@ bool QuincyFrame::RunCurrentScript(bool debug)
         unsigned short magic = 0;
         fread(&magic, sizeof(magic), 1, fp);
         if (size == 0 || (magic != AMX_MAGIC_16 && magic != AMX_MAGIC_32 && magic != AMX_MAGIC_64)) {
-            wxMessageBox(wxT("Invalid or unsupported run-time file format."), wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("Invalid or unsupported run-time file format.", "Pawn IDE", wxOK | wxICON_ERROR);
             fclose(fp);
             return false;
         }
@@ -3287,8 +3287,8 @@ bool QuincyFrame::RunCurrentScript(bool debug)
         fread(&magic, sizeof(magic), 1, fp);
         fclose(fp);
         if (size == 0 || magic != AMX_DBG_MAGIC) {
-            wxMessageBox(wxT("No debug information is present.\nPlease rebuild the script\n(or run without debugging)."),
-                         wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("No debug information is present.\nPlease rebuild the script\n(or run without debugging).",
+                         "Pawn IDE", wxOK | wxICON_ERROR);
             return false;
         }
     }
@@ -3298,25 +3298,25 @@ bool QuincyFrame::RunCurrentScript(bool debug)
     if (ExecProcess)
         ExecProcess->Redirect();
 
-    wxString command = strCompilerPath + wxT(DIRSEP_STR);
+    wxString command = strCompilerPath + DIRSEP_STR;
     if (debug)
-        command += wxT("pawndbg") wxT(EXE_EXT);
+        command += "pawndbg" EXE_EXT;
     else
-        command += wxT("pawnrun") wxT(EXE_EXT);
-    command += wxT(" ") + OptionallyQuoteString(amxname);
+        command += "pawnrun" EXE_EXT;
+    command += " " + OptionallyQuoteString(amxname);
     if (debug) {
-        command += wxT(" -term=off,");
+        command += " -term=off,";
         command += debug_prefix;
         if (DebuggerSelected == DEBUG_REMOTE) {
             //??? halt the RS232 reception, if any
-            command += wxT(" -rs232=") + DebugPort;
-            command += wxString::Format(wxT(",%ld"), DebugBaudrate);
+            command += " -rs232=" + DebugPort;
+            command += wxString::Format(",%ld", DebugBaudrate);
         }
     }
     ExecPID = wxExecute(command, wxEXEC_ASYNC, ExecProcess);
     if (ExecPID <= 0) {
-        wxMessageBox(wxT("Pawn run-time could not be started.\nPlease check the settings."),
-                     wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Pawn run-time could not be started.\nPlease check the settings.",
+                     "Pawn IDE", wxOK | wxICON_ERROR);
         delete ExecProcess;
         return false;
     }
@@ -3352,19 +3352,19 @@ bool QuincyFrame::RunCurrentScript(bool debug)
 void QuincyFrame::HandleDebugResponse(const wxString& cmd)
 {
     SetStatusText(wxEmptyString, 0);
-    if (cmd.Left(4).Cmp(wxT("file")) == 0) {
+    if (cmd.Left(4).Cmp("file") == 0) {
         DebugCurrentFile = cmd.Mid(4);
         DebugCurrentFile.Trim();
         DebugCurrentFile.Trim(false);
-    } else if (cmd.Left(5).Cmp(wxT("watch")) == 0) {
+    } else if (cmd.Left(5).Cmp("watch") == 0) {
         wxString text = cmd.Mid(5);
-        wxStringTokenizer tokenizer(text, wxT(" \t\r\n"), wxTOKEN_STRTOK);
+        wxStringTokenizer tokenizer(text, " \t\r\n", wxTOKEN_STRTOK);
         wxString word = tokenizer.GetNextToken();
         word.ToLong(&LastWatchIndex);
         wxString name = tokenizer.GetNextToken();
         wxString value = tokenizer.GetNextToken();
         while (tokenizer.HasMoreTokens())
-            value += wxT(" ") + tokenizer.GetNextToken();
+            value += " " + tokenizer.GetNextToken();
         if (LastWatchIndex <= WatchLog->GetItemCount())
             WatchLog->SetItemText(LastWatchIndex - 1, name);
         else
@@ -3372,21 +3372,21 @@ void QuincyFrame::HandleDebugResponse(const wxString& cmd)
         WatchLog->SetItem(LastWatchIndex - 1, 1, value);
         WatchLog->SetColumnWidth(0, wxLIST_AUTOSIZE);
         WatchLog->SetColumnWidth(1, wxLIST_AUTOSIZE);
-    } else if (cmd.Left(3).Cmp(wxT("loc")) == 0 || cmd.Left(3).Cmp(wxT("glb")) == 0) {
+    } else if (cmd.Left(3).Cmp("loc") == 0 || cmd.Left(3).Cmp("glb") == 0) {
         wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
         if (edit) {
             wxString tip = cmd.Mid(3);
             tip.Trim(false);
             tip.Trim();
-            tip = tip.AfterFirst(wxT('\t'));
+            tip = tip.AfterFirst('\t');
             edit->CallTipShow(CalltipPos, tip);
         }
-    } else if (cmd.Left(4).Cmp(wxT("info")) == 0) {
+    } else if (cmd.Left(4).Cmp("info") == 0) {
         wxString msg = cmd.Mid(4);
         msg.Trim(false);
         msg.Trim();
         SetStatusText(msg, 0);
-    } else if (cmd.Left(4).Cmp(wxT("dbg>")) == 0) {
+    } else if (cmd.Left(4).Cmp("dbg>") == 0) {
         DebugRunning = false;
         /* set the "current line" marker */
         wxStyledTextCtrl* edit = 0;
@@ -3448,7 +3448,7 @@ void QuincyFrame::HandleDebugResponse(const wxString& cmd)
                     edit = Editor[idx];
         }
         if (!edit) {
-            wxMessageBox(wxT("Could not open ") + DebugCurrentFile, wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+            wxMessageBox("Could not open " + DebugCurrentFile, "Pawn IDE", wxOK | wxICON_ERROR);
             return;
         }
         /* find the TAB page to activate */
@@ -3494,7 +3494,7 @@ void QuincyFrame::SendDebugCommand(const wxString& cmd)
         if (ostream) {
             for (unsigned idx = 0; idx < cmd.length(); idx++)
                 ostream->PutC(cmd[idx]);
-            ostream->PutC(wxT('\r'));
+            ostream->PutC('\r');
         }
     }
     DebugRunning = true;
@@ -3509,9 +3509,9 @@ void QuincyFrame::SendWatchList()
         wxString name = WatchLog->GetItemText(line);
         wxString cmd;
         if (name.length() > 0)
-            cmd = wxString::Format(wxT("w %d "), line + 1) + name;
+            cmd = wxString::Format("w %d ", line + 1) + name;
         else
-            cmd = wxString::Format(wxT("cw %d"), line + 1);
+            cmd = wxString::Format("cw %d", line + 1);
         SendDebugCommand(cmd);
     }
 }
@@ -3532,7 +3532,7 @@ void QuincyFrame::BuildBreakpointList()
             if (next < 0)
                 break;
             line = next + 1;
-            BreakpointList.Add(Filename[idx] + wxString::Format(wxT(":%d"), line));
+            BreakpointList.Add(Filename[idx] + wxString::Format(":%d", line));
         }
     }
     BuiltBreakpoints = true;
@@ -3542,13 +3542,13 @@ void QuincyFrame::SendBreakpointList()
 {
     /* before sending the first breakpoint, clear the entire stack */
     if (ChangedBreakpoints) {
-        SendDebugCommand(wxT("cbreak *"));
+        SendDebugCommand("cbreak *");
         ChangedBreakpoints = false;
         BuiltBreakpoints = false;
     } else if (BreakpointList.Count() > 0) {
         wxString bp = BreakpointList[0];
         BreakpointList.RemoveAt(0);
-        SendDebugCommand(wxT("break ") + bp);
+        SendDebugCommand("break " + bp);
     }
 }
 
@@ -3558,14 +3558,14 @@ void QuincyFrame::PrepareSearchLog()
         if (!SearchLog) {
             wxASSERT(PaneTab->GetPageCount() == TAB_SEARCH);
             #if defined _WIN32
-                wxFont font(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Courier New"));
+                wxFont font(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Courier New");
             #else
-                wxFont font(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Monospace"));
+                wxFont font(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Monospace");
             #endif
             SearchLog = new wxTreeCtrl(PaneTab, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_FULL_ROW_HIGHLIGHT|wxTR_HIDE_ROOT|wxTR_NO_LINES|wxTR_SINGLE|wxTR_DEFAULT_STYLE);
             SearchLog->SetFont(font);
             SearchLog->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler(QuincyFrame::OnSearchSelect), NULL, this);
-            PaneTab->AddPage(SearchLog, wxT("Search"), false); /* TAB_SEARCH */
+            PaneTab->AddPage(SearchLog, "Search", false); /* TAB_SEARCH */
         }
     } else {
         if (SearchLog) {
@@ -3611,19 +3611,19 @@ void QuincyFrame::SpaceToTab(bool indent_only)
     bool changed = false;
     wxString newtext = wxEmptyString;
     wxString orgtext = edit->GetText();
-    wxStringTokenizer tokenizer(orgtext, wxT('\n'), wxTOKEN_RET_DELIMS);
+    wxStringTokenizer tokenizer(orgtext, '\n', wxTOKEN_RET_DELIMS);
     while (tokenizer.HasMoreTokens()) {
         wxString line = tokenizer.GetNextToken();
         int pos = 0;
         for (unsigned idx = 0; idx < line.length(); idx++) {
-            if (line[idx] == wxT('\t'))
+            if (line[idx] == '\t')
                 pos = ((pos / theApp->GetTabWidth()) + 1) * theApp->GetTabWidth();
             else
                 pos += 1;
-            if (line[idx] == wxT(' ') && pos % theApp->GetTabWidth() == 0) {
+            if (line[idx] == ' ' && pos % theApp->GetTabWidth() == 0) {
                 /* see how many spaces we can remove */
                 int start = idx;
-                while (start > 0 && line[start - 1] == wxT(' '))
+                while (start > 0 && line[start - 1] == ' ')
                     start--;
                 wxASSERT(idx - start < (unsigned)theApp->GetTabWidth());
                 /* we wish to avoid converting a single space between two words
@@ -3633,11 +3633,11 @@ void QuincyFrame::SpaceToTab(bool indent_only)
                 if (idx - start > 0) {
                     /* replace the subrange of spaces with a TAB */
                     line.erase(start, (idx - start + 1));
-                    line.insert(start, wxT('\t'));
+                    line.insert(start, '\t');
                     idx = start;    /* adjust current position and string length */
                     changed = true;
                 }
-            } else if (indent_only && line[idx] > wxT(' ')) {
+            } else if (indent_only && line[idx] > ' ') {
                 break;
             }
         }
@@ -3660,14 +3660,14 @@ void QuincyFrame::OnTabsToSpaces(wxCommandEvent& /* event */)
     bool changed = false;
     wxString newtext = wxEmptyString;
     wxString orgtext = edit->GetText();
-    wxStringTokenizer tokenizer(orgtext, wxT('\n'), wxTOKEN_RET_DELIMS);
+    wxStringTokenizer tokenizer(orgtext, '\n', wxTOKEN_RET_DELIMS);
     while (tokenizer.HasMoreTokens()) {
         wxString line = tokenizer.GetNextToken();
         int pos;
-        while ((pos = line.Find(wxT('\t'))) >= 0) {
+        while ((pos = line.Find('\t')) >= 0) {
             int spaces = theApp->GetTabWidth() - (pos % theApp->GetTabWidth());
             line.erase(pos, 1);
-            line.insert(pos, spaces, wxT(' '));
+            line.insert(pos, spaces, ' ');
             changed = true;
         }
         newtext += line;
@@ -3697,11 +3697,11 @@ void QuincyFrame::OnTrimTrailing(wxCommandEvent& /* event */)
 
 void QuincyFrame::OnDeviceTool(wxCommandEvent& /* event */)
 {
-    wxString command = strCompilerPath + wxT(DIRSEP_STR) + DeviceTool + wxT(EXE_EXT);
+    wxString command = strCompilerPath + DIRSEP_STR + DeviceTool + EXE_EXT;
     long pid = wxExecute(command, wxEXEC_ASYNC);
     if (pid <= 0) {
-        wxMessageBox(wxT("Device configuration tool could not be started.\nPlease check the installation and configuration."),
-                     wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("Device configuration tool could not be started.\nPlease check the installation and configuration.",
+                     "Pawn IDE", wxOK | wxICON_ERROR);
     }
 }
 
@@ -3711,10 +3711,10 @@ void QuincyFrame::OnSampleBrowser(wxCommandEvent& /* event */)
     if (dlg->ShowModal() == wxID_OK) {
         /* open the files on selection */
         for (unsigned idx = 0; idx < dlg->GetFileCount(); idx++) {
-            wxString path = theApp->GetExamplesPath() + wxT(DIRSEP_STR);
+            wxString path = theApp->GetExamplesPath() + DIRSEP_STR;
             wxString host = GetTargetHost();
             if (host.Length() > 0)
-                path += host + wxT(DIRSEP_STR);
+                path += host + DIRSEP_STR;
             path += dlg->GetFile(idx);
             LoadSourceFile(path);
         }
@@ -3726,12 +3726,12 @@ void QuincyFrame::OnAbout(wxCommandEvent& /* event */)
     wxIcon icon(Quincy48_xpm);
 
     wxAboutDialogInfo info;
-    info.SetName(wxT("Pawn IDE"));
-    info.SetVersion(wxT("0.7.") wxT(SVNREV_STR));
-    info.SetDescription(wxT("A tiny IDE for Pawn."));
-    info.SetCopyright(wxT("(C) 2009-2024 CompuPhase"));
+    info.SetName("Pawn IDE");
+    info.SetVersion("0.7." SVNREV_STR);
+    info.SetDescription("A tiny IDE for Pawn.");
+    info.SetCopyright("(C) 2009-2024 CompuPhase");
     info.SetIcon(icon);
-    info.SetWebSite(wxT("https://www.compuphase.com/pawn/"));
+    info.SetWebSite("https://www.compuphase.com/pawn/");
     wxAboutBox(info);
 }
 
@@ -3739,16 +3739,16 @@ void QuincyFrame::OnHelp(wxCommandEvent& event)
 {
     wxString filename;
     if (event.GetId() == wxID_HELP) {
-        filename = theApp->GetDocPath() + wxT(DIRSEP_STR) + wxT("Quincy.pdf");
+        filename = theApp->GetDocPath() + DIRSEP_STR + "Quincy.pdf";
     } else if (menuHelp) {
         wxMenuItem *item = menuHelp->FindItem(event.GetId());
         if (item) {
             filename = item->GetItemLabelText();
-            filename.Replace(wxT(" "), wxT("_"));
+            filename.Replace(" ", "_");
             wxString HostDocPath = theApp->GetDocPath();
             if (strTargetHost.Length() > 0)
-                HostDocPath += wxT(DIRSEP_STR) + strTargetHost;
-            filename = HostDocPath + wxT(DIRSEP_STR) + filename + wxT(".pdf");
+                HostDocPath += DIRSEP_STR + strTargetHost;
+            filename = HostDocPath + DIRSEP_STR + filename + ".pdf";
         }
     }
 
@@ -3758,19 +3758,19 @@ void QuincyFrame::OnHelp(wxCommandEvent& event)
         /* remove page and label options */
         int idx;
         #if defined _WIN32
-            idx = Command.Find(wxT('/'));
+            idx = Command.Find('/');
         #else
-            idx = Command.Find(wxT('-'));
+            idx = Command.Find('-');
         #endif
         if (idx > 0)
             Command = Command.Left(idx);
-        Command += wxT(" ") + filename;
+        Command += " " + filename;
     } else {
         #if wxCHECK_VERSION(2, 9, 0)
         #else
-            wxTheMimeTypesManager->ReadMailcap(wxT("/etc/mailcap"));    /* for wxWidgets 2.8 */
+            wxTheMimeTypesManager->ReadMailcap("/etc/mailcap");    /* for wxWidgets 2.8 */
         #endif
-        wxFileType *FileType = wxTheMimeTypesManager->GetFileTypeFromMimeType(wxT("application/pdf"));
+        wxFileType *FileType = wxTheMimeTypesManager->GetFileTypeFromMimeType("application/pdf");
         Command = FileType->GetOpenCommand(filename);
     }
     wxExecute(Command);
@@ -3792,7 +3792,7 @@ void QuincyFrame::OnContextHelp(wxCommandEvent& /* event */)
     wxASSERT(filenames);
     if (filenames->size() == 0 && word[0] == '@') {
         /* no exact match found, try a prefix */
-        label = wxT("at.") + word.Mid(1);
+        label = "at." + word.Mid(1);
         filenames = HelpIndex->LookUp(label.utf8_str());
     }
     /* - if there are zero matches, give an error
@@ -3801,8 +3801,8 @@ void QuincyFrame::OnContextHelp(wxCommandEvent& /* event */)
     wxString filename;
     int page = 0;
     if (filenames == NULL || filenames->size() == 0) {
-        wxMessageBox(wxT("No help is available for \"") + word + wxT("\"."),
-                     wxT("Pawn IDE"), wxOK | wxICON_ERROR);
+        wxMessageBox("No help is available for \"" + word + "\".",
+                     "Pawn IDE", wxOK | wxICON_ERROR);
         return;
     } else if (filenames->size() == 1) {
         std::map<const char*,int>::iterator p = filenames->begin();
@@ -3818,7 +3818,7 @@ void QuincyFrame::OnContextHelp(wxCommandEvent& /* event */)
         }
         static int dlgwidth = wxDefaultCoord;
         static int dlgheight = wxDefaultCoord;
-        wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, wxT("This keyword appears in multiple documents. Please select the one to open."), wxT("Select document"), documents);
+        wxSingleChoiceDialog *dlg = new wxSingleChoiceDialog(this, "This keyword appears in multiple documents. Please select the one to open.", "Select document", documents);
         dlg->SetSize(wxDefaultCoord, wxDefaultCoord, dlgwidth, dlgheight, wxSIZE_AUTO);
         int result = dlg->ShowModal();
         dlg->GetSize(&dlgwidth, &dlgheight);
@@ -3839,24 +3839,24 @@ void QuincyFrame::OnContextHelp(wxCommandEvent& /* event */)
         Command = theApp->GetReaderPath();
         int idx;
         /* unless there is a {path} keyword, concatenate the file path */
-        if ((idx = Command.Find(wxT("{path}"))) >= 0)
-            Command.Replace(wxT("{path}"), filename);
+        if ((idx = Command.Find("{path}")) >= 0)
+            Command.Replace("{path}", filename);
         else
-            Command += wxT(" ") + filename;
+            Command += " " + filename;
         /* replace other options */
-        Command.Replace(wxT("{page}"), wxString::Format(wxT("%d"), page));
-        Command.Replace(wxT("{label}"), wxT("p.") + label);
+        Command.Replace("{page}", wxString::Format("%d", page));
+        Command.Replace("{label}", "p." + label);
     } else {
         #if wxCHECK_VERSION(2, 9, 0)
         #else
-            wxTheMimeTypesManager->ReadMailcap(wxT("/etc/mailcap"));    /* for wxWidgets 2.8 */
+            wxTheMimeTypesManager->ReadMailcap("/etc/mailcap");    /* for wxWidgets 2.8 */
         #endif
-        wxFileType *FileType = wxTheMimeTypesManager->GetFileTypeFromMimeType(wxT("application/pdf"));
+        wxFileType *FileType = wxTheMimeTypesManager->GetFileTypeFromMimeType("application/pdf");
         Command = FileType->GetOpenCommand(filename);
         #if defined _WIN32
-            Command += wxString::Format(wxT(" /A \"page=%d\""), page);  /* for Adobe Acrobat */
+            Command += wxString::Format(" /A \"page=%d\"", page);  /* for Adobe Acrobat */
         #else
-            Command += wxString::Format(wxT(" -p %d"), page);   /* for Evince and Okular */
+            Command += wxString::Format(" -p %d", page);   /* for Evince and Okular */
         #endif
     }
     wxExecute(Command);
@@ -3865,7 +3865,7 @@ void QuincyFrame::OnContextHelp(wxCommandEvent& /* event */)
 void QuincyFrame::OnEditorChange(wxStyledTextEvent& /* event */)
 {
     if (!IgnoreChangeEvent) {
-        SetStatusText(wxT("Source file changed since last compile"), 0);
+        SetStatusText("Source file changed since last compile", 0);
         SetChanged();
         /* flag start of re-scan of the context list (in the background, as an idle task */
         wxStyledTextCtrl *edit = GetActiveEdit(EditTab);
@@ -3884,7 +3884,7 @@ void QuincyFrame::OnEditorCharAdded(wxStyledTextEvent& event)
 
     char chr = (char)((wxStyledTextEvent&)event).GetKey();
 
-    if (theApp->GetAutoIndent() && chr == wxT('\n')) {
+    if (theApp->GetAutoIndent() && chr == '\n') {
         //??? also act on '\r' if support for Mac is needed
         int lineInd = 0;
         int currentLine = edit->GetCurrentLine();
@@ -3898,20 +3898,20 @@ void QuincyFrame::OnEditorCharAdded(wxStyledTextEvent& event)
                 wxString text = edit->GetLine(currentLine - 1);
                 /* get the first word on the previous line */
                 unsigned start, stop;
-                for (start = 0; start < text.Length() && text[start] <= wxT(' '); start++)
+                for (start = 0; start < text.Length() && text[start] <= ' '; start++)
                     /* nothing */;
-                for (stop = start + 1; stop < text.Length() && text[stop] > wxT(' ') && text[stop] != wxT('('); stop++)
+                for (stop = start + 1; stop < text.Length() && text[stop] > ' ' && text[stop] != '('; stop++)
                     /* nothing */;
                 if (start < text.Length() && stop < text.Length()) {
                     wxString word = text.Mid(start, stop - start);
-                    if (word.Cmp(wxT("if")) == 0 || word.Cmp(wxT("for")) == 0
-                        || word.Cmp(wxT("while")) == 0 || word.Cmp(wxT("do")) == 0)
+                    if (word.Cmp("if") == 0 || word.Cmp("for") == 0
+                        || word.Cmp("while") == 0 || word.Cmp("do") == 0)
                     {
                         /* check the last character on the line */
                         text.Trim();
                         stop = text.Length();
                         wxASSERT(stop > 0);
-                        if (text[stop - 1] == wxT(')') || text[stop - 1] == wxT('{'))
+                        if (text[stop - 1] == ')' || text[stop - 1] == '{')
                             lineInd += theApp->GetTabWidth();
                     }
                 }
@@ -3922,13 +3922,13 @@ void QuincyFrame::OnEditorCharAdded(wxStyledTextEvent& event)
                 pos++;
             edit->GotoPos(pos);
         }
-    } else if (chr == wxT('}') && theApp->GetAutoIndent() && edit->GetLexer() == wxSTC_LEX_CPP) {
+    } else if (chr == '}' && theApp->GetAutoIndent() && edit->GetLexer() == wxSTC_LEX_CPP) {
         /* test whether there is any text on the line */
         int currentLine = edit->GetCurrentLine();
         wxString text = edit->GetLine(currentLine);
         unsigned idx, count = 0;
-        for (idx = 0; idx < text.Length() && (text[idx] <= wxT(' ') || text[idx] == wxT('}')) && count <= 1; idx++)
-            if (text[idx] == wxT('}'))
+        for (idx = 0; idx < text.Length() && (text[idx] <= ' ' || text[idx] == '}') && count <= 1; idx++)
+            if (text[idx] == '}')
                 count++;
         if (idx == text.Length() && count == 1) {
             /* we need to get the indent level of the matching brace, but
@@ -3949,7 +3949,7 @@ void QuincyFrame::OnEditorPosition(wxStyledTextEvent& /* event */)
     int pos = edit->GetCurrentPos();
     int line = edit->LineFromPosition(pos);
     int col = edit->GetColumn(pos);
-    if ((PendingFlags & PEND_INDENTBRACE) && pos > 0 && edit->GetCharAt(pos - 1) == wxT('}')) {
+    if ((PendingFlags & PEND_INDENTBRACE) && pos > 0 && edit->GetCharAt(pos - 1) == '}') {
         int matchPos = edit->BraceMatch(pos - 1);
         if (matchPos >= 0) {
             /* find the indent on the line of the matching brace */
@@ -3973,7 +3973,7 @@ void QuincyFrame::OnEditorPosition(wxStyledTextEvent& /* event */)
     }
 
     /* update status bar */
-    wxString field = wxString::Format(wxT("Line %d Col %d"), line + 1, col + 1);
+    wxString field = wxString::Format("Line %d Col %d", line + 1, col + 1);
     SetStatusText(field, 1);
 
     /* check for brace highlighting */
@@ -4023,10 +4023,10 @@ void QuincyFrame::OnEditorDwellStart(wxStyledTextEvent& /* event */)
     int line = edit->LineFromPosition(CalltipPos);
     int col = CalltipPos - edit->PositionFromLine(line);    /* so TABs count as 1 */
     wxString text = edit->GetLine(line);
-    if (!isalnum(text[col]) && text[col] != wxT('_') && text[col] != wxT('@'))
+    if (!isalnum(text[col]) && text[col] != '_' && text[col] != '@')
         return;     /* not pointing at a word */
     int start = col, end = col;
-    while (start > 0 && (isalnum(text[start - 1]) || text[start] == wxT('_') || text[start] == wxT('@')))
+    while (start > 0 && (isalnum(text[start - 1]) || text[start] == '_' || text[start] == '@'))
         start--;
     while (end < (int)text.length() && isalnum(text[end]))
         end++;
@@ -4043,12 +4043,12 @@ void QuincyFrame::OnEditorDwellStart(wxStyledTextEvent& /* event */)
         tip = LookUpInfoTip(word, TIP_FUNCTION | TIP_CONSTANT);
     if (tip.Length() > 0) {
         edit->CallTipShow(CalltipPos, tip);
-        int bold = tip.Find(wxT("\n"));
+        int bold = tip.Find("\n");
         if (bold > 0)
             edit->CallTipSetHighlight(0, bold);
     } else if (ExecPID != 0 && DebugMode && !DebugRunning) {
         /* if debugging and waiting at a prompt, send a command to show the value */
-        SendDebugCommand(wxT("d ") + word);
+        SendDebugCommand("d " + word);
     }
 }
 
@@ -4105,18 +4105,18 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
     wxString text = edit->GetLine(line);
     if (col < 0 || col >= (int)text.Length())
         return;     /* no characters typed yet */
-    if (!isalnum(text[col]) && text[col] != wxT('_') && text[col] != wxT('@') && text[col] != wxT('.'))
+    if (!isalnum(text[col]) && text[col] != '_' && text[col] != '@' && text[col] != '.')
         return;     /* not pointing at a word */
     int start = col;
-    while (start > 0 && (isalnum(text[start - 1]) || text[start - 1] == wxT('_') || text[start - 1] == wxT('@') || text[start - 1] == wxT('/') || text[start - 1] == wxT('*')))
+    while (start > 0 && (isalnum(text[start - 1]) || text[start - 1] == '_' || text[start - 1] == '@' || text[start - 1] == '/' || text[start - 1] == '*'))
         start--;
     int length = col - start + 1;
     if (length == 0)
         return;     /* not a word */
     wxString prefix = text.Mid(start, length);
 
-    bool dotfield = (start > 0 && text[start - 1] == wxT('.'));
-    if (!dotfield && prefix.Cmp(wxT(".")) == 0) {
+    bool dotfield = (start > 0 && text[start - 1] == '.');
+    if (!dotfield && prefix.Cmp(".") == 0) {
         dotfield = true;
         prefix = wxEmptyString;
         length = 0;
@@ -4138,14 +4138,14 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
                 return;     /* can't find parent function */
             start = text.Length() - 1;
         }
-        if (text[start] == wxT(',')) {
+        if (text[start] == ',') {
             /* function parameter, but other parameters come before this one */
             /* move back lines as long as a line ends with a comma */
             while (line > 0) {
                 wxString temp = edit->GetLine(line - 1);
                 temp.Trim();
                 size_t len = temp.Length();
-                if (len > 0 && temp[len - 1] == wxT(',')) {
+                if (len > 0 && temp[len - 1] == ',') {
                     text = temp;
                     line -= 1;
                 } else {
@@ -4156,23 +4156,23 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
             int end = 0;
             do {
                 start = end;
-                while (start < (int)text.Length() && !isalnum(text[start]) && text[start] != wxT('_') && text[start] != wxT('@'))
+                while (start < (int)text.Length() && !isalnum(text[start]) && text[start] != '_' && text[start] != '@')
                     start++;
                 end = start;
-                while (end < (int)text.Length() && (isalnum(text[end]) || text[end] == wxT('_') || text[end] == wxT('@')))
+                while (end < (int)text.Length() && (isalnum(text[end]) || text[end] == '_' || text[end] == '@'))
                     end++;
                 contextsymbol = text.Mid(start, end - start);
-            } while (contextsymbol.Cmp(wxT("if")) == 0 || contextsymbol.Cmp(wxT("for")) == 0
-                     || contextsymbol.Cmp(wxT("while")) == 0 || contextsymbol.Cmp(wxT("do")) == 0);
+            } while (contextsymbol.Cmp("if") == 0 || contextsymbol.Cmp("for") == 0
+                     || contextsymbol.Cmp("while") == 0 || contextsymbol.Cmp("do") == 0);
         } else {
-            if (text[start] == wxT('(')) {
+            if (text[start] == '(') {
                 /* function parameter (first in the list), skip '(' */
                 start--;
                 while (start > 0 && isspace(text[start - 1]))
                     start--;
             }
             int end = start;
-            while (start > 0 && (isalnum(text[start - 1]) || text[start - 1] == wxT('_') || text[start - 1] == wxT('@')))
+            while (start > 0 && (isalnum(text[start - 1]) || text[start - 1] == '_' || text[start - 1] == '@'))
                 start--;
             contextsymbol = text.Mid(start, end - start + 1);
         }
@@ -4187,16 +4187,16 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
         long caretpos = -1;
         for (unsigned idx = 0; idx < expansion.Length(); idx++) {
             switch ((int)expansion[idx]) {
-            case wxT('\n'):
+            case '\n':
                 edit->NewLine();
                 break;
-            case wxT('\t'):
+            case '\t':
                 edit->Tab();
                 break;
-            case wxT('\v'):
+            case '\v':
                 edit->BackTab();
                 break;
-            case wxT('^'):
+            case '^':
                 caretpos = edit->GetCurrentPos();
                 break;
             default:
@@ -4219,7 +4219,7 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
         /* symbols from the symbol browser */
         for (const CSymbolEntry* sym = SymbolList.Root(); sym && definition.IsEmpty(); sym = sym->Next) {
             wxString name = sym->SymbolName;
-            if ((int)name.Length() > length + 2 && name[1] == wxT(':')) {
+            if ((int)name.Length() > length + 2 && name[1] == ':') {
                 name = name.Mid(2);
                 if (name.Cmp(contextsymbol) == 0)
                     definition = sym->Syntax;
@@ -4232,31 +4232,31 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
                 wxString name = iter->first;
                 if ((int)name.Length() > length && name.Cmp(contextsymbol) == 0) {
                     definition = iter->second;
-                    definition = definition.BeforeFirst(wxT('\n'));
+                    definition = definition.BeforeFirst('\n');
                 }
             }
         }
         /* go through the definition to find the matching parameters */
-        start = definition.Find(wxT('('));
+        start = definition.Find('(');
         wxASSERT(start > 0 && start < (int)definition.Length());
         for ( ;; ) {
             start++;    /* skip '(' or ',' */
-            while (start < (int)definition.Length() && (definition[start] <= wxT(' ') || definition[start] <= wxT('&')))
+            while (start < (int)definition.Length() && (definition[start] <= ' ' || definition[start] <= '&'))
                 start++;
             if (start >= (int)definition.Length())
                 break;
-            for (pos = start; pos < (int)definition.Length() && (isalnum(definition[pos]) || definition[pos] == wxT('_')); pos++)
+            for (pos = start; pos < (int)definition.Length() && (isalnum(definition[pos]) || definition[pos] == '_'); pos++)
                 /* nothing */;
             if (pos > start) {
                 wxString param = definition.Mid(start, pos - start);
-                if (param.Cmp(wxT("const")) == 0) {
+                if (param.Cmp("const") == 0) {
                     start = pos;
                     continue;
                 }
                 if (length == 0 || param.Left(length).Cmp(prefix) == 0)
                     list.Add(param);
             }
-            for (start = pos; start < (int)definition.Length() && definition[start] != wxT(','); start++)
+            for (start = pos; start < (int)definition.Length() && definition[start] != ','; start++)
                 /* nothing */;
         }
     } else {
@@ -4270,7 +4270,7 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
         /* symbols from the symbol browser */
         for (const CSymbolEntry* sym = SymbolList.Root(); sym; sym = sym->Next) {
             wxString name = sym->SymbolName;
-            if ((int)name.Length() > length + 2 && name[1] == wxT(':')) {
+            if ((int)name.Length() > length + 2 && name[1] == ':') {
                 name = name.Mid(2);
                 if (name.Left(length).Cmp(prefix) == 0 && list.Index(name) == wxNOT_FOUND)
                     list.Add(name);
@@ -4283,41 +4283,41 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
         size_t idx = 0;
         while (idx < textlen)   {
             wxChar cur = fulltext[idx];
-            wxChar nxt = (idx + 1 < textlen) ? fulltext[idx + 1] : wxT('\0');
-            if (cur == wxT('/') && nxt == wxT('/')) {
+            wxChar nxt = (idx + 1 < textlen) ? fulltext[idx + 1] : '\0';
+            if (cur == '/' && nxt == '/') {
                 /* wipe out until '\r' or '\n' */
-                while (idx < textlen && fulltext[idx] != wxT('\r') && fulltext[idx] != wxT('\n'))
-                    fulltext[idx++] = wxT(' ');
-                if (idx < textlen && fulltext[idx] != wxT('\n'))
-                    fulltext[idx++] = wxT(' ');
-            } else if (cur == wxT('/') && nxt == wxT('*')) {
-                fulltext[idx++] = wxT(' '); /* erase '/*' */
-                fulltext[idx++] = wxT(' ');
-                wxChar prv = wxT('\0');
-                while (idx < textlen && (fulltext[idx] != wxT('/') || prv != wxT('*'))) {
+                while (idx < textlen && fulltext[idx] != '\r' && fulltext[idx] != '\n')
+                    fulltext[idx++] = ' ';
+                if (idx < textlen && fulltext[idx] != '\n')
+                    fulltext[idx++] = ' ';
+            } else if (cur == '/' && nxt == '*') {
+                fulltext[idx++] = ' '; /* erase '/*' */
+                fulltext[idx++] = ' ';
+                wxChar prv = '\0';
+                while (idx < textlen && (fulltext[idx] != '/' || prv != '*')) {
                     prv = fulltext[idx];
-                    fulltext[idx++] = wxT(' ');
+                    fulltext[idx++] = ' ';
                 }
                 if (idx < textlen)
-                    fulltext[idx++] = wxT(' '); /* also erase final '/' the comment */
-            } else if (cur == wxT('"') || cur == wxT('\'')) {
-                fulltext[idx++] = wxT(' ');     /* erase initial '"' */
+                    fulltext[idx++] = ' '; /* also erase final '/' the comment */
+            } else if (cur == '"' || cur == '\'') {
+                fulltext[idx++] = ' ';     /* erase initial '"' */
                 while (idx < textlen && fulltext[idx] != cur) {
-                    if (idx + 1 < textlen && fulltext[idx] == wxT('\\'))
-                        fulltext[idx++] = wxT(' '); /* erase '\' plus the character following it */
-                    fulltext[idx++] = wxT(' ');
+                    if (idx + 1 < textlen && fulltext[idx] == '\\')
+                        fulltext[idx++] = ' '; /* erase '\' plus the character following it */
+                    fulltext[idx++] = ' ';
                 }
                 if (idx < textlen)
-                    fulltext[idx++] = wxT(' '); /* also erase final '"' */
+                    fulltext[idx++] = ' '; /* also erase final '"' */
             } else {
                 idx++;  /* none of the above: normal character */
             }
         }
-        wxStringTokenizer tokenizer(fulltext, wxT(" \t\r\n()[]{}<>`~!#$%^&*-+|\\;:'\",./?"), wxTOKEN_STRTOK);
+        wxStringTokenizer tokenizer(fulltext, " \t\r\n()[]{}<>`~!#$%^&*-+|\\;:'\",./?", wxTOKEN_STRTOK);
         while (tokenizer.HasMoreTokens()) {
             wxString word = tokenizer.GetNextToken();
             /* only include tokens that are alphanumeric (but start alphabetic) */
-            if (!isalpha(word[0]) && word[0] != wxT('_') && word[0] != wxT('@'))
+            if (!isalpha(word[0]) && word[0] != '_' && word[0] != '@')
                 continue;
             /* only include words that are longer than what is typed already, and
                limit the list to the words that start with the same prefix (and
@@ -4333,7 +4333,7 @@ void QuincyFrame::OnAutoComplete(wxCommandEvent& /* event */)
     wxString items;
     for (unsigned idx = 0; idx < list.GetCount(); idx++) {
         if (items.length () > 0)
-            items += wxT("|");
+            items += "|";
         items += list[idx];
     }
     if (items.Length() > 0)
@@ -4474,7 +4474,7 @@ void QuincyFrame::OnUIFind(wxUpdateUIEvent& /* event */)
 void QuincyFrame::OnUIRun(wxUpdateUIEvent& /* event */)
 {
     bool enable_abort = ExecPID != 0 && wxProcess::Exists(ExecPID);
-    bool enable_run = (enable_abort && DebugMode) ? !DebugRunning : RunTimeEnabled;
+    bool enable_run = (enable_abort && DebugMode) || RunTimeEnabled;
     bool enable_transfer = !enable_abort
                            && (((DebuggerEnabled & DEBUG_REMOTE) != 0 && DebuggerSelected == DEBUG_REMOTE)
                                || UploadTool.length() > 0);
@@ -4489,6 +4489,12 @@ void QuincyFrame::OnUIRun(wxUpdateUIEvent& /* event */)
             ToolBar->EnableTool(IDM_RUN, enable_run);
             ToolBar->EnableTool(IDM_ABORT, enable_abort);
             ToolBar->EnableTool(IDM_DEVICETOOL, DeviceTool.length() > 0);
+            wxAuiToolBarItem *item = ToolBar->FindTool(IDM_RUN);
+            wxASSERT(item);
+            if (DebugMode)
+                item->SetShortHelp("Continue" + TB_SHORTCUT("Debug"));
+            else
+                item->SetShortHelp("Run the script" + TB_SHORTCUT("Run"));
             ToolBar->Refresh(false);
         }
         if (menuBuild) {
@@ -4551,10 +4557,10 @@ bool QuincyFrame::UpdateSymBrowser(const wxString& filename)
             return false;
         int count = 0;
         wxString fname;
-        if (dir.GetFirst(&fname, wxT("*.xml"), wxDIR_FILES )) {
+        if (dir.GetFirst(&fname, "*.xml", wxDIR_FILES )) {
             do {
                 /* get the full path of the matching PDF file, verify whether it exists */
-                fname = path + wxT(DIRSEP_STR) + fname;
+                fname = path + DIRSEP_STR + fname;
                 wxASSERT(wxFileExists(fname));
                 if (SymbolList.LoadReportFile(fname))
                     count += 1;
@@ -4562,33 +4568,33 @@ bool QuincyFrame::UpdateSymBrowser(const wxString& filename)
         }
         result = (count > 0);
     } else {
-        result = SymbolList.LoadReportFile(filename.BeforeLast(wxT('.')) + wxT(".xml"));
+        result = SymbolList.LoadReportFile(filename.BeforeLast('.') + ".xml");
     }
 
     wxASSERT(BrowserTree);
     if (result) {
         BrowserTree->DeleteAllItems();
-        wxTreeItemId root = BrowserTree->AddRoot(wxT("root"));
-        wxTreeItemId sectionConstants = BrowserTree->AppendItem(root, wxT("Constants"));
-        wxTreeItemId sectionGlobals = BrowserTree->AppendItem(root, wxT("Global variables"));
-        wxTreeItemId sectionFunctions = BrowserTree->AppendItem(root, wxT("Functions"));
+        wxTreeItemId root = BrowserTree->AddRoot("root");
+        wxTreeItemId sectionConstants = BrowserTree->AppendItem(root, "Constants");
+        wxTreeItemId sectionGlobals = BrowserTree->AppendItem(root, "Global variables");
+        wxTreeItemId sectionFunctions = BrowserTree->AppendItem(root, "Functions");
         wxTreeItemId section;
         for (const CSymbolEntry* item = SymbolList.Root(); item; item = item->Next) {
-            wxASSERT(item->SymbolName[1] == wxT(':'));
-            if (item->SymbolName[0] == wxT('C'))
+            wxASSERT(item->SymbolName[1] == ':');
+            if (item->SymbolName[0] == 'C')
                 section = sectionConstants;
-            else if (item->SymbolName[0] == wxT('F'))
+            else if (item->SymbolName[0] == 'F')
                 section = sectionGlobals;
-            else if (item->SymbolName[0] == wxT('M'))
+            else if (item->SymbolName[0] == 'M')
                 section = sectionFunctions;
             else
                 continue;
-            BrowserTree->AppendItem(section, item->Syntax + wxT(" - ") + item->Source, -1, -1, new BrowserItemData(item));
+            BrowserTree->AppendItem(section, item->Syntax + " - " + item->Source, -1, -1, new BrowserItemData(item));
         }
     } else {
         if (BrowserTree->GetCount() == 0) {
-            wxTreeItemId root = BrowserTree->AddRoot(wxT("root"));
-            BrowserTree->AppendItem(root, wxT("No symbols loaded"));
+            wxTreeItemId root = BrowserTree->AddRoot("root");
+            BrowserTree->AppendItem(root, "No symbols loaded");
         }
     }
     return result;
@@ -4602,12 +4608,12 @@ bool QuincyFrame::ReadInfoTips()
     wxString pathname;
     pathname = theApp->GetDocPath();
     if (strTargetHost.Length() > 0)
-        pathname += wxT(DIRSEP_STR) + strTargetHost;
-    pathname += wxT(DIRSEP_STR) wxT("infotips.lst");
+        pathname += DIRSEP_STR + strTargetHost;
+    pathname += DIRSEP_STR "infotips.lst";
     /* the target host name may be upper case while the direcory name is lower case */
     if (!wxFileExists(pathname) && strTargetHost.Length() > 0) {
         wxString name = strTargetHost;
-        pathname = theApp->GetDocPath() + wxT(DIRSEP_STR) + name.MakeLower() + wxT(DIRSEP_STR) wxT("infotips.lst");
+        pathname = theApp->GetDocPath() + DIRSEP_STR + name.MakeLower() + DIRSEP_STR "infotips.lst";
     }
 
     wxTextFile flst;
@@ -4617,35 +4623,35 @@ bool QuincyFrame::ReadInfoTips()
         wxString line = flst.GetLine(idx);
         line = line.Trim(false);
         line = line.Trim(true);
-        if (line.length() != 0 && line[0] != wxT('#')) {
+        if (line.length() != 0 && line[0] != '#') {
             /* get the keyword from the line */
             int namelength;
-            int openparen = line.Find(wxT('('));
+            int openparen = line.Find('(');
             if (line[0] == '@') {
-                namelength = line.Find(wxT(')'));   /* use complete function definition for public functions */
+                namelength = line.Find(')');   /* use complete function definition for public functions */
                 if (namelength > 0)
                     namelength++;
             } else {
                 namelength = openparen; /* use only the function name */
             }
             if (namelength < 0) {
-                namelength = line.Find(wxT(' '));
-                if (namelength > 0 && line[namelength - 1] == wxT(':'))
-                    namelength += line.Mid(namelength + 1).Find(wxT(' ')) + 1;
+                namelength = line.Find(' ');
+                if (namelength > 0 && line[namelength - 1] == ':')
+                    namelength += line.Mid(namelength + 1).Find(' ') + 1;
             }
             if (namelength > 0) {
                 /* remove the tag name in front of the function name */
                 wxString keyword;
-                int skip = line.Find(wxT(':'));
+                int skip = line.Find(':');
                 if (skip >= 0 && skip < openparen) {
-                    while (line[++skip] == wxT(' '))
+                    while (line[++skip] == ' ')
                         /* nothing */;
                 } else {
                     skip = 0;
                 }
                 keyword = line.Mid(skip, namelength - skip);
                 /* reformat the line somewhat */
-                if (line.length() > (size_t)namelength && line[namelength] == wxT('(')) {
+                if (line.length() > (size_t)namelength && line[namelength] == '(') {
                     int closing = line.Mid(namelength).Find(')');
                     if (closing > 0)
                         namelength += closing + 1;
@@ -4653,7 +4659,7 @@ bool QuincyFrame::ReadInfoTips()
                 wxString def = line.Left(namelength);
                 wxString descr = line.Mid(namelength).Trim(false);
                 /* add it to the list */
-                InfoTipList.insert(std::make_pair(keyword, def + wxT("\n") + descr));
+                InfoTipList.insert(std::make_pair(keyword, def + "\n" + descr));
             }
         }
     }
@@ -4667,8 +4673,8 @@ wxString QuincyFrame::LookUpInfoTip(const wxString& keyword, int flags)
         std::map<wxString,wxString>::iterator iter = InfoTipList.begin();
         while (iter != InfoTipList.end()) {
             wxString key = iter->first;
-            if (key[0] == wxT('@')) {
-                int paren = key.Find(wxT('('));
+            if (key[0] == '@') {
+                int paren = key.Find('(');
                 if (paren > 0)
                     key = key.Left(paren);
             }
@@ -4680,7 +4686,7 @@ wxString QuincyFrame::LookUpInfoTip(const wxString& keyword, int flags)
 
     /* not found in the "info" files, see whether the symbol browser has it */
     for (const CSymbolEntry* sym = SymbolList.Root(); sym; sym = sym->Next) {
-        if (sym->SymbolName.Length() > 1 && sym->SymbolName[1] == wxT(':')
+        if (sym->SymbolName.Length() > 1 && sym->SymbolName[1] == ':'
             && keyword.Cmp(sym->SymbolName.Mid(2)) == 0 && sym->Syntax.Length() > 0)
         {
             if (((flags & TIP_FUNCTION) && sym->SymbolName[0] == 'M')
@@ -4689,7 +4695,7 @@ wxString QuincyFrame::LookUpInfoTip(const wxString& keyword, int flags)
             {
                 wxString item = sym->Syntax;
                 if (sym->Summary.Length() > 0)
-                    item += wxT("\n") + sym->Summary;
+                    item += "\n" + sym->Summary;
                 return item;
             }
         }
@@ -4746,25 +4752,25 @@ void QuincyFrame::RebuildHelpMenu()
 
     wxString HostDocPath = theApp->GetDocPath();
     if (strTargetHost.Length() > 0)
-        HostDocPath += wxT(DIRSEP_STR) + strTargetHost;
+        HostDocPath += DIRSEP_STR + strTargetHost;
     wxDir dir(HostDocPath);
     if (!dir.IsOpened())
         return;
     wxString filename;
-    if (dir.GetFirst(&filename, wxT("*.aux"), wxDIR_FILES )) {
+    if (dir.GetFirst(&filename, "*.aux", wxDIR_FILES )) {
         int count = 0;
         do {
             /* get the full path of the matching PDF file, verify whether it exists */
-            wxString PDFFile = HostDocPath + wxT(DIRSEP_STR) + filename.BeforeLast(wxT('.')) + wxT(".pdf");
+            wxString PDFFile = HostDocPath + DIRSEP_STR + filename.BeforeLast('.') + ".pdf";
             if (!wxFileExists(PDFFile))
                 continue;   /* not found, skip this file */
             /* process the index */
-            wxString AuxFile = HostDocPath + wxT(DIRSEP_STR) + filename;
+            wxString AuxFile = HostDocPath + DIRSEP_STR + filename;
             HelpIndex->ScanFile(AuxFile.utf8_str(), IDM_HELP1 + count, PDFFile.utf8_str());
             /* set this in the menu */
             if (menuHelp) {
-                filename = filename.BeforeLast(wxT('.'));
-                filename.Replace(wxT("_"), wxT(" "));
+                filename = filename.BeforeLast('.');
+                filename.Replace("_", " ");
                 menuHelp->Insert(count + 1, IDM_HELP1 + count, filename);
                 Connect(IDM_HELP1 + count, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnHelp));
             }
@@ -4791,7 +4797,7 @@ void QuincyFrame::RebuildToolsMenu()
     if (DeviceTool.length() > 0) {
         wxBitmap tb_devicetool(tb_device_xpm);
         menuTools->AppendSeparator();
-        AppendIconItem(menuTools, IDM_CONTEXTHELP, MENU_ENTRY(wxT("DeviceTool")), tb_devicetool);
+        AppendIconItem(menuTools, IDM_CONTEXTHELP, MENU_ENTRY("DeviceTool"), tb_devicetool);
         Connect(IDM_DEVICETOOL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(QuincyFrame::OnDeviceTool));
     }
 }
@@ -4907,7 +4913,7 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
     }
 
     if (!re.IsValid())
-        re.Compile(wxT("^[[:blank:]]*(static[[:blank:]]+|)([A-Za-z@_][A-Za-z@_0-9]*:[[:blank:]]*|)([A-Za-z@_][A-Za-z@_0-9]*)[[:blank:]]*\\("), wxRE_EXTENDED);
+        re.Compile("^[[:blank:]]*(static[[:blank:]]+|)([A-Za-z@_][A-Za-z@_0-9]*:[[:blank:]]*|)([A-Za-z@_][A-Za-z@_0-9]*)[[:blank:]]*\\(", wxRE_EXTENDED);
 
     /* run through the source code of the current document */
     wxASSERT(edit == activeedit);
@@ -4925,11 +4931,11 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
         wxASSERT(re.IsValid());
         for (int idx = startline; idx < lastline; idx++) {
             wxString line = edit->GetLine(idx);
-            if (line.Left(12).Cmp(wxT("timer_second"))==0)
+            if (line.Left(12).Cmp("timer_second")==0)
                 lastline = idx + 1;
             /* strip line comments */
             int pos;
-            if ((pos = line.Find(wxT("//"))) >= 0)
+            if ((pos = line.Find("//")) >= 0)
                 line = line.Left(pos);
             if (nestlevel == 0 && !incomment && re.Matches(line)) {
                 context = re.GetMatch(line, 3);
@@ -4939,13 +4945,13 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
             bool instring = false;
             bool escaped = false;
             for (unsigned c = 0; c < line.Length(); c++) {
-                if (line[c] == wxT('{') && !incomment && !instring && !inparamlist) {
+                if (line[c] == '{' && !incomment && !instring && !inparamlist) {
                     if (nestlevel == 0 && context.Length() > 0) {
                         WorkNames.Add(context);
                         wxASSERT(topline >= 0);
                     }
                     nestlevel++;
-                } else if (line[c] == wxT('}') && !incomment && !instring && !inparamlist) {
+                } else if (line[c] == '}' && !incomment && !instring && !inparamlist) {
                     nestlevel--;
                     if (nestlevel < 0)
                         nestlevel = 0;
@@ -4958,16 +4964,16 @@ bool ContextParse::ScanContext(wxStyledTextCtrl* edit, int flags)
                         context = wxEmptyString;
                         topline = -1;
                     }
-                } else if (line[c] == wxT(')') && !incomment && !instring) {
+                } else if (line[c] == ')' && !incomment && !instring) {
                     inparamlist = false;
-                } else if (line[c] == wxT('"') && !incomment && !escaped) {
+                } else if (line[c] == '"' && !incomment && !escaped) {
                     instring = !instring;
-                } else if (line[c] == wxT('/') && (c + 1) < line.Length() && line[c + 1] == wxT('*') && !instring) {
+                } else if (line[c] == '/' && (c + 1) < line.Length() && line[c + 1] == '*' && !instring) {
                     incomment = true;
-                } else if (line[c] == wxT('*') && (c + 1) < line.Length() && line[c + 1] == wxT('/') && !instring) {
+                } else if (line[c] == '*' && (c + 1) < line.Length() && line[c + 1] == '/' && !instring) {
                     incomment = false;
                 }
-                if (line[c] == wxT('\\'))
+                if (line[c] == '\\')
                     escaped = !escaped;
                 else
                     escaped = false;
